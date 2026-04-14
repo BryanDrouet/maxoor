@@ -444,6 +444,8 @@ nav a:hover {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    border-left: none;
+    border-right: none;
 }
 
 .form-group {

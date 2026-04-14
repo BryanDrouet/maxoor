@@ -21,9 +21,14 @@ function initCountdown() {
 function updateCountdown() {
     const now = new Date().getTime();
     const distance = LAUNCH_DATE - now;
+    const countdown = document.querySelector('.countdown');
+
+    if (!countdown) {
+        return;
+    }
 
     if (distance < 0) {
-        document.querySelector('.countdown').innerHTML = '<div style="grid-column: 1/-1; color: var(--color-light-1); font-size: 1.5rem; font-weight: bold;">🎉 Maxoor is LIVE!</div>';
+        countdown.innerHTML = '<div style="grid-column: 1/-1; color: var(--color-light-1); font-size: 1.5rem; font-weight: bold;">🎉 Maxoor is LIVE!</div>';
         return;
     }
 
@@ -48,6 +53,11 @@ function updateCountdown() {
     }
     if (secondsItem) {
         secondsItem.classList.remove('hidden');
+    }
+
+    if (countdown) {
+        const visibleItems = countdown.querySelectorAll('.countdown-item:not(.hidden)').length;
+        countdown.style.setProperty('--countdown-columns', String(Math.max(1, visibleItems)));
     }
 
     document.getElementById('countdown-days').textContent = String(days).padStart(2, '0');

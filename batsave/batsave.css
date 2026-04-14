@@ -48,6 +48,8 @@
     font-size: 0.9rem;
     color: var(--color-light-1);
     font-weight: 500;
+    border-left: none;
+    border-right: none;
 }
 
 .batsave-container {
@@ -96,6 +98,8 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    border-left: none;
+    border-right: none;
 }
 
 .batsave-stream:hover,
@@ -150,6 +154,8 @@
     flex-direction: column;
     gap: 0.8rem;
     justify-content: space-between;
+    border-left: none;
+    border-right: none;
 }
 
 .feature-card:hover {
