@@ -1,3 +1,44 @@
+/**
+ * Vérifie l'accès au site protégé
+ * Redirige vers /launch/ si pas d'authentification
+ */
+function checkAccessProtection() {
+    // Vérifier si on est sur la page d'accueil (index.html à la racine)
+    const isHomePage = window.location.pathname === '/' || window.location.pathname === '/index.html';
+    
+    if (isHomePage) {
+        // Vérifier si le lancement est passé (14/04/2026 20h)
+        const launchDate = new Date('2026-04-14T20:00:00').getTime();
+        const now = new Date().getTime();
+        const launchHasPassed = now >= launchDate;
+        
+        // Vérifier si l'utilisateur a une session valide OU si le lancement est passé
+        const hasAccess = sessionStorage.getItem('maxoor_preview_access') === 'true' || launchHasPassed;
+        
+        if (!hasAccess) {
+            // Rediriger vers la page de lancement
+            window.location.href = '/launch/';
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * Fonction de déconnexion - Efface la session et revient à /launch/
+ */
+window.logoutMaxoor = function() {
+    sessionStorage.removeItem('maxoor_preview_access');
+    window.location.href = '/launch/';
+};
+
+// Afficher une commande dans la console pour se déconnecter
+console.log('%c🍼 Maxoor Inc. - Mode Développement', 'color: #00FFEA; font-size: 14px; font-weight: bold;');
+console.log('%cPour se déconnecter : logoutMaxoor()', 'color: #00B8A8; font-size: 12px;');
+
+// Vérifier l'accès immédiatement avant que le contenu ne se charge
+checkAccessProtection();
+
 document.addEventListener('DOMContentLoaded', () => {
     // Le super-prompt qui donne le contexte global à l'IA pour toutes les images du site
     const contextBase = "Contexte : Images pour le site e-commerce de luxe 'Maxoor Inc.', une entreprise parodique vendant un lait magique anti-âge de qualité premium. Direction artistique : Photographie de magazine GQ/Vogue, éclairage studio dramatique en clair-obscur. La palette de couleurs stricte à intégrer dans les lumières, reflets ou décors est : #00FFEA, #00B8A8, #00665D, et #003D38. Qualité 8k, photoréaliste, ultra-détaillé, ambiance corporate premium, mystérieuse et légèrement excentrique.";
@@ -9,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
             price: 2.99,
             oldPrice: null,
             discountPercent: null,
-            imageSrc: "product1L.png", 
+            imageSrc: "assets/images/product1L.png", 
             imagePrompt: `Le Lait de Maxoor - Bouteille 1L`,
             icon: 'droplet'
         },
@@ -19,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
             price: 14.99,
             oldPrice: 17.94,
             discountPercent: Math.round(((17.94 - 14.99) / 17.94) * 100),
-            imageSrc: "product6L.png",
+            imageSrc: "assets/images/product6L.png",
             imagePrompt: `Le Pack Rajeunissement - 6x1L`,
             description: `Privilège de lancement : 2 packs de 6 achetés = le 3ème offert.`,
             icon: 'package'
@@ -31,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
             id: 'maxoor',
             name: 'Maxoor',
             role: 'Producteur & Président',
-            imageSrc: "teamMaxoor.png", 
+            imageSrc: "assets/images/teamMaxoor.png", 
             imagePrompt: `Portrait de Maxoor, producteur et président de Maxoor Inc.`,
             icon: 'crown'
         },
@@ -39,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
             id: 'bryan',
             name: 'Bryan_Drouet',
             role: 'Co-Directeur Stratégique',
-            imageSrc: "teamBryan_Drouet.png", 
+            imageSrc: "assets/images/teamBryan_Drouet.png", 
             imagePrompt: `Portrait de Bryan_Drouet, co-directeur stratégique de Maxoor Inc.`,
             icon: 'code'
         },
@@ -47,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
             id: 'batsave',
             name: 'Batsave',
             role: 'Co-Directeur Créatif',
-            imageSrc: "teamBatsave.png", 
+            imageSrc: "assets/images/teamBatsave.png",
             imagePrompt: `Portrait de Batsave, co-directeur créatif de Maxoor Inc.`,
             icon: 'palette'
         }
@@ -63,26 +104,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const cartBtn = document.getElementById('cart-btn');
     const closeCartBtn = document.getElementById('close-cart');
 
-    const toggleCart = (show) => {
-        if (show) {
-            cartPanel.classList.add('open');
-            cartOverlay.classList.add('show');
-            cartBtn.setAttribute('aria-expanded', 'true');
-            cartPanel.setAttribute('aria-hidden', 'false');
-        } else {
-            if (cartPanel.contains(document.activeElement)) {
-                cartBtn.focus({ preventScroll: true });
+    // Vérifier si le panier existe sur cette page
+    if (cartBtn && cartPanel && cartOverlay && closeCartBtn) {
+        const toggleCart = (show) => {
+            if (show) {
+                cartPanel.classList.add('open');
+                cartOverlay.classList.add('show');
+                cartBtn.setAttribute('aria-expanded', 'true');
+                cartPanel.setAttribute('aria-hidden', 'false');
+            } else {
+                if (cartPanel.contains(document.activeElement)) {
+                    cartBtn.focus({ preventScroll: true });
+                }
+                cartPanel.classList.remove('open');
+                cartOverlay.classList.remove('show');
+                cartBtn.setAttribute('aria-expanded', 'false');
+                cartPanel.setAttribute('aria-hidden', 'true');
             }
-            cartPanel.classList.remove('open');
-            cartOverlay.classList.remove('show');
-            cartBtn.setAttribute('aria-expanded', 'false');
-            cartPanel.setAttribute('aria-hidden', 'true');
-        }
-    };
+        };
 
-    cartBtn.addEventListener('click', () => toggleCart(true));
-    closeCartBtn.addEventListener('click', () => toggleCart(false));
-    cartOverlay.addEventListener('click', () => toggleCart(false));
+        cartBtn.addEventListener('click', () => toggleCart(true));
+        closeCartBtn.addEventListener('click', () => toggleCart(false));
+        cartOverlay.addEventListener('click', () => toggleCart(false));
+    }
 
     const updateCartUI = () => {
         let total = 0;
@@ -92,16 +136,18 @@ document.addEventListener('DOMContentLoaded', () => {
             return acc;
         }, {});
 
-        Array.from(cartItemsContainer.children).forEach(child => {
-            if (child.classList.contains('empty-msg') || child.classList.contains('removing')) return;
-            const id = child.dataset.id;
-            if (!itemCounts[id]) {
-                child.classList.add('removing');
-                child.style.opacity = '0';
-                child.style.transform = 'translateY(-10px)';
-                setTimeout(() => child.remove(), 300);
-            }
-        });
+        if (cartItemsContainer) {
+            Array.from(cartItemsContainer.children).forEach(child => {
+                if (child.classList.contains('empty-msg') || child.classList.contains('removing')) return;
+                const id = child.dataset.id;
+                if (!itemCounts[id]) {
+                    child.classList.add('removing');
+                    child.style.opacity = '0';
+                    child.style.transform = 'translateY(-10px)';
+                    setTimeout(() => child.remove(), 300);
+                }
+            });
+        }
 
         for (const [id, quantity] of Object.entries(itemCounts)) {
             const product = productsData.find(p => p.id === id);
@@ -117,76 +163,82 @@ document.addEventListener('DOMContentLoaded', () => {
 
             total += itemTotal;
 
-            let existingItem = cartItemsContainer.querySelector(`.cart-item[data-id="${id}"]`);
+            if (cartItemsContainer) {
+                let existingItem = cartItemsContainer.querySelector(`.cart-item[data-id="${id}"]`);
 
-            if (existingItem) {
-                existingItem.querySelector('.qty-val').textContent = quantity;
-                existingItem.querySelector('.item-total-price').textContent = itemTotal.toFixed(2) + '€';
-                const promoEl = existingItem.querySelector('.cart-item-promo');
-                
-                if (promoHtml) {
-                    if (promoEl.textContent !== promoHtml) {
-                        promoEl.textContent = promoHtml;
+                if (existingItem) {
+                    existingItem.querySelector('.qty-val').textContent = quantity;
+                    existingItem.querySelector('.item-total-price').textContent = itemTotal.toFixed(2) + '€';
+                    const promoEl = existingItem.querySelector('.cart-item-promo');
+                    
+                    if (promoHtml) {
+                        if (promoEl.textContent !== promoHtml) {
+                            promoEl.textContent = promoHtml;
+                        }
+                        promoEl.classList.add('active');
+                    } else {
+                        promoEl.classList.remove('active');
                     }
-                    promoEl.classList.add('active');
                 } else {
-                    promoEl.classList.remove('active');
-                }
-            } else {
-                const div = document.createElement('div');
-                div.classList.add('cart-item');
-                div.dataset.id = id;
-                div.innerHTML = `
-                    <div class="cart-item-info">
-                        <strong>${product.name}</strong>
-                        <span>Quantité: <span class="qty-val">${quantity}</span></span>
-                        <span class="cart-item-promo ${promoHtml ? 'active' : ''}">${promoHtml}</span>
-                    </div>
-                    <div class="cart-item-actions">
-                        <span class="item-total-price">${itemTotal.toFixed(2)}€</span>
-                        <button class="remove-item" data-id="${id}" aria-label="Retirer 1 ${product.name}"><i data-lucide="minus-circle" aria-hidden="true"></i></button>
-                        <button class="add-item" data-id="${id}" aria-label="Ajouter 1 ${product.name}"><i data-lucide="plus-circle" aria-hidden="true"></i></button>
-                    </div>
-                `;
-                
-                div.style.opacity = '0';
-                div.style.transform = 'translateY(10px)';
-                
-                const emptyMsg = cartItemsContainer.querySelector('.empty-msg');
-                if (emptyMsg) emptyMsg.remove();
+                    const div = document.createElement('div');
+                    div.classList.add('cart-item');
+                    div.dataset.id = id;
+                    div.innerHTML = `
+                        <div class="cart-item-info">
+                            <strong>${product.name}</strong>
+                            <span>Quantité: <span class="qty-val">${quantity}</span></span>
+                            <span class="cart-item-promo ${promoHtml ? 'active' : ''}">${promoHtml}</span>
+                        </div>
+                        <div class="cart-item-actions">
+                            <span class="item-total-price">${itemTotal.toFixed(2)}€</span>
+                            <button class="remove-item" data-id="${id}" aria-label="Retirer 1 ${product.name}"><i data-lucide="minus-circle" aria-hidden="true"></i></button>
+                            <button class="add-item" data-id="${id}" aria-label="Ajouter 1 ${product.name}"><i data-lucide="plus-circle" aria-hidden="true"></i></button>
+                        </div>
+                    `;
+                    
+                    div.style.opacity = '0';
+                    div.style.transform = 'translateY(10px)';
+                    
+                    const emptyMsg = cartItemsContainer.querySelector('.empty-msg');
+                    if (emptyMsg) emptyMsg.remove();
 
-                cartItemsContainer.appendChild(div);
-                
-                setTimeout(() => {
-                    div.style.opacity = '1';
-                    div.style.transform = 'translateY(0)';
-                    lucide.createIcons();
-                }, 10);
+                    cartItemsContainer.appendChild(div);
+                    
+                    setTimeout(() => {
+                        div.style.opacity = '1';
+                        div.style.transform = 'translateY(0)';
+                        lucide.createIcons();
+                    }, 10);
+                }
             }
         }
 
-        if (cart.length === 0 && !cartItemsContainer.querySelector('.empty-msg')) {
-            const empty = document.createElement('p');
-            empty.className = 'empty-msg';
-            empty.style.textAlign = 'center';
-            empty.style.color = 'var(--color-light-2)';
-            empty.style.marginTop = '2rem';
-            empty.style.opacity = '0';
-            empty.style.transition = 'opacity 0.3s ease';
-            empty.textContent = 'Votre sélection est vide.';
-            cartItemsContainer.appendChild(empty);
-            setTimeout(() => empty.style.opacity = '1', 10);
+        if (cartItemsContainer) {
+            if (cart.length === 0 && !cartItemsContainer.querySelector('.empty-msg')) {
+                const empty = document.createElement('p');
+                empty.className = 'empty-msg';
+                empty.style.textAlign = 'center';
+                empty.style.color = 'var(--color-light-2)';
+                empty.style.marginTop = '2rem';
+                empty.style.opacity = '0';
+                empty.style.transition = 'opacity 0.3s ease';
+                empty.textContent = 'Votre sélection est vide.';
+                cartItemsContainer.appendChild(empty);
+                setTimeout(() => empty.style.opacity = '1', 10);
+            }
         }
 
-        cartTotalPrice.textContent = total.toFixed(2) + '€';
-        cartCountElement.textContent = cart.length;
+        if (cartTotalPrice) cartTotalPrice.textContent = total.toFixed(2) + '€';
+        if (cartCountElement) cartCountElement.textContent = cart.length;
         
-        if (cart.length === 0) {
-            checkoutBtn.disabled = true;
-            checkoutBtn.style.opacity = '0.5';
-        } else {
-            checkoutBtn.disabled = false;
-            checkoutBtn.style.opacity = '1';
+        if (checkoutBtn) {
+            if (cart.length === 0) {
+                checkoutBtn.disabled = true;
+                checkoutBtn.style.opacity = '0.5';
+            } else {
+                checkoutBtn.disabled = false;
+                checkoutBtn.style.opacity = '1';
+            }
         }
     };
 
@@ -204,121 +256,133 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCartUI();
     };
 
-    cartItemsContainer.addEventListener('click', (e) => {
-        const addBtn = e.target.closest('.add-item');
-        const removeBtn = e.target.closest('.remove-item');
-        if (addBtn) addToCart(addBtn.dataset.id);
-        if (removeBtn) removeFromCart(removeBtn.dataset.id);
-    });
+    if (cartItemsContainer) {
+        cartItemsContainer.addEventListener('click', (e) => {
+            const addBtn = e.target.closest('.add-item');
+            const removeBtn = e.target.closest('.remove-item');
+            if (addBtn) addToCart(addBtn.dataset.id);
+            if (removeBtn) removeFromCart(removeBtn.dataset.id);
+        });
+    }
 
     const productsContainer = document.getElementById('products-container');
     const placeholderSvg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'><rect width='400' height='300' fill='%23003D38'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%2300B8A8'>Image via Gemini</text></svg>`;
     
-    productsData.forEach(product => {
-        const article = document.createElement('article');
-        article.classList.add('product-card');
-        
-        let priceHtml = `<div class="product-price">${product.price.toFixed(2)}€`;
-        if (product.oldPrice) {
-            priceHtml += `<span class="old-price">${product.oldPrice.toFixed(2)}€</span>`;
-            if (product.discountPercent) {
-                priceHtml += `<span class="discount-badge">-${product.discountPercent}%</span>`;
+    if (productsContainer) {
+        productsData.forEach(product => {
+            const article = document.createElement('article');
+            article.classList.add('product-card');
+            
+            let priceHtml = `<div class="product-price">${product.price.toFixed(2)}€`;
+            if (product.oldPrice) {
+                priceHtml += `<span class="old-price">${product.oldPrice.toFixed(2)}€</span>`;
+                if (product.discountPercent) {
+                    priceHtml += `<span class="discount-badge">-${product.discountPercent}%</span>`;
+                }
             }
-        }
-        priceHtml += `</div>`;
+            priceHtml += `</div>`;
 
-        const finalSrc = product.imageSrc ? product.imageSrc : placeholderSvg;
+            const finalSrc = product.imageSrc ? product.imageSrc : placeholderSvg;
 
-        article.innerHTML = `
-            <img src="${finalSrc}" alt="${product.imagePrompt}" title="${product.imagePrompt}">
-            <h3 class="product-title">${product.name}</h3>
-            ${product.description ? `<p class="product-description">${product.description}</p>` : ''}
-            ${priceHtml}
-            <button class="add-to-cart" data-id="${product.id}" aria-label="Ajouter ${product.name} au panier">
-                <i data-lucide="${product.icon}" aria-hidden="true"></i> Ajouter au panier
-            </button>
-        `;
-        productsContainer.appendChild(article);
-    });
+            article.innerHTML = `
+                <img src="${finalSrc}" alt="${product.imagePrompt}" title="${product.imagePrompt}">
+                <h3 class="product-title">${product.name}</h3>
+                ${product.description ? `<p class="product-description">${product.description}</p>` : ''}
+                ${priceHtml}
+                <button class="add-to-cart" data-id="${product.id}" aria-label="Ajouter ${product.name} au panier">
+                    <i data-lucide="${product.icon}" aria-hidden="true"></i> Ajouter au panier
+                </button>
+            `;
+            productsContainer.appendChild(article);
+        });
 
-    productsContainer.addEventListener('click', (e) => {
-        const btn = e.target.closest('.add-to-cart');
-        if (btn) {
-            addToCart(btn.dataset.id);
-            const originalText = btn.innerHTML;
-            btn.innerHTML = `<i data-lucide="check" aria-hidden="true"></i> Sélectionné`;
-            lucide.createIcons();
-            setTimeout(() => {
-                btn.innerHTML = originalText;
+        productsContainer.addEventListener('click', (e) => {
+            const btn = e.target.closest('.add-to-cart');
+            if (btn) {
+                addToCart(btn.dataset.id);
+                const originalText = btn.innerHTML;
+                btn.innerHTML = `<i data-lucide="check" aria-hidden="true"></i> Sélectionné`;
                 lucide.createIcons();
-            }, 1000);
-        }
-    });
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    lucide.createIcons();
+                }, 1000);
+            }
+        });
+    }
 
     const teamContainer = document.getElementById('team-container');
 
-    teamData.forEach(member => {
-        const div = document.createElement('div');
-        div.classList.add('team-card');
-        
-        const finalSrc = member.imageSrc ? member.imageSrc : placeholderSvg;
+    if (teamContainer) {
+        teamData.forEach(member => {
+            const div = document.createElement('div');
+            div.classList.add('team-card');
+            
+            const finalSrc = member.imageSrc ? member.imageSrc : placeholderSvg;
 
-        div.innerHTML = `
-            <img src="${finalSrc}" alt="${member.imagePrompt}" title="${member.imagePrompt}">
-            <h3><i data-lucide="${member.icon}" aria-hidden="true"></i><span>${member.name}</span></h3>
-            <p>${member.role}</p>
-        `;
-        teamContainer.appendChild(div);
-    });
+            div.innerHTML = `
+                <img src="${finalSrc}" alt="${member.imagePrompt}" title="${member.imagePrompt}">
+                <h3><i data-lucide="${member.icon}" aria-hidden="true"></i><span>${member.name}</span></h3>
+                <p>${member.role}</p>
+            `;
+            teamContainer.appendChild(div);
+        });
+    }
 
     lucide.createIcons();
 
+    // Cookie banner (uniquement sur index.html)
     const cookieBanner = document.getElementById('cookie-banner');
     const acceptCookies = document.getElementById('accept-cookies');
     const rejectCookies = document.getElementById('reject-cookies');
 
-    if (!localStorage.getItem('rgpd_cookie_consent')) {
-        setTimeout(() => {
-            cookieBanner.classList.add('show');
-        }, 1000);
+    if (cookieBanner && acceptCookies && rejectCookies) {
+        if (!localStorage.getItem('rgpd_cookie_consent')) {
+            setTimeout(() => {
+                cookieBanner.classList.add('show');
+            }, 1000);
+        }
+
+        const closeBanner = (status) => {
+            localStorage.setItem('rgpd_cookie_consent', status);
+            cookieBanner.classList.remove('show');
+        };
+
+        acceptCookies.addEventListener('click', () => closeBanner('accepted'));
+        rejectCookies.addEventListener('click', () => closeBanner('rejected'));
     }
 
-    const closeBanner = (status) => {
-        localStorage.setItem('rgpd_cookie_consent', status);
-        cookieBanner.classList.remove('show');
-    };
-
-    acceptCookies.addEventListener('click', () => closeBanner('accepted'));
-    rejectCookies.addEventListener('click', () => closeBanner('rejected'));
-
+    // Contact form (uniquement sur index.html)
     const contactForm = document.getElementById('contact-form');
     
-    contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const submitBtn = contactForm.querySelector('.submit-btn');
-        const originalText = submitBtn.innerHTML;
-        
-        submitBtn.style.opacity = '0';
-        setTimeout(() => {
-            submitBtn.innerHTML = `<i data-lucide="check-circle" aria-hidden="true"></i> Requête transmise à la direction`;
-            submitBtn.style.backgroundColor = '#00B8A8';
-            submitBtn.style.color = '#000000';
-            submitBtn.style.opacity = '1';
-            lucide.createIcons();
-        }, 300);
-        
-        setTimeout(() => {
-            contactForm.reset();
+    if (contactForm) {
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const submitBtn = contactForm.querySelector('.submit-btn');
+            const originalText = submitBtn.innerHTML;
+            
             submitBtn.style.opacity = '0';
             setTimeout(() => {
-                submitBtn.innerHTML = originalText;
-                submitBtn.style.backgroundColor = '';
-                submitBtn.style.color = '';
+                submitBtn.innerHTML = `<i data-lucide="check-circle" aria-hidden="true"></i> Requête transmise à la direction`;
+                submitBtn.style.backgroundColor = '#00B8A8';
+                submitBtn.style.color = '#000000';
                 submitBtn.style.opacity = '1';
                 lucide.createIcons();
             }, 300);
-        }, 4000);
-    });
+            
+            setTimeout(() => {
+                contactForm.reset();
+                submitBtn.style.opacity = '0';
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.style.backgroundColor = '';
+                    submitBtn.style.color = '';
+                    submitBtn.style.opacity = '1';
+                    lucide.createIcons();
+                }, 300);
+            }, 4000);
+        });
+    }
 
     updateCartUI();
 

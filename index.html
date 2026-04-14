@@ -6,13 +6,63 @@
     <base href="/">
     <title>Maxoor Inc. | Le Lait de la Jeunesse</title>
     <meta name="description" content="Le Lait de Maxoor. L'éclat de vos 20 ans dès maintenant. La révolution cosmétique à boire.">
+    
+    <!-- Open Graph (Facebook, LinkedIn, Pinterest, Discord, Telegram) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://maxoor.bryan.ovh/">
+    <meta property="og:title" content="Maxoor Inc. | Le Lait de la Jeunesse">
+    <meta property="og:description" content="Le Lait de Maxoor. L'éclat de vos 20 ans dès maintenant. La révolution cosmétique à boire.">
+    <meta property="og:image" content="https://maxoor.bryan.ovh/assets/images/header.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Le Lait de Maxoor">
+    <meta property="og:locale" content="fr_FR">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://maxoor.bryan.ovh/">
+    <meta name="twitter:title" content="Maxoor Inc. | Le Lait de la Jeunesse">
+    <meta name="twitter:description" content="Le Lait de Maxoor. L'éclat de vos 20 ans dès maintenant. La révolution cosmétique à boire.">
+    <meta name="twitter:image" content="https://maxoor.bryan.ovh/assets/images/header.png">
+    <meta name="twitter:creator" content="@MaxoorInc">
+    
+    <!-- Snapchat (utilise aussi les Open Graph) -->
+    <meta name="snap-application" content="maxoor_inc">
+    
+    <!-- Instagram (utilise aussi les Open Graph) -->
+    <meta property="instagram:see_also" content="https://maxoor.bryan.ovh/">
+    
+    <!-- Autres meta tags utiles -->
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Maxoor Inc.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/images/header.png" sizes="any">
+    <link rel="apple-touch-icon" href="assets/images/header.png">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://maxoor.bryan.ovh/">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Chivo+Mono:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">    <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script>
     <script src="script.js" defer></script>
 </head>
 <body>
+    <!-- Vérification de l'accès avant-première -->
+    <script>
+        (function() {
+            // Vérifier si l'accès avant-première a été accordé via mot de passe
+            if (!sessionStorage.getItem('maxoor_preview_access')) {
+                // Redirection vers la page de lancement
+                window.location.href = '/launch/';
+            }
+        })();
+    </script>
+    
     <header>
         <div class="logo">
             <span>Maxoor Inc.</span>
@@ -39,7 +89,7 @@
                 <p class="legal-voice">Attention, un surdosage peut entraîner la perte soudaine de votre permis de conduire. Ne pas utiliser pour la pâte à crêpes. Pour votre santé, évitez de rajeunir entre les repas.</p>
             </div>
             <div class="hero-image">
-                <img src="header.png" alt="Le Lait de Maxoor." id="hero-img-placeholder">
+                <img src="assets/images/header.png" alt="Le Lait de Maxoor." id="hero-img-placeholder">
             </div>
         </section>
 

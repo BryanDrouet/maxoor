@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/launch/">
+    <title>Maxoor Inc. - Lancement Exclusif 14/04/2026</title>
+    <meta name="description" content="Compte à rebours pour le lancement de Maxoor Inc. Accédez en avant-première avec votre mot de passe exclusif.">
+    <meta name="theme-color" content="#00665D">
+    
+    <!-- OpenGraph Meta Tags -->
+    <meta property="og:title" content="Maxoor Inc. - Lancement Exclusif">
+    <meta property="og:description" content="Compte à rebours vers le lancement de Maxoor Inc. Rejoignez Batsave!">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://maxoor.bryan.ovh/launch/">
+    <meta property="og:image" content="https://maxoor.bryan.ovh/assets/images/header.png">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Maxoor Inc. - Lancement Exclusif">
+    <meta name="twitter:description" content="Compte à rebours vers le lancement. Accédez avec votre mot de passe.">
+    <meta name="twitter:image" content="https://maxoor.bryan.ovh/assets/images/header.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="../milk-bottle-logo.svg">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="./launch.css">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+</head>
+<body>
+    <main class="launch-hero" role="main">
+        <article class="launch-content">
+            <!-- Animated Milk Bottle Icon -->
+            <svg 
+                class="milk-bottle-icon" 
+                viewBox="0 0 100 140" 
+                xmlns="http://www.w3.org/2000/svg"
+                role="img"
+                aria-label="Maxoor milk bottle logo"
+            >
+                <!-- Bottle cap -->
+                <rect x="35" y="8" width="30" height="8" fill="#00FFEA" rx="2" />
+                <!-- Bottle neck -->
+                <path d="M 40 16 L 38 30 L 62 30 L 60 16 Z" fill="#00FFEA" />
+                <!-- Bottle body -->
+                <path d="M 38 30 Q 30 50 32 85 Q 33 105 50 115 Q 67 105 68 85 Q 70 50 62 30 Z" fill="none" stroke="#00FFEA" stroke-width="2" />
+                <!-- Milk inside bottle -->
+                <path d="M 39 85 Q 32 95 34 100 Q 50 110 50 110 Q 50 110 66 100 Q 68 95 61 85 Z" fill="#00B8A8" />
+                <!-- Shine effect -->
+                <ellipse cx="45" cy="45" rx="8" ry="15" fill="#00FFEA" opacity="0.3" />
+            </svg>
+
+            <h1>Maxoor Inc.</h1>
+            <h2>Lancement Exclusif</h2>
+
+            <!-- Countdown Section -->
+            <section class="countdown" role="region" aria-label="Compte à rebours">
+                <div class="countdown-item">
+                    <span class="countdown-number" id="countdown-days">00</span>
+                    <span class="countdown-label">Jours</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="countdown-hours">00</span>
+                    <span class="countdown-label">Heures</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="countdown-minutes">00</span>
+                    <span class="countdown-label">Minutes</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="countdown-seconds">00</span>
+                    <span class="countdown-label">Secondes</span>
+                </div>
+            </section>
+
+            <!-- Password Access Section -->
+            <section class="access-section" role="region" aria-label="Accès anticipé">
+                <h3>Accès Anticipé</h3>
+                <p>Entrez votre mot de passe pour accéder à la plateforme Maxoor</p>
+                
+                <form class="password-form" action="#" method="POST">
+                    <input 
+                        type="text" 
+                        id="username-field" 
+                        name="username" 
+                        value="maxoor_user"
+                        hidden
+                        aria-hidden="true"
+                        autocomplete="username"
+                    >
+                    <input 
+                        type="password" 
+                        id="password-input" 
+                        name="password" 
+                        placeholder="Mot de passe"
+                        required
+                        autocomplete="new-password"
+                        aria-label="Mot de passe d'accès anticipé"
+                    >
+                    <button type="submit" class="submit-btn">Accéder</button>
+                </form>
+
+                <div class="error-message" role="alert" aria-live="polite"></div>
+                <div class="success-message" role="status" aria-live="polite"></div>
+            </section>
+
+            <!-- Batsave Promotion -->
+            <section class="batsave-promo" role="region" aria-label="Promotion Batsave">
+                <h3>
+                    <i data-lucide="tv" style="display: inline-block; width: 20px; height: 20px; vertical-align: middle; margin-right: 8px;"></i>
+                    Découvrez Batsave
+                </h3>
+                <p>Streamer gaming, créateur de contenu et passionné d'innovation. Rejoignez la communauté Maxoor et suivez les meilleures streams gaming!</p>
+                <a href="/batsave/" class="batsave-link">Voir le profil Batsave</a>
+            </section>
+        </article>
+    </main>
+
+    <!-- Global Scripts -->
+    <script src="../script.js"></script>
+    <script src="./launch.js"></script>
+</body>
+</html>
