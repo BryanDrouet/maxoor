@@ -66,6 +66,7 @@ function updateCountdown() {
     document.getElementById('countdown-seconds').textContent = String(seconds).padStart(2, '0');
 }
 
+
 /**
  * Calcule le SHA-256 d'une chaîne de caractères
  * @param {string} str - La chaîne à hacher
@@ -87,7 +88,7 @@ async function handlePasswordSubmit(e) {
     const passwordInput = document.getElementById('password-input');
     const errorMessage = document.querySelector('.error-message');
     const successMessage = document.querySelector('.success-message');
-    const submitBtn = document.querySelector('.submit-btn');
+    const submitBtn = document.querySelector('.password-form button[type="submit"]');
 
     errorMessage.style.display = 'none';
     successMessage.style.display = 'none';

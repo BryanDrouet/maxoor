@@ -18,30 +18,6 @@ function initTwitchPlayer() {
     iframe.width = '620';
     
     player.appendChild(iframe);
-
-    updateStreamStatus();
-}
-
-function updateStreamStatus() {
-    const statusBadge = document.getElementById('stream-status');
-    if (!statusBadge) return;
-
-    fetch('https://api.twitch.tv/kraken/streams/batsave', {
-        headers: {
-            'Client-ID': 'YOUR_CLIENT_ID'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.stream) {
-            statusBadge.innerHTML = '<span class="status-dot" aria-hidden="true"></span><span>En direct</span>';
-            statusBadge.classList.add('online');
-            statusBadge.classList.remove('offline');
-        }
-    })
-    .catch(err => {
-        console.log('Stream status check unavailable');
-    });
 }
 
 window.addEventListener('load', function() {

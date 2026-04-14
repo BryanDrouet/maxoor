@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h3 class="product-title">${product.name}</h3>
                 ${product.description ? `<p class="product-description">${product.description}</p>` : ''}
                 ${priceHtml}
-                <button class="add-to-cart" data-id="${product.id}" aria-label="Ajouter ${product.name} au panier">
+                <button class="add-to-cart btn-primary" data-id="${product.id}" aria-label="Ajouter ${product.name} au panier">
                     <i data-lucide="${product.icon}" aria-hidden="true"></i> Ajouter au panier
                 </button>
             `;
@@ -358,7 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (contactForm) {
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const submitBtn = contactForm.querySelector('.submit-btn');
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerHTML;
             
             submitBtn.style.opacity = '0';

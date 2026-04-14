@@ -52,12 +52,12 @@ body {
     overflow-x: hidden;
 }
 
-h1, h2, h3, .logo, .cta-btn {
+h1, h2, h3, .logo, .btn-primary, .btn-secondary {
     font-family: var(--font-titles);
     font-weight: normal;
 }
 
-button, .cta-btn {
+button, .btn-primary, .btn-secondary {
     font-family: var(--font-titles);
 }
 
@@ -66,7 +66,7 @@ button, .cta-btn {
     font-weight: 600;
 }
 
-.product-card, .team-card, .promo-banner, .cta-btn, .add-to-cart, .submit-btn {
+.product-card, .team-card, .promo-banner, .btn-primary, .btn-secondary {
     transition: var(--transition);
     border-radius: var(--border-radius);
 }
@@ -171,11 +171,13 @@ nav a:hover {
     gap: 0.5rem;
 }
 
-.cta-btn {
+.btn-primary,
+.btn-secondary {
     text-align: center;
-    display: inline-block;
-    background-color: var(--color-light-1);
-    color: var(--text-on-light);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
     padding: 1rem 2.5rem;
     border-radius: var(--border-radius);
     text-decoration: none;
@@ -184,12 +186,36 @@ nav a:hover {
     letter-spacing: 2px;
     font-size: 1rem;
     transition: var(--transition);
+    cursor: pointer;
     border: 1px solid var(--color-light-1);
 }
 
-.cta-btn:hover {
+.btn-primary {
+    background-color: var(--color-light-1);
+    color: var(--text-on-light);
+}
+
+.btn-primary:hover {
     background-color: transparent;
     color: var(--color-light-1);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--color-light-1);
+}
+
+.btn-secondary:hover {
+    background-color: var(--color-light-1);
+    color: var(--text-on-light);
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled {
+    background-color: #878787;
+    border-color: #878787;
+    color: #ffffff;
+    cursor: not-allowed;
 }
 
 .legal-voice {
@@ -366,26 +392,8 @@ nav a:hover {
     font-family: var(--font-sans);
 }
 
-.add-to-cart {
-    background-color: var(--color-light-1);
-    color: var(--text-on-light);
-    border: none;
-    border-radius: var(--border-radius);
-    padding: 1rem 1.5rem;
-    cursor: pointer;
+.product-card .btn-primary {
     width: 100%;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-    transition: var(--transition);
-}
-
-.add-to-cart:hover {
-    background-color: var(--color-light-2);
 }
 
 .promo-banner {
@@ -557,32 +565,9 @@ nav a:hover {
     box-shadow: 0 0 0 3px rgba(0, 255, 234, 0.25);
 }
 
-.submit-btn {
-    background-color: var(--color-light-1);
-    color: var(--text-on-light);
-    border: none;
-    border-radius: var(--border-radius);
-    padding: 1.2rem 2rem;
-    cursor: pointer;
+.contact-form .btn-primary,
+#checkout-btn.btn-primary {
     width: 100%;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-    transition: var(--transition);
-}
-
-.submit-btn:hover {
-    background-color: var(--color-light-2);
-}
-
-.submit-btn:disabled {
-    background-color: #878787;
-    color: #fff;
-    cursor: not-allowed;
 }
 
 footer {
@@ -808,38 +793,6 @@ footer {
     bottom: 0;
 }
 
-.btn-primary {
-    background-color: var(--color-light-1);
-    color: var(--text-on-light);
-    border-radius: var(--border-radius);
-    padding: 0.8rem 1.5rem;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    text-transform: uppercase;
-    transition: var(--transition);
-}
-
-.btn-primary:hover {
-    background-color: var(--color-light-2);
-}
-
-.btn-secondary {
-    background-color: var(--color-dark-2);
-    color: var(--text-on-dark);
-    border-radius: var(--border-radius);
-    border: 1px solid var(--color-light-2);
-    padding: 0.8rem 1.5rem;
-    cursor: pointer;
-    font-weight: bold;
-    text-transform: uppercase;
-    transition: var(--transition);
-}
-
-.btn-secondary:hover {
-    background-color: var(--color-dark-1);
-    border-color: var(--color-light-1);
-}
 
 @media (max-width: 768px) {
     header {

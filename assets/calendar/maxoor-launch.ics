@@ -1,0 +1,25 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Maxoor Inc//Launch Calendar Event//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:maxoor-launch-20260414T200000@maxoor.bryan.ovh
+DTSTAMP:20260414T120000Z
+DTSTART;TZID=Europe/Paris:20260414T200000
+DTEND;TZID=Europe/Paris:20260414T210000
+SUMMARY:Lancement Maxoor Inc.
+DESCRIPTION:Lancement de Maxoor Inc. https://maxoor.bryan.ovh/
+URL:https://maxoor.bryan.ovh/
+BEGIN:VALARM
+TRIGGER:-PT15M
+ACTION:DISPLAY
+DESCRIPTION:Rappel: lancement Maxoor dans 15 minutes.
+END:VALARM
+BEGIN:VALARM
+TRIGGER:PT0M
+ACTION:DISPLAY
+DESCRIPTION:Rappel: c'est l'heure du lancement Maxoor.
+END:VALARM
+END:VEVENT
+END:VCALENDAR
