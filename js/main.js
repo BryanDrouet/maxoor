@@ -70,6 +70,13 @@ const TEAM_DATA = [
     }
 ];
 
+function updateHeaderHeight() {
+    const header = document.querySelector('header');
+    if (header) {
+        document.documentElement.style.setProperty('--header-height', `${header.offsetHeight}px`);
+    }
+}
+
 // Initialisation au chargement du DOM
 document.addEventListener('DOMContentLoaded', () => {
     AuthManager.checkPageAccess();
