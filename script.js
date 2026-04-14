@@ -621,7 +621,7 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(el);
     });
 
-    document.querySelectorAll('.product-card, .team-card').forEach((el, index) => {
+    document.querySelectorAll('.product-card, .team-card, .info-card').forEach((el, index) => {
         el.classList.add('reveal');
         observer.observe(el);
     });

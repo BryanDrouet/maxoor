@@ -104,7 +104,7 @@ function initRevealAnimations() {
         observer.observe(el);
     });
 
-    document.querySelectorAll('.product-card, .team-card').forEach((el) => {
+    document.querySelectorAll('.product-card, .team-card, .info-card').forEach((el) => {
         el.classList.add('reveal');
         observer.observe(el);
     });
