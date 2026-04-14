@@ -266,6 +266,8 @@ nav a:hover {
     width: 100%;
     object-fit: cover;
     transition: var(--transition);
+    border-left: 0 !important;
+    border-right: 0 !important;
 }
 
 .hero-image:hover img {
@@ -293,10 +295,39 @@ nav a:hover {
     gap: 4rem;
 }
 
-.products-grid, .team-grid {
+.products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 3rem;
+}
+
+.team-grid {
+    display: grid;
+    /* On définit des colonnes de taille égale */
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 3rem;
+    justify-items: center; /* Centre les cartes horizontalement dans leur cellule */
+}
+
+/* On cible spécifiquement le 3ème élément (Batsave) */
+.team-grid .team-card:nth-child(3) {
+    /* Il commence à la 1ère colonne et s'étale sur 2 colonnes */
+    grid-column: 1 / span 2; 
+    /* On limite sa largeur pour qu'il garde la même taille que les autres */
+    width: 100%;
+    max-width: 450px; 
+}
+
+/* Adaptation pour mobile : repasser sur une seule colonne */
+@media (max-width: 768px) {
+    .team-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .team-grid .team-card:nth-child(3) {
+        grid-column: auto;
+        max-width: 100%;
+    }
 }
 
 /* Utility flex classes for consistent spacing */
@@ -450,6 +481,8 @@ nav a:hover {
     border-radius: var(--border-radius);
     padding: 3rem;
     border: 1px solid var(--color-light-2);
+    border-left: 0 !important;
+    border-right: 0 !important;
     transition: var(--transition);
 }
 
@@ -526,6 +559,8 @@ nav a:hover {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     aspect-ratio: 16 / 9;
     transition: var(--transition);
+    border-left: 0 !important;
+    border-right: 0 !important;
 }
 
 .partnership-video iframe {
@@ -555,6 +590,8 @@ nav a:hover {
 .info-card {
     background-color: var(--color-dark-1);
     border: 1px solid var(--color-light-2);
+    border-left: 0 !important;
+    border-right: 0 !important;
     border-radius: var(--border-radius);
     padding: 2rem;
     transition: var(--transition);
@@ -1087,7 +1124,7 @@ footer {
 
 .product-info-content {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(2, 1fr); /* Force 2 colonnes */
     gap: 2rem;
     margin-top: 2rem;
 }
@@ -1178,10 +1215,19 @@ footer {
         gap: 2rem;
     }
 
-    .products-grid,
+    .products-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
     .team-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
+    }
+
+    .team-grid .team-card:nth-child(3) {
+        grid-column: auto;
+        max-width: 100%;
     }
 
     .product-card,
@@ -1199,7 +1245,6 @@ footer {
 
     .contact-form {
         padding: 1.5rem;
-        border: 1px solid var(--color-light-2);
     }
 
     .form-group input,
@@ -1235,7 +1280,7 @@ footer {
     }
 
     .product-info-content {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* Repasse en 1 colonne sur mobile */
         gap: 1rem;
     }
 
