@@ -1,0 +1,310 @@
+/**
+ * components/launch.css - Styles spécifiques pour la page de lancement
+ * Complète le style.css principal
+ */
+
+/* Launch Hero */
+.launch-hero {
+    background: linear-gradient(135deg, var(--color-dark-1) 0%, var(--color-dark-2) 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+}
+
+.launch-content {
+    max-width: 700px;
+    animation: fadeInDown 0.8s ease-out;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.launch-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.launch-content h1 {
+    font-size: 3.5rem;
+    color: var(--color-light-1);
+    margin: 0;
+}
+
+.launch-content h2 {
+    font-size: 1.5rem;
+    color: var(--color-light-2);
+    font-weight: 300;
+}
+
+.milk-bottle-icon {
+    width: 120px;
+    height: 120px;
+    display: block;
+    filter: drop-shadow(0 10px 20px rgba(0, 255, 234, 0.2));
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+/* Countdown */
+.countdown {
+    display: grid;
+    grid-template-columns: repeat(var(--countdown-columns, 4), minmax(120px, 1fr));
+    gap: 1rem;
+    background: rgba(0, 255, 234, 0.05);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    border: 2px solid var(--color-light-1);
+}
+
+.countdown h2 {
+    grid-column: 1 / -1;
+    margin: 0 0 0.5rem;
+    text-align: center;
+}
+
+.countdown-item {
+    background: rgba(0, 184, 168, 0.1);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-light-2);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.countdown-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--color-light-1);
+    font-family: var(--font-numbers);
+}
+
+.countdown-label {
+    font-size: 0.85rem;
+    color: var(--text-on-dark);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Sections */
+.reminder-section,
+.access-section,
+.batsave-promo {
+    background: rgba(0, 255, 234, 0.08);
+    border: 2px solid var(--color-light-2);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.reminder-section h3,
+.access-section h3,
+.batsave-promo h3 {
+    font-size: 1.2rem;
+    color: var(--color-light-1);
+}
+
+.reminder-section p,
+.access-section p,
+.batsave-promo p {
+    color: var(--text-on-dark);
+}
+
+/* Calendar & Password Form */
+.calendar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: center;
+}
+
+.calendar-actions .btn-primary,
+.calendar-actions .btn-secondary {
+    min-width: 230px;
+}
+
+.password-form {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.password-form input {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.8rem 1rem;
+    border: 2px solid var(--color-light-2);
+    border-radius: var(--border-radius);
+    background: rgba(0, 255, 234, 0.05);
+    color: var(--text-on-dark);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.password-form input:focus {
+    outline: none;
+    border-color: var(--color-light-1);
+    box-shadow: 0 0 20px rgba(0, 255, 234, 0.15);
+    background: rgba(0, 255, 234, 0.1);
+}
+
+.password-form input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.password-form .btn-primary {
+    width: 100%;
+}
+
+.error-message,
+.success-message {
+    font-size: 0.95rem;
+}
+
+.error-message {
+    color: #ff6b6b;
+    display: none;
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+.success-message {
+    color: #51cf66;
+    display: none;
+}
+
+.batsave-promo .btn-secondary {
+    align-self: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Responsive - Tablet */
+@media (max-width: 768px) {
+    .launch-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .launch-content h2 {
+        font-size: 1.1rem;
+    }
+
+    .countdown {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+        padding: 1.5rem;
+    }
+
+    .countdown-number {
+        font-size: 1.5rem;
+    }
+
+    .milk-bottle-icon {
+        width: 80px;
+        height: 80px;
+    }
+
+    .password-form {
+        flex-direction: column;
+    }
+
+    .password-form input,
+    .password-form .btn-primary {
+        width: 100%;
+    }
+
+    .access-section,
+    .batsave-promo,
+    .reminder-section {
+        padding: 1.5rem;
+    }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 480px) {
+    .launch-hero {
+        padding: 1rem;
+    }
+
+    .launch-content {
+        gap: 1.5rem;
+    }
+
+    .launch-content h1 {
+        font-size: 1.8rem;
+    }
+
+    .launch-content h2 {
+        font-size: 0.95rem;
+    }
+
+    .milk-bottle-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .countdown {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+        padding: 1rem;
+    }
+
+    .countdown h2 {
+        font-size: 1.1rem;
+    }
+
+    .countdown-number {
+        font-size: 1.2rem;
+    }
+
+    .countdown-label {
+        font-size: 0.75rem;
+    }
+
+    .access-section,
+    .reminder-section,
+    .batsave-promo {
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .password-form {
+        gap: 0.5rem;
+    }
+
+    .password-form input {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+    }
+}

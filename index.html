@@ -49,19 +49,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Chivo+Mono:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">    <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@latest" defer></script>
-    <script src="script.js" defer></script>
+    <script type="module" src="js/main.js" defer></script>
 </head>
 <body>
-    <!-- Vérification de l'accès avant-première -->
-    <script>
-        (function() {
-            // Vérifier si l'accès avant-première a été accordé via mot de passe
-            if (!sessionStorage.getItem('maxoor_preview_access')) {
-                // Redirection vers la page de lancement
-                window.location.href = '/launch/';
-            }
-        })();
-    </script>
     
     <header>
         <div class="logo">
@@ -90,6 +80,86 @@
             </div>
             <div class="hero-image">
                 <img src="assets/images/header.png" alt="Le Lait de Maxoor." id="hero-img-placeholder">
+            </div>
+        </section>
+
+        <section class="partnership-section">
+            <div class="section-header">
+                <h2>En Partenariat</h2>
+                <p>Découvrez notre collaboration exclusive</p>
+            </div>
+            <div class="partnership-content">
+                <div class="partnership-text">
+                    <h3>Le Jus de Mynthos x Maxoor Inc.</h3>
+                    <p>En collaboration avec <strong>Antoine Daniel</strong> et <strong>le Jus de Mynthos</strong>, nous vous présentons une synergie unique pour l'élixir de jouvence ultime.</p>
+                    <div class="promo-codes">
+                        <p><strong>Codes promotionnels spéciaux :</strong></p>
+                        <ul>
+                            <li><code>Mynthos5</code><strong> -5€ </strong> sur le Pack Rajeunissement</li>
+                            <li><code>Mynthos10</code><strong> -10% </strong> sur la commande totale</li>
+                        </ul>
+                        <p class="promo-validity">Valides jusqu'au <strong>17 avril 2026 à 20h</strong> (heure de Paris)</p>
+                    </div>
+                </div>
+                <div class="partnership-video">
+                    <iframe src="https://www.youtube.com/embed/4WP8ULTda3k?vq=hd1080" title="Le Jus de Mynthos x Maxoor Inc." frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+        </section>
+
+        <section class="product-info-section">
+            <div class="section-header">
+                <h2>Composition & Effets</h2>
+                <p>Ce que vous devez savoir sur nos élixirs</p>
+            </div>
+            <div class="product-info-content">
+                <div class="info-card">
+                    <h3>🧪 Composition du Lait 1L</h3>
+                    <ul>
+                        <li><strong>Essence de Chronos:</strong> 12% - Régule l'écoulement du temps dermique</li>
+                        <li><strong>Protéines de naïveté:</strong> 18% - Restaure l'innocence faciale perdue</li>
+                        <li><strong>Lactose Rajeunissant:</strong> 35% - Structure cellulaire optimisée</li>
+                        <li><strong>Minéraux lunaires:</strong> 8% - Effet luminosité révélé sous lumière naturelle</li>
+                        <li><strong>Eau de source interdite:</strong> 22% - Provenance: Fontaine de Jouvence (secteur confidentiel)</li>
+                        <li><strong>Oligoéléments mystérieux:</strong> 5% - Secrets propriétaires Maxoor Inc.</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3>✨ Effets Principaux</h3>
+                    <ul>
+                        <li><strong>Rajeunissement cutané:</strong> -3 à -7 ans en apparence après 2 semaines</li>
+                        <li><strong>Élasticité retrouvée:</strong> Raffermissement visible sous 10 jours</li>
+                        <li><strong>Éclat lumineux:</strong> Lumière naturelle irradiante dès le 3ème jour</li>
+                        <li><strong>Lissage rides:</strong> Atténuation progressive des ridules et marques</li>
+                        <li><strong>Hydratation profonde:</strong> Peau pulpeuse et rebondie 24h/24</li>
+                        <li><strong>Revitalisation énergétique:</strong> Sensation de légèreté générale</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3>⚠️ Effets Secondaires Possibles</h3>
+                    <ul>
+                        <li><strong>Oublis de votre date de naissance:</strong> Temporaire - 48h à 1 semaine</li>
+                        <li><strong>Envie de regarder des dessins animés:</strong> Effets du rajeunissement mental</li>
+                        <li><strong>Perte soudaine d'intérêt pour les actualités sérieuses:</strong> Préférence pour les jeux de cour</li>
+                        <li><strong>Parole légèrement enfantine:</strong> Régresse vers expressions du passé</li>
+                        <li><strong>Regain de nostalgie 90s:</strong> Inexplicable mais agréable</li>
+                        <li><strong>Compulsion à refaire des papiers d'identité:</strong> Recommandé pour cohérence</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3>📋 Mode d'Emploi Recommandé</h3>
+                    <ul>
+                        <li><strong>Posologie:</strong> 30ml le matin à jeun, 15ml le soir après dîner</li>
+                        <li><strong>Conservation:</strong> Au réfrigérateur, entre 2°C et 8°C</li>
+                        <li><strong>Durée du flacon:</strong> Environ 20 jours (utilisation optimale)</li>
+                        <li><strong>Durée des effets:</strong> 2-3 mois après fin de la cure</li>
+                        <li><strong>Conseil d'expert:</strong> Ne pas mélanger avec d'autres boissons magiques</li>
+                        <li><strong>Stockage:</strong> Loin des documents officiels (les murs ont des yeux)</li>
+                    </ul>
+                </div>
             </div>
         </section>
 
@@ -140,7 +210,7 @@
                     <label for="rgpd_consent">J'accepte que Maxoor Inc. traite mes données pour me recontacter, conformément au RGPD. Je reconnais également que rajeunir est à mes risques et périls.</label>
                 </div>
                 <button type="submit" class="btn-primary">
-                    <i data-lucide="send" aria-hidden="true"></i> Envoyer au service client
+                    Envoyer au service client
                 </button>
             </form>
         </section>
@@ -164,7 +234,19 @@
         </div>
         <div id="cart-items" class="cart-items" aria-live="polite"></div>
         <div class="cart-footer">
-            <div class="cart-total">Total: <span id="cart-total-price">0.00€</span></div>
+            <div class="promo-input-group">
+                <input type="text" id="promo-code" placeholder="Code promo" aria-label="Entrez votre code promo" autocomplete="off" title="⚠️ Les codes promotionnels ne sont pas cumulables">
+                <button id="apply-promo" class="btn-secondary">Appliquer</button>
+            </div>
+            <div id="promo-message" class="promo-message" aria-live="polite"></div>
+            <div class="cart-total">
+                <div>
+                    <div>Sous-total: <span id="cart-subtotal">0.00€</span></div>
+                    <div id="discount-display"><span id="discount-text">Réduction:</span> <span id="discount-amount">0.00€</span></div>
+                    <div id="shipping-display"><span id="shipping-text">Livraison:</span> <span id="shipping-amount">4.99€</span></div>
+                </div>
+                <div><strong>Total: <span id="cart-total-price">0.00€</span></strong></div>
+            </div>
             <button id="checkout-btn" class="btn-primary" disabled>Passer commande</button>
         </div>
     </div>

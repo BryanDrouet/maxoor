@@ -7,8 +7,8 @@ function checkAccessProtection() {
     const isHomePage = window.location.pathname === '/' || window.location.pathname === '/index.html';
     
     if (isHomePage) {
-        // Vérifier si le lancement est passé (14/04/2026 20h)
-        const launchDate = new Date('2026-04-14T20:00:00').getTime();
+        // Vérifier si le lancement est passé (14/04/2026 15h)
+        const launchDate = new Date('2026-04-14T15:00:00').getTime();
         const now = new Date().getTime();
         const launchHasPassed = now >= launchDate;
         
@@ -51,8 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
             oldPrice: null,
             discountPercent: null,
             imageSrc: "assets/images/product1L.png", 
-            imagePrompt: `Le Lait de Maxoor - Bouteille 1L`,
-            icon: 'droplet'
+            imagePrompt: `Le Lait de Maxoor - Bouteille 1L`
         },
         {
             id: 'pack-6l',
@@ -62,8 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
             discountPercent: Math.round(((17.94 - 14.99) / 17.94) * 100),
             imageSrc: "assets/images/product6L.png",
             imagePrompt: `Le Pack Rajeunissement - 6x1L`,
-            description: `Privilège de lancement : 2 packs de 6 achetés = le 3ème offert.`,
-            icon: 'package'
+            description: `Privilège de lancement : 2 packs de 6 achetés = le 3ème offert.`
         }
     ];
 
@@ -73,40 +71,168 @@ document.addEventListener('DOMContentLoaded', () => {
             name: 'Maxoor',
             role: 'Producteur & Président',
             imageSrc: "assets/images/teamMaxoor.png", 
-            imagePrompt: `Portrait de Maxoor, producteur et président de Maxoor Inc.`,
-            icon: 'crown'
+            imagePrompt: `Portrait de Maxoor, producteur et président de Maxoor Inc.`
         },
         {
             id: 'bryan',
             name: 'Bryan_Drouet',
             role: 'Co-Directeur Stratégique',
             imageSrc: "assets/images/teamBryan_Drouet.png", 
-            imagePrompt: `Portrait de Bryan_Drouet, co-directeur stratégique de Maxoor Inc.`,
-            icon: 'code'
+            imagePrompt: `Portrait de Bryan_Drouet, co-directeur stratégique de Maxoor Inc.`
         },
         {
             id: 'batsave',
             name: 'Batsave',
             role: 'Co-Directeur Créatif',
             imageSrc: "assets/images/teamBatsave.png",
-            imagePrompt: `Portrait de Batsave, co-directeur créatif de Maxoor Inc.`,
-            icon: 'palette'
+            imagePrompt: `Portrait de Batsave, co-directeur créatif de Maxoor Inc.`
         }
     ];
 
     let cart = [];
+    let appliedPromoCode = null;
+    let promoDiscount = 0;
+    let freeShipping = false;
+    
     const cartCountElement = document.getElementById('cart-count');
     const cartPanel = document.getElementById('cart-panel');
     const cartOverlay = document.getElementById('cart-overlay');
     const cartItemsContainer = document.getElementById('cart-items');
     const cartTotalPrice = document.getElementById('cart-total-price');
+    const cartSubtotal = document.getElementById('cart-subtotal');
     const checkoutBtn = document.getElementById('checkout-btn');
     const cartBtn = document.getElementById('cart-btn');
     const closeCartBtn = document.getElementById('close-cart');
+    const promoCodeInput = document.getElementById('promo-code');
+    const applyPromoBtn = document.getElementById('apply-promo');
+    const promoMessage = document.getElementById('promo-message');
+    const discountDisplay = document.getElementById('discount-display');
+    const discountAmount = document.getElementById('discount-amount');
 
+    // Fonctions de persistence
+    const saveCartToStorage = () => {
+        localStorage.setItem('maxoor_cart', JSON.stringify(cart));
+    };
+
+    const loadCartFromStorage = () => {
+        const saved = localStorage.getItem('maxoor_cart');
+        if (saved) {
+            try {
+                const savedCart = JSON.parse(saved);
+                // Vérifier que les produits existent toujours
+                cart = savedCart.filter(itemId => productsData.some(p => p.id === itemId));
+                if (cart.length > 0) {
+                    return true;
+                }
+            } catch (e) {
+                console.log('Erreur lors du chargement du panier');
+            }
+        }
+        return false;
+    };
+
+    const savePromoCodeToStorage = (code) => {
+        if (code) {
+            localStorage.setItem('maxoor_promo_code', code);
+        } else {
+            localStorage.removeItem('maxoor_promo_code');
+        }
+    };
+
+    const loadPromoCodeFromStorage = () => {
+        return localStorage.getItem('maxoor_promo_code');
+    };
+
+    // Fonction pour vérifier si la période de promo est valide
+    const isPromoValidPeriod = () => {
+        const now = new Date();
+        
+        // Les codes sont valides du 14/04/2026 15h au 17/04/2026 20h (heure de Paris)
+        // Paris est UTC+2 en avril (heure d'été)
+        // Donc: 14/04 15h Paris = 14/04 13h UTC
+        //      17/04 20h Paris = 17/04 18h UTC
+        const startDate = new Date('2026-04-14T13:00:00Z');
+        const endDate = new Date('2026-04-17T18:00:00Z');
+        
+        return now >= startDate && now <= endDate;
+    };
+
+    // Fonction pour valider et appliquer un code promo
+    const validatePromoCode = (code) => {
+        const upperCode = code.trim().toUpperCase();
+        
+        // Easter eggs - Toujours valides
+        if (upperCode === 'BATSAVE' || upperCode === 'MAXOOR' || upperCode === 'BRYAN_DROUET') {
+            return {
+                valid: true,
+                code: upperCode,
+                message: '🎉 Code Easter egg appliqué : Livraison gratuite !'
+            };
+        }
+        
+        // Codes périodiques - Vérifier la période seulement pour ceux-ci
+        if (!isPromoValidPeriod()) {
+            return {
+                valid: false,
+                message: '❌ Les codes promotionnels ne sont plus valides.'
+            };
+        }
+        
+        if (upperCode === 'MYNTHOS5') {
+            return {
+                valid: true,
+                code: upperCode,
+                message: '✓ Code Mynthos5 appliqué : -5€ sur le Pack Rajeunissement'
+            };
+        }
+        
+        if (upperCode === 'MYNTHOS10') {
+            return {
+                valid: true,
+                code: upperCode,
+                message: '✓ Code Mynthos10 appliqué : -10% sur votre commande'
+            };
+        }
+        
+        return {
+            valid: false,
+            message: '❌ Code promo invalide.'
+        };
+    };
+
+    // Fonction pour calculer la réduction
+    const calculateDiscount = (subtotal, itemCounts) => {
+        // Réinitialiser la livraison gratuite
+        freeShipping = false;
+        
+        if (!appliedPromoCode) return 0;
+        
+        if (appliedPromoCode === 'MYNTHOS5') {
+            // -5€ sur le pack de 6 uniquement
+            const packQuantity = itemCounts['pack-6l'] || 0;
+            return packQuantity > 0 ? 5 : 0;
+        }
+        
+        if (appliedPromoCode === 'MYNTHOS10') {
+            // -10% sur la commande totale
+            return Math.round(subtotal * 0.1 * 100) / 100;
+        }
+        
+        // Easter eggs - Livraison gratuite
+        if (appliedPromoCode === 'BATSAVE' || appliedPromoCode === 'MAXOOR' || appliedPromoCode === 'BRYAN_DROUET') {
+            freeShipping = true;
+            return 0;
+        }
+        
+        return 0;
+    };
+
+    // Déclaration de toggleCart en dehors du if pour qu'elle soit accessible partout
+    let toggleCart = () => {};
+    
     // Vérifier si le panier existe sur cette page
     if (cartBtn && cartPanel && cartOverlay && closeCartBtn) {
-        const toggleCart = (show) => {
+        toggleCart = (show) => {
             if (show) {
                 cartPanel.classList.add('open');
                 cartOverlay.classList.add('show');
@@ -129,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const updateCartUI = () => {
-        let total = 0;
+        let subtotal = 0;
         
         const itemCounts = cart.reduce((acc, itemId) => {
             acc[itemId] = (acc[itemId] || 0) + 1;
@@ -158,10 +284,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const freePacks = Math.floor(quantity / 3);
                 itemTotal -= freePacks * product.price;
                 const s = freePacks > 1 ? 's' : '';
-                promoHtml = `-${freePacks} pack${s} offert${s} !`;
+                promoHtml = `${freePacks} pack${s} offert${s} !`;
             }
 
-            total += itemTotal;
+            subtotal += itemTotal;
 
             if (cartItemsContainer) {
                 let existingItem = cartItemsContainer.querySelector(`.cart-item[data-id="${id}"]`);
@@ -228,6 +354,30 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Calculer la réduction
+        promoDiscount = calculateDiscount(subtotal, itemCounts);
+        const total = subtotal - promoDiscount;
+
+        if (cartSubtotal) cartSubtotal.textContent = subtotal.toFixed(2) + '€';
+        
+        if (discountDisplay) {
+            if (promoDiscount > 0) {
+                discountDisplay.style.display = 'block';
+                discountAmount.textContent = '-' + promoDiscount.toFixed(2) + '€';
+            } else {
+                discountDisplay.style.display = 'none';
+            }
+        }
+
+        const freeShippingDisplay = document.getElementById('free-shipping-display');
+        if (freeShippingDisplay) {
+            if (freeShipping) {
+                freeShippingDisplay.style.display = 'block';
+            } else {
+                freeShippingDisplay.style.display = 'none';
+            }
+        }
+
         if (cartTotalPrice) cartTotalPrice.textContent = total.toFixed(2) + '€';
         if (cartCountElement) cartCountElement.textContent = cart.length;
         
@@ -244,6 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const addToCart = (id) => {
         cart.push(id);
+        saveCartToStorage();
         updateCartUI();
         toggleCart(true);
     };
@@ -253,6 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (index > -1) {
             cart.splice(index, 1);
         }
+        saveCartToStorage();
         updateCartUI();
     };
 
@@ -262,6 +414,46 @@ document.addEventListener('DOMContentLoaded', () => {
             const removeBtn = e.target.closest('.remove-item');
             if (addBtn) addToCart(addBtn.dataset.id);
             if (removeBtn) removeFromCart(removeBtn.dataset.id);
+        });
+    }
+
+    // Event listener pour le code promo
+    if (applyPromoBtn && promoCodeInput) {
+        applyPromoBtn.addEventListener('click', () => {
+            const code = promoCodeInput.value.trim();
+            
+            // Si le champ est vide, permettre la suppression du code promo
+            if (!code) {
+                appliedPromoCode = null;
+                promoMessage.textContent = '✓ Code promo supprimé';
+                promoMessage.className = 'promo-message success';
+                savePromoCodeToStorage(null);
+                updateCartUI();
+                return;
+            }
+            
+            const validation = validatePromoCode(code);
+            
+            if (validation.valid) {
+                appliedPromoCode = validation.code;
+                promoCodeInput.value = '';
+                promoMessage.textContent = validation.message;
+                promoMessage.className = 'promo-message success';
+                savePromoCodeToStorage(appliedPromoCode);
+            } else {
+                // Ne pas effacer un code valide si le nouveau code est invalide
+                promoMessage.textContent = validation.message;
+                promoMessage.className = 'promo-message error';
+            }
+            
+            updateCartUI();
+        });
+
+        // Permettre d'appliquer le code avec Entrée
+        promoCodeInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                applyPromoBtn.click();
+            }
         });
     }
 
@@ -290,7 +482,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ${product.description ? `<p class="product-description">${product.description}</p>` : ''}
                 ${priceHtml}
                 <button class="add-to-cart btn-primary" data-id="${product.id}" aria-label="Ajouter ${product.name} au panier">
-                    <i data-lucide="${product.icon}" aria-hidden="true"></i> Ajouter au panier
+                    Ajouter au panier
                 </button>
             `;
             productsContainer.appendChild(article);
@@ -322,7 +514,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             div.innerHTML = `
                 <img src="${finalSrc}" alt="${member.imagePrompt}" title="${member.imagePrompt}">
-                <h3><i data-lucide="${member.icon}" aria-hidden="true"></i><span>${member.name}</span></h3>
+                <h3><span>${member.name}</span></h3>
                 <p>${member.role}</p>
             `;
             teamContainer.appendChild(div);
@@ -384,6 +576,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Charger le panier et le code promo depuis localStorage
+    loadCartFromStorage();
+    const savedPromoCode = loadPromoCodeFromStorage();
+    if (savedPromoCode) {
+        const validation = validatePromoCode(savedPromoCode);
+        if (validation.valid) {
+            appliedPromoCode = validation.code;
+        } else {
+            // Le code n'est plus valide, le supprimer du storage
+            savePromoCodeToStorage(null);
+        }
+    }
+
     updateCartUI();
 
     const observerOptions = {
@@ -400,7 +605,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, observerOptions);
 
-    document.querySelectorAll('.hero-content, .hero-image, .section-header, .promo-banner, .contact-form').forEach(el => {
+    document.querySelectorAll('.hero-content, .hero-image, .section-header, .promo-banner, .contact-form, .partnership-content').forEach(el => {
         el.classList.add('reveal');
         observer.observe(el);
     });
