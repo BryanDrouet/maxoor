@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/">
+    <title>Maxoor Inc. | Le Lait de la Jeunesse</title>
+    <meta name="description" content="Le Lait de Maxoor. L'éclat de vos 20 ans dès maintenant. La révolution cosmétique à boire.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Chivo+Mono:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <span>Maxoor Inc.</span>
+        </div>
+        <nav aria-label="Navigation principale">
+            <ul>
+                <li><a href="#shop">Boutique</a></li>
+                <li><a href="#team">Direction</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <button class="cart-btn" aria-label="Ouvrir le panier" id="cart-btn" aria-expanded="false" aria-controls="cart-panel">
+            <i data-lucide="shopping-cart" aria-hidden="true"></i>
+            <span id="cart-count">0</span>
+        </button>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Le Lait de Maxoor.</h1>
+                <h2>L'éclat de vos 20 ans dès maintenant.</h2>
+                <a href="#shop" class="cta-btn">Accéder à la boutique</a>
+                <p class="legal-voice">Attention, un surdosage peut entraîner la perte soudaine de votre permis de conduire. Ne pas utiliser pour la pâte à crêpes. Pour votre santé, évitez de rajeunir entre les repas.</p>
+            </div>
+            <div class="hero-image">
+                <img src="header.png" alt="Le Lait de Maxoor." id="hero-img-placeholder">
+            </div>
+        </section>
+
+        <section id="shop" class="shop-section">
+            <div class="section-header">
+                <h2>Collection Prestige</h2>
+                <p>Découvrez nos élixirs de jouvence.</p>
+            </div>
+            <div class="products-grid" id="products-container" role="list" aria-label="Liste des produits"></div>
+        </section>
+
+        <section id="team" class="team-section">
+            <div class="section-header">
+                <h2>L'Élite Maxoor Inc.</h2>
+            </div>
+            <div class="team-grid" id="team-container" role="list" aria-label="Équipe de direction"></div>
+        </section>
+
+        <section id="contact" class="contact-section">
+            <div class="section-header">
+                <h2>Service Conciergerie</h2>
+                <p>Une réclamation concernant votre retour en enfance ?</p>
+            </div>
+            <form id="contact-form" class="contact-form">
+                <div class="form-group">
+                    <label for="user_name">Nom complet</label>
+                    <input type="text" id="user_name" name="user_name" required aria-required="true">
+                </div>
+                <div class="form-group">
+                    <label for="user_email">Adresse e-mail</label>
+                    <input type="email" id="user_email" name="user_email" required aria-required="true">
+                </div>
+                <div class="form-group">
+                    <label for="user_subject">Objet de la demande</label>
+                    <select id="user_subject" name="user_subject" required aria-required="true">
+                        <option value="">Sélectionnez un motif</option>
+                        <option value="livraison">Où est mon élixir ?</option>
+                        <option value="effets">Je suis retourné(e) en maternelle</option>
+                        <option value="autre">Autre demande prestigieuse</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="user_message">Votre message</label>
+                    <textarea id="user_message" name="user_message" required aria-required="true"></textarea>
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="rgpd_consent" name="rgpd_consent" required aria-required="true">
+                    <label for="rgpd_consent">J'accepte que Maxoor Inc. traite mes données pour me recontacter, conformément au RGPD. Je reconnais également que rajeunir est à mes risques et périls.</label>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i data-lucide="send" aria-hidden="true"></i> Envoyer au service client
+                </button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Maxoor Inc. Tous droits réservés.</p>
+            <p class="legal-links">
+                <a href="#">Mentions Légales</a> | 
+                <a href="#">Politique de Confidentialité</a> | 
+                <a href="#">CGV</a>
+            </p>
+        </div>
+    </footer>
+
+    <div id="cart-panel" class="cart-panel" aria-hidden="true" role="dialog" aria-labelledby="cart-title">
+        <div class="cart-header">
+            <h2 id="cart-title">Votre Sélection</h2>
+            <button id="close-cart" aria-label="Fermer le panier"><i data-lucide="x" aria-hidden="true"></i></button>
+        </div>
+        <div id="cart-items" class="cart-items" aria-live="polite"></div>
+        <div class="cart-footer">
+            <div class="cart-total">Total: <span id="cart-total-price">0.00€</span></div>
+            <button id="checkout-btn" class="submit-btn" disabled>Passer commande</button>
+        </div>
+    </div>
+    <div id="cart-overlay" class="cart-overlay" aria-hidden="true"></div>
+
+    <div id="cookie-banner" class="cookie-banner" role="dialog" aria-labelledby="cookie-title" aria-describedby="cookie-desc">
+        <div class="cookie-content">
+            <h3 id="cookie-title">Gestion des cookies</h3>
+            <p id="cookie-desc">Nous utilisons des cookies pour assurer le bon fonctionnement du site, analyser notre trafic et vous proposer la meilleure expérience de rajeunissement possible. (Conforme RGPD)</p>
+        </div>
+        <div class="cookie-actions">
+            <button id="accept-cookies" class="btn-primary">Tout accepter</button>
+            <button id="reject-cookies" class="btn-secondary">Tout refuser</button>
+        </div>
+    </div>
+</body>
+</html>
