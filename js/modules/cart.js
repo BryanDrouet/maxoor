@@ -340,7 +340,7 @@ export const CartManager = {
                 // Fade out
                 shippingDisplay.classList.add('fade-text');
                 setTimeout(() => {
-                    shippingAmount.textContent = '0€';
+                    shippingAmount.textContent = '';
                     if (shippingText) {
                         shippingText.textContent = '🚚 Livraison gratuite';
                     }

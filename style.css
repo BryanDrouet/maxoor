@@ -242,6 +242,23 @@ nav a:hover {
     opacity: 0.6;
 }
 
+/* Style spécial pour le bouton "Victime de son succès" */
+.checkout-victim {
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1px;
+    background-color: #5a5a5a;
+    border-color: #5a5a5a;
+    opacity: 0.5;
+    font-size: 0.9rem;
+}
+
+.checkout-victim:hover {
+    background-color: #5a5a5a;
+    border-color: #5a5a5a;
+    cursor: not-allowed;
+}
+
 .legal-voice {
     font-size: 0.75rem;
     color: var(--color-light-2);
