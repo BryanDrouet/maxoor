@@ -392,6 +392,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cartTotalPrice) cartTotalPrice.textContent = total.toFixed(2) + '€';
         if (cartCountElement) cartCountElement.textContent = cart.length;
         
+        // Masquer/afficher le cart-footer selon si le panier est vide
+        const cartFooter = document.querySelector('.cart-footer');
+        if (cartFooter) {
+            if (cart.length === 0) {
+                cartFooter.style.display = 'none';
+            } else {
+                cartFooter.style.display = '';
+            }
+        }
+        
         if (checkoutBtn) {
             if (cart.length === 0) {
                 checkoutBtn.disabled = true;
@@ -559,31 +569,74 @@ document.addEventListener('DOMContentLoaded', () => {
     const contactForm = document.getElementById('contact-form');
     
     if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
+        contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+
             const submitBtn = contactForm.querySelector('button[type="submit"]');
+            if (!submitBtn) return;
+
             const originalText = submitBtn.innerHTML;
-            
-            submitBtn.style.opacity = '0';
-            setTimeout(() => {
-                submitBtn.innerHTML = `<i data-lucide="check-circle" aria-hidden="true"></i> Requête transmise à la direction`;
+            const formData = new FormData(contactForm);
+            const actionUrl = contactForm.getAttribute('action') || '';
+
+            console.group('[ContactForm] Submit debug');
+            console.log('Action URL:', actionUrl);
+            console.log('Method:', contactForm.getAttribute('method') || 'POST');
+            console.log('Name provided:', Boolean(formData.get('name')));
+            console.log('Email provided:', Boolean(formData.get('email')));
+            console.log('Subject value:', formData.get('subject'));
+            console.log('Message length:', String(formData.get('message') || '').length);
+            console.log('RGPD checked:', formData.get('rgpd_consent') !== null);
+
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.75';
+            submitBtn.innerHTML = 'Envoi en cours...';
+
+            try {
+                const response = await fetch(actionUrl, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        Accept: 'application/json'
+                    }
+                });
+
+                console.log('Response status:', response.status, response.statusText);
+
+                let responseBody = null;
+                try {
+                    responseBody = await response.json();
+                    console.log('Response body:', responseBody);
+                } catch {
+                    console.log('Response body: non-JSON (acceptable selon service)');
+                }
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                submitBtn.innerHTML = `<i data-lucide="check-circle" aria-hidden="true"></i> Requête envoyée`;
                 submitBtn.style.backgroundColor = '#00B8A8';
                 submitBtn.style.color = '#000000';
-                submitBtn.style.opacity = '1';
-                lucide.createIcons();
-            }, 300);
-            
-            setTimeout(() => {
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+
                 contactForm.reset();
-                submitBtn.style.opacity = '0';
+            } catch (error) {
+                console.error('[ContactForm] Erreur envoi:', error);
+                submitBtn.innerHTML = 'Erreur d\'envoi - voir console';
+                submitBtn.style.backgroundColor = '#ff6464';
+                submitBtn.style.color = '#000000';
+            } finally {
+                console.groupEnd();
                 setTimeout(() => {
+                    submitBtn.disabled = false;
                     submitBtn.innerHTML = originalText;
                     submitBtn.style.backgroundColor = '';
                     submitBtn.style.color = '';
                     submitBtn.style.opacity = '1';
-                    lucide.createIcons();
-                }, 300);
-            }, 4000);
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }, 2500);
+            }
         });
     }
 

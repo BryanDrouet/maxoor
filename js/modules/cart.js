@@ -382,6 +382,16 @@ export const CartManager = {
         if (cartTotalPrice) cartTotalPrice.textContent = total.toFixed(2) + '€';
         if (cartCountElement) cartCountElement.textContent = this.cart.length;
         
+        // Masquer/afficher le cart-footer selon si le panier est vide
+        const cartFooter = document.querySelector('.cart-footer');
+        if (cartFooter) {
+            if (this.cart.length === 0) {
+                cartFooter.style.display = 'none';
+            } else {
+                cartFooter.style.display = '';
+            }
+        }
+        
         if (checkoutBtn) {
             if (this.cart.length === 0) {
                 checkoutBtn.disabled = true;

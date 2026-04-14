@@ -251,11 +251,18 @@ nav a:hover {
     border-color: #5a5a5a;
     opacity: 0.5;
     font-size: 0.9rem;
+    cursor: not-allowed;
 }
 
-.checkout-victim:hover {
+.btn-primary.checkout-victim:hover,
+.btn-primary.checkout-victim:focus,
+.btn-primary.checkout-victim:active,
+.btn-primary.checkout-victim:focus-visible {
     background-color: #5a5a5a;
     border-color: #5a5a5a;
+    color: #ffffff;
+    box-shadow: none;
+    transform: none;
     cursor: not-allowed;
 }
 
@@ -720,11 +727,21 @@ nav a:hover {
     align-items: center;
 }
 
+/* Astérisque pour les champs obligatoires */
+.required-asterisk {
+    color: var(--color-light-1);
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
 .checkbox-group input {
     position: absolute;
     opacity: 0;
     width: 1px;
     height: 1px;
+    margin: 0;
+    appearance: none;
+    -webkit-appearance: none;
     pointer-events: none;
 }
 
