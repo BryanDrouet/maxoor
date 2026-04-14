@@ -759,8 +759,8 @@ nav a:hover {
 .checkbox-group label::after {
     content: "";
     position: absolute;
-    top: 50%;
-    left: 0.2rem;
+    top: 49.7%;
+    left: 0.25rem;
     width: 1.45rem;
     height: 1.45rem;
     border-radius: 50%;
@@ -776,7 +776,7 @@ nav a:hover {
 }
 
 .checkbox-group input:checked + label::after {
-    transform: translateX(1.55rem) translateY(-50%);
+    transform: translateX(1.36rem) translateY(-48%);
 }
 
 .checkbox-group input:focus-visible + label::before {
