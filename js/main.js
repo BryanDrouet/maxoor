@@ -60,6 +60,13 @@ const TEAM_DATA = [
         role: 'Co-Directeur Créatif',
         imageSrc: addCacheVersion("assets/images/teamBatsave.png"),
         imagePrompt: `Portrait de Batsave, co-directeur créatif de Maxoor Inc.`
+    },
+    {
+        id: 'jewin',
+        name: 'Jewin',
+        role: 'Goûteur de nos différents produits',
+        imageSrc: addCacheVersion("assets/images/teamJewin.png"),
+        imagePrompt: `Portrait de Jewin, goûteur officiel des produits cosmétiques de Maxoor Inc.`
     }
 ];
 
