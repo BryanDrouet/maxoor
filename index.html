@@ -47,7 +47,9 @@
     
     <!-- Cache busting pour les ressources statiques -->
     <script>
-        const CACHE_VERSION = Date.now();
+        if (typeof CACHE_VERSION === 'undefined') {
+            var CACHE_VERSION = Date.now();
+        }
         document.addEventListener('DOMContentLoaded', () => {
             // Ajouter le cache busting à tous les types d'images (urls relatives et absolues)
             document.querySelectorAll('img[src^="/assets/"], img[src^="./assets/"], img[src^="../assets/"], img[src^="assets/"]').forEach(img => {

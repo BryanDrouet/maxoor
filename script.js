@@ -1,7 +1,7 @@
 /**
  * Cache busting pour les ressources statiques
  */
-const CACHE_VERSION = Date.now();
+var CACHE_VERSION = Date.now();
 const addCacheVersion = (url) => {
     if (url.startsWith('assets/') || url.startsWith('/assets/')) {
         return url + '?v=' + CACHE_VERSION;

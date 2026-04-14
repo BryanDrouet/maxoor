@@ -32,7 +32,9 @@
     
     <!-- Cache busting pour assets statiques -->
     <script>
-        const CACHE_VERSION = Date.now();
+        if (typeof CACHE_VERSION === 'undefined') {
+            var CACHE_VERSION = Date.now();
+        }
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('img[src^="/assets/"], img[src^="./assets/"], img[src^="../assets/"]').forEach(img => {
                 if (!img.src.includes('?v=')) {
