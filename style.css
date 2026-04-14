@@ -580,6 +580,14 @@ nav a:hover {
     border: none;
 }
 
+@media (min-width: 769px) {
+    .partnership-video {
+        max-height: 60dvh;
+        width: min(100%, calc(60dvh * 16 / 9));
+        justify-self: center;
+    }
+}
+
 .partnership-video:hover {
     box-shadow: 0 15px 40px rgba(0, 255, 234, 0.2);
 }
