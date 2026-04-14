@@ -18,9 +18,10 @@ const addCacheVersion = (url) => {
 };
 
 const PRODUCTS_DATA = [
+    // --- GAMME NATURE ---
     {
         id: 'lait-1l',
-        name: 'Le Lait de Maxoor - Bouteille 1L',
+        name: 'Le Lait de Maxoor - Nature (1L)',
         price: 2.99,
         oldPrice: null,
         discountPercent: null,
@@ -29,14 +30,94 @@ const PRODUCTS_DATA = [
     },
     {
         id: 'pack-6l',
-        name: 'Le Pack Rajeunissement - 6x1L',
+        name: 'Pack Rajeunissement - Nature (6x1L)',
         price: 14.99,
         oldPrice: 17.94,
         discountPercent: Math.round(((17.94 - 14.99) / 17.94) * 100),
         imageSrc: addCacheVersion("assets/images/product6L.png"),
-        imagePrompt: `Le Pack Rajeunissement - 6x1L`,
-        description: `Privilège de lancement : 2 packs de 6 achetés = le 3ème offert.`
-    }
+        description: `Privilège de lancement : 2 packs achetés = le 3ème offert.`
+    },
+
+    // --- GAMME BANANE IMPÉRIALE ---
+    {
+        id: 'lait-banane-1l',
+        name: 'Nectar de Banane Impériale (1L)',
+        price: 3.49,
+        oldPrice: null,
+        discountPercent: null,
+        imageSrc: addCacheVersion("assets/images/productBanane1L.png"), 
+        description: `Restaure l'éclat et l'énergie inépuisable d'un enfant de 4 ans.`
+    },
+    {
+        id: 'pack-banane-6l',
+        name: 'Pack Banane Impériale (6x1L)',
+        price: 17.49,
+        oldPrice: 20.94,
+        discountPercent: Math.round(((20.94 - 17.49) / 20.94) * 100),
+        imageSrc: addCacheVersion("assets/images/productBanane6L.png"),
+        description: `Pack premium Banane Impériale, disponible hors offre de lancement.`
+    },
+
+    // --- GAMME FRAISE SAUVAGE ---
+    {
+        id: 'lait-fraise-1l',
+        name: 'Rosée de Fraise Sauvage (1L)',
+        price: 3.49,
+        oldPrice: null,
+        discountPercent: null,
+        imageSrc: addCacheVersion("assets/images/productFraise1L.png"), 
+        description: `Efface la fatigue corporate et rend les joues roses de l'innocence.`
+    },
+    {
+        id: 'pack-fraise-6l',
+        name: 'Pack Fraise Sauvage (6x1L)',
+        price: 17.49,
+        oldPrice: 20.94,
+        discountPercent: Math.round(((20.94 - 17.49) / 20.94) * 100),
+        imageSrc: addCacheVersion("assets/images/productFraise6L.png"),
+        description: `Pack premium Fraise Sauvage, disponible hors offre de lancement.`
+    }/*,
+
+    
+    // --- GAMME CACAO GRAND CRU ---
+    {
+        id: 'lait-cacao-1l',
+        name: 'Cacao Grand Cru Absolu (1L)',
+        price: 3.99,
+        oldPrice: null,
+        discountPercent: null,
+        imageSrc: addCacheVersion("assets/images/productCacao1L.png"), 
+        description: `Comble les rides profondes creusées par le cynisme et les impôts.`
+    },
+    {
+        id: 'pack-cacao-6l',
+        name: 'Pack Cacao Grand Cru (6x1L)',
+        price: 19.99,
+        oldPrice: 23.94,
+        discountPercent: Math.round(((23.94 - 19.99) / 23.94) * 100),
+        imageSrc: addCacheVersion("assets/images/productCacao6L.png"),
+        description: `Pack premium Cacao Grand Cru, disponible hors offre de lancement.`
+    },
+
+    // --- HAUTE COUTURE (FORMULES PRESTIGE) ---
+    {
+        id: 'lait-millesime-1l',
+        name: 'Le Millésime - Affiné en fût (1L)',
+        price: 45.00,
+        oldPrice: null,
+        discountPercent: null,
+        imageSrc: addCacheVersion("assets/images/productMillesime1L.png"), 
+        description: `Un rajeunissement lent et élégant. Pour perdre 10 ans avec distinction.`
+    },
+    {
+        id: 'lait-or-1l',
+        name: 'L\'Édition Nuit Étoilée (1L)',
+        price: 99.99,
+        oldPrice: 120.00,
+        discountPercent: Math.round(((120.00 - 99.99) / 120.00) * 100),
+        imageSrc: addCacheVersion("assets/images/productOr1L.png"), 
+        description: `Infusé à l'Or 24 Carats. Pour un teint qui irradie littéralement dans le noir.`
+    }*/
 ];
 
 const TEAM_DATA = [
