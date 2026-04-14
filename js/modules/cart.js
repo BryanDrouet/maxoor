@@ -165,9 +165,23 @@ export const CartManager = {
             clearTimeout(this.promoMessageTimer);
         }
 
-        // Afficher le message
-        promoMessage.textContent = message;
-        promoMessage.className = `promo-message ${className} show`;
+        // Vérifier si le message est déjà visible
+        const isVisible = promoMessage.classList.contains('show');
+
+        if (isVisible) {
+            // Fade out le texte actuel
+            promoMessage.classList.add('fade-text');
+            setTimeout(() => {
+                // Changer le texte et la classe
+                promoMessage.textContent = message;
+                promoMessage.className = `promo-message ${className} show`;
+                promoMessage.classList.remove('fade-text');
+            }, 150);
+        } else {
+            // Afficher directement si pas visible
+            promoMessage.textContent = message;
+            promoMessage.className = `promo-message ${className} show`;
+        }
 
         // Masquer après 5 secondes
         this.promoMessageTimer = setTimeout(() => {

@@ -1,4 +1,15 @@
 /**
+ * Cache busting pour les ressources statiques
+ */
+const CACHE_VERSION = Date.now();
+const addCacheVersion = (url) => {
+    if (url.startsWith('assets/') || url.startsWith('/assets/')) {
+        return url + '?v=' + CACHE_VERSION;
+    }
+    return url;
+};
+
+/**
  * Vérifie l'accès au site protégé
  * Redirige vers /launch/ si pas d'authentification
  */
@@ -50,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
             price: 2.99,
             oldPrice: null,
             discountPercent: null,
-            imageSrc: "assets/images/product1L.png", 
+            imageSrc: addCacheVersion("assets/images/product1L.png"), 
             imagePrompt: `Le Lait de Maxoor - Bouteille 1L`
         },
         {
@@ -59,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
             price: 14.99,
             oldPrice: 17.94,
             discountPercent: Math.round(((17.94 - 14.99) / 17.94) * 100),
-            imageSrc: "assets/images/product6L.png",
+            imageSrc: addCacheVersion("assets/images/product6L.png"),
             imagePrompt: `Le Pack Rajeunissement - 6x1L`,
             description: `Privilège de lancement : 2 packs de 6 achetés = le 3ème offert.`
         }
@@ -70,21 +81,21 @@ document.addEventListener('DOMContentLoaded', () => {
             id: 'maxoor',
             name: 'Maxoor',
             role: 'Producteur & Président',
-            imageSrc: "assets/images/teamMaxoor.png", 
+            imageSrc: addCacheVersion("assets/images/teamMaxoor.png"), 
             imagePrompt: `Portrait de Maxoor, producteur et président de Maxoor Inc.`
         },
         {
             id: 'bryan',
             name: 'Bryan_Drouet',
             role: 'Co-Directeur Stratégique',
-            imageSrc: "assets/images/teamBryan_Drouet.png", 
+            imageSrc: addCacheVersion("assets/images/teamBryan_Drouet.png"), 
             imagePrompt: `Portrait de Bryan_Drouet, co-directeur stratégique de Maxoor Inc.`
         },
         {
             id: 'batsave',
             name: 'Batsave',
             role: 'Co-Directeur Créatif',
-            imageSrc: "assets/images/teamBatsave.png",
+            imageSrc: addCacheVersion("assets/images/teamBatsave.png"),
             imagePrompt: `Portrait de Batsave, co-directeur créatif de Maxoor Inc.`
         }
     ];

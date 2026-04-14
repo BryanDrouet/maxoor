@@ -32,6 +32,18 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest" defer></script>
     <script type="module" src="./launch-init.js" defer></script>
+    
+    <!-- Cache busting pour assets statiques -->
+    <script>
+        const CACHE_VERSION = Date.now();
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('img[src^="/assets/"], img[src^="./assets/"], img[src^="../assets/"]').forEach(img => {
+                if (!img.src.includes('?v=')) {
+                    img.src += '?v=' + CACHE_VERSION;
+                }
+            });
+        });
+    </script>
 </head>
 <body>
     <main class="launch-hero" role="main">

@@ -994,6 +994,11 @@ footer {
     opacity: 1;
 }
 
+.promo-message.fade-text {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
 .promo-message.success {
     background-color: rgba(0, 184, 168, 0.2);
     color: var(--color-light-2);
@@ -1553,6 +1558,11 @@ footer {
 
     .promo-message.show {
         opacity: 1;
+    }
+
+    .promo-message.fade-text {
+        opacity: 0;
+        transition: opacity 0.15s ease;
     }
 
     .product-info-section {
