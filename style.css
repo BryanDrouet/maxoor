@@ -915,6 +915,14 @@ footer {
     color: var(--text-on-dark);
 }
 
+.cart-item-info .qty-info {
+    display: inline;
+}
+
+.cart-item-info .qty-val {
+    display: inline;
+}
+
 .cart-item-promo {
     color: var(--color-light-2);
     font-size: 0.8rem;

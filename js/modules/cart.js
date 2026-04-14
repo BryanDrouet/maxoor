@@ -403,7 +403,7 @@ export const CartManager = {
         div.innerHTML = `
             <div class="cart-item-info">
                 <strong>${product.name}</strong>
-                <span>Quantité: <span class="qty-val">${quantity}</span></span>
+                <span class="qty-info">Quantité: <span class="qty-val">${quantity}</span></span>
                 <span class="cart-item-promo ${promoHtml ? 'active' : ''}">${promoHtml}</span>
             </div>
             <div class="cart-item-actions">
