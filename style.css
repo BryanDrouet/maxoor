@@ -98,6 +98,19 @@ header {
     letter-spacing: 2px;
 }
 
+.logo a {
+    color: inherit;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: var(--transition);
+}
+
+.logo a:hover,
+.logo a:focus-visible {
+    color: var(--color-light-1);
+}
+
 nav ul {
     display: flex;
     list-style: none;
