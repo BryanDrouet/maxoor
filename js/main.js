@@ -9,7 +9,6 @@ import { ProductManager } from './modules/products.js';
 import { FormManager } from './modules/forms.js';
 import { initSearchUI } from './modules/search.js';
 
-// Version cache stable pour permettre le cache navigateur entre les chargements
 var CACHE_VERSION = '2026-04-15';
 const addCacheVersion = (url) => {
     if (url.startsWith('assets/') || url.startsWith('/assets/')) {
@@ -170,7 +169,6 @@ function updateHeaderHeight() {
     }
 }
 
-// Initialisation au chargement du DOM
 let revealObserver;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -183,36 +181,27 @@ document.addEventListener('DOMContentLoaded', () => {
     FormManager.initCookieBanner();
     FormManager.initContactForm();
 
-    // Initialiser les animations de reveal en premier
     revealObserver = createRevealObserver();
 
-    // Initialiser la recherche et les filtres
     const renderFilteredProducts = (filteredProducts) => {
         ProductManager.renderProducts(filteredProducts, (id) => CartManager.addItem(id));
         
-        // Réappliquer les animations reveal pour les nouvelles cartes
         const newCards = document.querySelectorAll('.products-grid .product-card');
         newCards.forEach(card => {
             card.classList.add('reveal');
             revealObserver.observe(card);
         });
         
-        // Reinitialiser les icônes Lucide pour les nouvelles cartes
         if (typeof lucide !== 'undefined') lucide.createIcons();
     };
     
     initSearchUI(PRODUCTS_DATA, renderFilteredProducts);
 
-    // Initialiser les icônes Lucide
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
-    // Initialiser les animations de reveal
     initRevealAnimations();
 });
 
-/**
- * Crée un observer pour les animations de révélation
- */
 function createRevealObserver() {
     const observerOptions = {
         threshold: 0.01,
@@ -229,9 +218,6 @@ function createRevealObserver() {
     }, observerOptions);
 }
 
-/**
- * Initialise les animations de révélation des éléments
- */
 function initRevealAnimations() {
     document.querySelectorAll('.hero-content, .hero-image, .section-header, .promo-banner, .contact-form, .partnership-content').forEach(el => {
         el.classList.add('reveal');

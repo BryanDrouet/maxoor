@@ -5,17 +5,11 @@
 const LAUNCH_DATE = new Date('2026-04-14T20:45:00').getTime();
 
 export const CountdownManager = {
-    /**
-     * Initialise le compte à rebours
-     */
     init() {
         const countdownInterval = setInterval(() => this.update(), 1000);
-        this.update(); // S'exécute immédiatement
+        this.update();
     },
 
-    /**
-     * Met à jour l'affichage du compte à rebours
-     */
     update() {
         const now = new Date().getTime();
         const distance = LAUNCH_DATE - now;

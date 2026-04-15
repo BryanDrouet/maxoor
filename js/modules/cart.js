@@ -13,9 +13,6 @@ export const CartManager = {
     SHIPPING_COST: 4.99,
     MAX_TOTAL: 500,
 
-    /**
-     * Initialise les éléments DOM du panier
-     */
     init(productsData) {
         this.productsData = productsData;
         this.cart = StorageManager.loadCart(productsData);
@@ -30,13 +27,11 @@ export const CartManager = {
             }
         }
 
-        // Garantit que le total final du panier charge ne depasse pas le plafond.
         this.normalizeCartToMaxTotal();
 
         this.setupEventListeners();
         this.update();
         
-        // Mettre à jour l'état du bouton promo après tout chargement
         const applyPromoBtn = document.getElementById('apply-promo');
         const promoCodeInput = document.getElementById('promo-code');
         if (applyPromoBtn && promoCodeInput) {
@@ -44,9 +39,6 @@ export const CartManager = {
         }
     },
 
-    /**
-     * Configure les événements du panier
-     */
     setupEventListeners() {
         const cartBtn = document.getElementById('cart-btn');
         const closeCartBtn = document.getElementById('close-cart');
@@ -90,19 +82,12 @@ export const CartManager = {
         }
     },
 
-    /**
-     * Vide tout le panier
-     */
     clearCart() {
         this.cart = [];
         StorageManager.saveCart(this.cart);
         this.update();
     },
 
-    /**
-     * Bascule la visibilité du panier
-     * @param {boolean} show
-     */
     toggle(show) {
         const cartPanel = document.getElementById('cart-panel');
         const cartOverlay = document.getElementById('cart-overlay');
@@ -124,10 +109,6 @@ export const CartManager = {
         }
     },
 
-    /**
-     * Ajoute un article au panier
-     * @param {string} id
-     */
     addItem(id) {
         const projectedCart = [...this.cart, id];
         const projectedTotals = this.calculateTotalsForCart(projectedCart);
@@ -143,10 +124,6 @@ export const CartManager = {
         this.update();
     },
 
-    /**
-     * Calcule les totaux (sous-total, reduction, livraison, total final)
-     * pour un etat donne du panier.
-     */
     calculateTotalsForCart(cartItems) {
         const itemCounts = cartItems.reduce((acc, itemId) => {
             acc[itemId] = (acc[itemId] || 0) + 1;
@@ -161,7 +138,6 @@ export const CartManager = {
 
             let itemTotal = product.price * quantity;
 
-            // Offre de lancement: 2 packs achetes = le 3eme offert.
             if (id === 'pack-6l' && quantity >= 3) {
                 const freePacks = Math.floor(quantity / 3);
                 itemTotal -= freePacks * product.price;
@@ -177,9 +153,6 @@ export const CartManager = {
         return { subtotal, discount, freeShipping, shippingCost, total };
     },
 
-    /**
-     * Reduit le panier charge depuis le stockage si le total final depasse le plafond.
-     */
     normalizeCartToMaxTotal() {
         let changed = false;
 
@@ -195,10 +168,6 @@ export const CartManager = {
         }
     },
 
-    /**
-     * Retire un article du panier
-     * @param {string} id
-     */
     removeItem(id) {
         const index = this.cart.lastIndexOf(id);
         if (index > -1) {
@@ -208,65 +177,47 @@ export const CartManager = {
         this.update();
     },
 
-    /**
-     * Applique un code promo
-     * @param {HTMLElement} input - Élément input du code promo
-     */
-    /**
-     * Met à jour l'affichage et l'état du bouton promo
-     */
     updatePromoButtonState(applyPromoBtn, promoCodeInput) {
         if (!applyPromoBtn || !promoCodeInput) return;
         
         const inputValue = promoCodeInput.value.trim();
         
         if (this.appliedPromoCode && !inputValue) {
-            // Code appliqué et champ vide -> bouton Supprimer
             applyPromoBtn.textContent = 'Supprimer';
             applyPromoBtn.classList.add('btn-delete');
         } else {
-            // Sinon -> bouton Appliquer
             applyPromoBtn.textContent = 'Appliquer';
             applyPromoBtn.classList.remove('btn-delete');
         }
     },
 
-    /**
-     * Affiche un message et le masque après 5 secondes
-     */
     showPromoMessage(message, className) {
         const promoMessage = document.getElementById('promo-message');
         if (!promoMessage) return;
 
-        // Clear timer existant si présent
         if (this.promoMessageTimer) {
             clearTimeout(this.promoMessageTimer);
         }
 
-        // Vérifier si le message est déjà visible
         const isVisible = promoMessage.classList.contains('show');
 
         if (isVisible) {
-            // Fade out le texte actuel
             promoMessage.classList.add('fade-text');
             setTimeout(() => {
-                // Changer le texte et la classe
                 promoMessage.textContent = message;
                 promoMessage.className = `promo-message ${className} show`;
                 promoMessage.classList.remove('fade-text');
             }, 150);
         } else {
-            // Afficher directement si pas visible
             promoMessage.textContent = message;
             promoMessage.className = `promo-message ${className} show`;
         }
 
-        // Masquer après 5 secondes
         this.promoMessageTimer = setTimeout(() => {
             promoMessage.classList.remove('show');
             setTimeout(() => {
                 promoMessage.textContent = '';
-            }, 300); // Attendre la fin de l'animation
+            }, 300);
         }, 5000);
     },
 
@@ -274,7 +225,6 @@ export const CartManager = {
         const code = input.value.trim();
         const applyPromoBtn = document.getElementById('apply-promo');
 
-        // Si un code est appliqué et le champ est vide -> supprimer le code
         if (!code && this.appliedPromoCode) {
             const previousPromoCode = this.appliedPromoCode;
             this.appliedPromoCode = null;
@@ -295,7 +245,6 @@ export const CartManager = {
             return;
         }
 
-        // Si le champ est vide et pas de code appliqué -> rien faire
         if (!code) {
             this.updatePromoButtonState(applyPromoBtn, input);
             return;
@@ -316,9 +265,6 @@ export const CartManager = {
         this.updatePromoButtonState(applyPromoBtn, input);
     },
 
-    /**
-     * Met à jour l'affichage du panier
-     */
     update() {
         let subtotal = 0;
         const cartCountElement = document.getElementById('cart-count');
@@ -338,7 +284,6 @@ export const CartManager = {
             return acc;
         }, {});
 
-        // Mettre à jour les articles du panier
         if (cartItemsContainer) {
             Array.from(cartItemsContainer.children).forEach(child => {
                 if (child.classList.contains('empty-msg') || child.classList.contains('removing')) return;
@@ -388,7 +333,6 @@ export const CartManager = {
             }
         }
 
-        // Afficher le message panier vide
         if (cartItemsContainer && this.cart.length === 0 && !cartItemsContainer.querySelector('.empty-msg')) {
             const empty = document.createElement('p');
             empty.className = 'empty-msg';
@@ -402,7 +346,6 @@ export const CartManager = {
             setTimeout(() => empty.style.opacity = '1', 10);
         }
 
-        // Calculer la réduction
         const { discount, freeShipping } = PromoManager.calculateDiscount(this.appliedPromoCode, subtotal, itemCounts);
         this.promoDiscount = discount;
         this.freeShipping = freeShipping;
@@ -427,7 +370,6 @@ export const CartManager = {
             if (this.freeShipping) {
                 const shippingText = document.getElementById('shipping-text');
                 
-                // Fade out
                 shippingDisplay.classList.add('fade-text');
                 setTimeout(() => {
                     shippingAmount.textContent = '';
@@ -443,7 +385,6 @@ export const CartManager = {
             } else {
                 const shippingText = document.getElementById('shipping-text');
                 
-                // Fade out
                 shippingDisplay.classList.add('fade-text');
                 setTimeout(() => {
                     shippingAmount.textContent = this.SHIPPING_COST.toFixed(2) + '€';
@@ -472,7 +413,6 @@ export const CartManager = {
         if (cartTotalPrice) cartTotalPrice.textContent = total.toFixed(2) + '€';
         if (cartCountElement) cartCountElement.textContent = this.cart.length;
         
-        // Masquer/afficher le cart-footer selon si le panier est vide
         const cartFooter = document.querySelector('.cart-footer');
         if (cartFooter) {
             if (this.cart.length === 0) {
@@ -503,9 +443,6 @@ export const CartManager = {
         }
     },
 
-    /**
-     * Crée un élément d'article du panier
-     */
     createCartItemElement(container, product, id, quantity, itemTotal, promoHtml) {
         const div = document.createElement('div');
         div.classList.add('cart-item');

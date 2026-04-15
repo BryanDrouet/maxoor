@@ -3,9 +3,6 @@
  */
 
 export const TwitchManager = {
-    /**
-     * Initialise le lecteur Twitch intégré
-     */
     init() {
         const player = document.getElementById('twitch-player');
         if (!player) return;

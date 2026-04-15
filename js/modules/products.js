@@ -3,16 +3,10 @@
  */
 
 export const ProductManager = {
-    /**
-     * Rendu les cartes de produits
-     * @param {Array} productsData - Données des produits
-     * @param {Function} onAddToCart - Callback ajout au panier
-     */
     renderProducts(productsData, onAddToCart) {
         const productsContainer = document.getElementById('products-container');
         if (!productsContainer) return;
 
-        // Vide le conteneur avant de remplir
         productsContainer.innerHTML = '';
 
         const placeholderSvg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'><rect width='400' height='300' fill='%23003D38'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%2300B8A8'>Image via Gemini</text></svg>`;
@@ -53,8 +47,6 @@ export const ProductManager = {
             productsContainer.appendChild(article);
         });
 
-        // Ajouter le listener qu'une seule fois (delegation)
-        // Supprimer les anciens listeners en remplaçant le conteneur visuellement
         productsContainer.removeEventListener('click', productsContainer._handleCartClick);
         
         productsContainer._handleCartClick = (e) => {
@@ -67,10 +59,6 @@ export const ProductManager = {
         productsContainer.addEventListener('click', productsContainer._handleCartClick);
     },
 
-    /**
-     * Rendu les cartes d'équipe
-     * @param {Array} teamData - Données de l'équipe
-     */
     renderTeam(teamData) {
         const teamContainer = document.getElementById('team-container');
         if (!teamContainer) return;

@@ -5,9 +5,6 @@
 import { StorageManager } from './storage.js';
 
 export const FormManager = {
-    /**
-     * Initialise la banneau de cookies RGPD
-     */
     initCookieBanner() {
         const cookieBanner = document.getElementById('cookie-banner');
         const acceptCookies = document.getElementById('accept-cookies');
@@ -32,9 +29,6 @@ export const FormManager = {
         });
     },
 
-    /**
-     * Initialise le formulaire de contact
-     */
     initContactForm() {
         const contactForm = document.getElementById('contact-form');
         if (!contactForm) return;
@@ -110,11 +104,6 @@ export const FormManager = {
         });
     },
 
-    /**
-     * Initialise le formulaire de mot de passe (page de lancement)
-     * @param {string} correctPassword - SHA-256 du mot de passe correct
-     * @param {Function} onSuccess - Callback après authentification réussie
-     */
     async initPasswordForm(correctPassword, onSuccess) {
         const form = document.querySelector('.password-form');
         if (!form) return;
@@ -168,11 +157,6 @@ export const FormManager = {
         });
     },
 
-    /**
-     * Calcule le SHA-256 d'une chaîne
-     * @param {string} str
-     * @returns {Promise<string>} Hash hexadécimal
-     */
     async sha256(str) {
         const buffer = new TextEncoder().encode(str);
         const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
