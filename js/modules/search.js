@@ -99,8 +99,8 @@ applyFilters() {
     getProductGameme(product) {
         if (product.id.includes('banane')) return 'Banane Impériale';
         if (product.id.includes('fraise')) return 'Fraise Sauvage';
-        if (product.id.includes('cacao')) return 'Cacao Grand Cru';
-        if (product.id.includes('millesime') || product.id.includes('or')) return 'Prestige';
+        // if (product.id.includes('cacao')) return 'Cacao Grand Cru';
+        // if (product.id.includes('millesime') || product.id.includes('or')) return 'Prestige';
         return 'Nature';
     }
 
