@@ -23,8 +23,8 @@ export class SearchManager {
                 gamme = 'Fraise Sauvage';
             } else if (product.id.includes('cacao')) {
                 gamme = 'Cacao Grand Cru';
-            //} else if (product.id.includes('millesime') || product.id.includes('or')) {
-            //    gamme = 'Prestige';
+            } else if (product.id.includes('millesime') || product.id.includes('or')) {
+                gamme = 'Prestige';
             } else {
                 gamme = 'Nature';
             }
