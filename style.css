@@ -587,6 +587,15 @@ a:not(header a):not(.btn-primary):not(.btn-secondary):not(.btn-delete):focus-vis
     gap: 3rem;
 }
 
+/* Réduire la grille à 40% max sur desktop quand un seul produit est affiché */
+@media (min-width: 769px) {
+    .products-grid:has(> .product-card:only-child) {
+        max-width: 40%;
+        margin: 0 auto;
+        grid-template-columns: 1fr;
+    }
+}
+
 .products-empty-state {
     grid-column: 1 / -1;
     text-align: center;
