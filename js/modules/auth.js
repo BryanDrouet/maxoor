@@ -34,7 +34,5 @@ export const AuthManager = {
 
     initLogoutCommand() {
         window.logoutMaxoor = () => this.logout();
-        console.log('%c🍼 Maxoor Inc. - Mode Développement', 'color: #00FFEA; font-size: 14px; font-weight: bold;');
-        console.log('%cPour se déconnecter : logoutMaxoor()', 'color: #00B8A8; font-size: 12px;');
     }
 };

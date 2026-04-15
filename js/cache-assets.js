@@ -2,6 +2,11 @@
     const VERSION_KEY = 'maxoor_asset_version';
     const META_KEY = 'maxoor_asset_signatures';
     const REFRESH_PARAM = 'asset-refresh';
+    const IGNORED_DEV_ASSET_PATTERNS = [
+        /\/fiveserver\.js$/i,
+        /\/livereload\.js$/i,
+        /\/sockjs/i
+    ];
 
     const getCurrentVersion = () => {
         try {
@@ -13,6 +18,11 @@
 
     let cacheVersion = getCurrentVersion();
 
+    const isIgnoredDevAsset = (url) => {
+        const target = `${url.pathname}${url.search}`;
+        return IGNORED_DEV_ASSET_PATTERNS.some((pattern) => pattern.test(target));
+    };
+
     const isLocalAssetPath = (rawUrl) => {
         if (!rawUrl || rawUrl.startsWith('#') || rawUrl.startsWith('data:') || rawUrl.startsWith('blob:')) {
             return false;
@@ -21,6 +31,7 @@
         try {
             const url = new URL(rawUrl, window.location.href);
             if (url.origin !== window.location.origin) return false;
+            if (isIgnoredDevAsset(url)) return false;
             return /\.(css|js|png|svg|jpe?g|webp|gif|avif)(\?|#|$)/i.test(url.pathname + url.search + url.hash);
         } catch {
             return false;
@@ -199,7 +210,6 @@
 
     const printStartupBanner = () => {
         try {
-            console.clear();
             const brand = [
                 'background: linear-gradient(135deg, #003D38 0%, #00665D 100%)',
                 'color: #00FFEA',
@@ -229,10 +239,12 @@
     };
 
     window.addEventListener('load', () => {
-        detectAssetChanges().catch(() => {
-            cleanupRefreshParam();
-        }).finally(() => {
-            printStartupBanner();
-        });
+        printStartupBanner();
+
+        setTimeout(() => {
+            detectAssetChanges().catch(() => {
+                cleanupRefreshParam();
+            });
+        }, 250);
     });
 })();
