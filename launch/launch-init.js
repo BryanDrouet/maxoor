@@ -9,10 +9,8 @@ import { FormManager } from '../js/modules/forms.js';
 const PASSWORD_HASH = '491068e8824786c4648f2f46d2d9bc850fe78b26a3ede2361917851ec3687d1a'; // SHA-256 de "maxoor2026"
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialiser le compte à rebours
     CountdownManager.init();
 
-    // Initialiser le formulaire de mot de passe
     FormManager.initPasswordForm(PASSWORD_HASH, () => {
         AuthManager.grantPreviewAccess();
         setTimeout(() => {
@@ -20,6 +18,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1500);
     });
 
-    // Initialiser les icônes Lucide
     if (typeof lucide !== 'undefined') lucide.createIcons();
 });
