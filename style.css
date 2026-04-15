@@ -46,14 +46,14 @@ html {
 }
 
 ::selection {
-    background-color: rgba(0, 255, 234, 0.38);
-    color: #001a18;
+    background-color: #00FFEA;
+    color: #002e2a;
     text-shadow: none;
 }
 
 ::-moz-selection {
-    background-color: rgba(0, 255, 234, 0.38);
-    color: #001a18;
+    background-color: #00FFEA;
+    color: #002e2a;
     text-shadow: none;
 }
 
