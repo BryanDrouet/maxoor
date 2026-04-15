@@ -134,7 +134,6 @@ export function initSearchUI(products, renderCallback) {
     if (activeGammeButton) {
         const initialGameme = activeGammeButton.dataset.filterGamme;
         searchManager.filterByGameme(initialGameme);
-        console.log(`[SearchUI] Initialisation avec filtre: ${initialGameme}`);
         renderCallback(searchManager.getFilteredProducts());
     } else {
         renderCallback(searchManager.getFilteredProducts());
@@ -148,7 +147,6 @@ export function initSearchUI(products, renderCallback) {
 
     searchInput.addEventListener('input', (e) => {
         searchManager.searchProducts(e.target.value);
-        console.log(`[SearchUI] Recherche: "${e.target.value}", Produits trouvés: ${searchManager.getFilteredProducts().length}`);
         renderCallback(searchManager.getFilteredProducts());
     });
 
@@ -161,8 +159,7 @@ export function initSearchUI(products, renderCallback) {
             e.currentTarget.classList.add('active');
 
             searchManager.filterByGameme(gamme);
-            
-            console.log(`[SearchUI] Filtre gamme: ${gamme}, Produits trouvés: ${searchManager.getFilteredProducts().length}`);
+
             renderCallback(searchManager.getFilteredProducts());
         });
     });
@@ -177,7 +174,6 @@ export function initSearchUI(products, renderCallback) {
 
             searchManager.filterByContainer(containerType);
 
-            console.log(`[SearchUI] Filtre contenant: ${containerType}, Produits trouvés: ${searchManager.getFilteredProducts().length}`);
             renderCallback(searchManager.getFilteredProducts());
         });
     });
@@ -195,7 +191,6 @@ export function initSearchUI(products, renderCallback) {
             if (containerFilterButtons.length > 0) {
                 containerFilterButtons[0].classList.add('active');
             }
-            console.log(`[SearchUI] Réinitialisation - Produits affichés: ${searchManager.getFilteredProducts().length}`);
             renderCallback(searchManager.getFilteredProducts());
         });
     }

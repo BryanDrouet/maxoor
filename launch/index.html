@@ -7,18 +7,18 @@
     <title>Maxoor Inc. - Lancement Exclusif 14/04/2026</title>
     <meta name="description" content="Compte à rebours pour le lancement de Maxoor Inc. Accédez en avant-première avec votre mot de passe exclusif.">
     <meta name="theme-color" content="#00665D">
-    
+
     <meta property="og:title" content="Maxoor Inc. - Lancement Exclusif">
     <meta property="og:description" content="Compte à rebours vers le lancement de Maxoor Inc. Accédez en avant-première.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://maxoor.bryan.ovh/launch/">
     <meta property="og:image" content="https://maxoor.bryan.ovh/assets/images/logo.svg">
-    
+
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Maxoor Inc. - Lancement Exclusif">
     <meta name="twitter:description" content="Compte à rebours vers le lancement. Accédez avec votre mot de passe.">
     <meta name="twitter:image" content="https://maxoor.bryan.ovh/assets/images/logo.svg">
-    
+
     <link rel="icon" type="image/svg+xml" href="/assets/images/logo.svg" sizes="any">
     <link rel="apple-touch-icon" href="/assets/images/logo.svg">
 
@@ -40,74 +40,15 @@
             setTimeout(clearLoadingState, 8000);
         }
     </script>
-    
+
+    <script src="/js/cache-assets.js"></script>
+
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="./launch.css">
-    
+
     <script src="/js/modules/layout.js" defer></script>
     <script src="https://unpkg.com/lucide@latest" defer></script>
     <script type="module" src="./launch-init.js" defer></script>
-    
-    <script>
-        if (typeof CACHE_VERSION === 'undefined') {
-            var CACHE_VERSION = Date.now();
-        }
-
-        const isLocalAssetPath = (url) => {
-            return /^\/?assets\//.test(url)
-                || /^\.\/assets\//.test(url)
-                || /^\.\.\/assets\//.test(url)
-                || /^[^:]+\.(png|svg|jpe?g|webp|gif|avif)(\?|#|$)/i.test(url);
-        };
-
-        const hasTargetExt = (url) => /\.(png|svg|jpe?g|webp|gif|avif)(\?|#|$)/i.test(url);
-
-        const addVersionParam = (url) => {
-            if (!url || /[?&]v=/.test(url) || !isLocalAssetPath(url) || !hasTargetExt(url)) {
-                return url;
-            }
-            return url + (url.includes('?') ? '&' : '?') + 'v=' + CACHE_VERSION;
-        };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('img[src], source[src], use[href], use[xlink\\:href], image[href]').forEach((el) => {
-                if (el.hasAttribute('href')) {
-                    const href = el.getAttribute('href');
-                    const updatedHref = addVersionParam(href);
-                    if (updatedHref !== href) el.setAttribute('href', updatedHref);
-                }
-
-                if (el.hasAttribute('src')) {
-                    const src = el.getAttribute('src');
-                    const updatedSrc = addVersionParam(src);
-                    if (updatedSrc !== src) el.setAttribute('src', updatedSrc);
-                }
-
-                if (el.hasAttribute('xlink:href')) {
-                    const xlinkHref = el.getAttribute('xlink:href');
-                    const updatedXlinkHref = addVersionParam(xlinkHref);
-                    if (updatedXlinkHref !== xlinkHref) el.setAttribute('xlink:href', updatedXlinkHref);
-                }
-            });
-
-            document.querySelectorAll('source[srcset], img[srcset]').forEach((el) => {
-                const srcset = el.getAttribute('srcset');
-                if (!srcset) return;
-
-                const updatedSrcset = srcset
-                    .split(',')
-                    .map((candidate) => {
-                        const parts = candidate.trim().split(/\s+/);
-                        if (!parts.length) return candidate;
-                        parts[0] = addVersionParam(parts[0]);
-                        return parts.join(' ');
-                    })
-                    .join(', ');
-
-                if (updatedSrcset !== srcset) el.setAttribute('srcset', updatedSrcset);
-            });
-        });
-    </script>
 </head>
 <body>
     <div id="page-loader" class="page-loader" aria-live="polite" aria-label="Chargement de la page">
@@ -181,19 +122,19 @@
                     <p>Entrez votre mot de passe pour accéder à la plateforme Maxoor.</p>
 
                     <form class="password-form" action="#" method="POST">
-                        <input 
-                            type="text" 
-                            id="username-field" 
-                            name="username" 
+                        <input
+                            type="text"
+                            id="username-field"
+                            name="username"
                             value="maxoor_user"
                             hidden
                             aria-hidden="true"
                             autocomplete="username"
                         >
-                        <input 
-                            type="password" 
-                            id="password-input" 
-                            name="password" 
+                        <input
+                            type="password"
+                            id="password-input"
+                            name="password"
                             placeholder="Mot de passe"
                             required
                             autocomplete="new-password"
@@ -210,6 +151,5 @@
     </main>
 
     <footer data-shared-footer="true"></footer>
-
 </body>
 </html>

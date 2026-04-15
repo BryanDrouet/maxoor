@@ -57,67 +57,7 @@
         }
     </script>
 
-    <!-- Cache busting pour assets statiques (css, js, png, svg) -->
-    <script>
-        if (typeof CACHE_VERSION === 'undefined') {
-            var CACHE_VERSION = Date.now();
-        }
-
-        const isLocalAssetPath = (url) => {
-            return /^\/?assets\//.test(url)
-                || /^\.\/assets\//.test(url)
-                || /^\.\.\/assets\//.test(url)
-                || /^[^:]+\.(png|svg|jpe?g|webp|gif|avif)(\?|#|$)/i.test(url);
-        };
-
-        const hasTargetExt = (url) => /\.(png|svg|jpe?g|webp|gif|avif)(\?|#|$)/i.test(url);
-
-        const addVersionParam = (url) => {
-            if (!url || /[?&]v=/.test(url) || !isLocalAssetPath(url) || !hasTargetExt(url)) {
-                return url;
-            }
-            return url + (url.includes('?') ? '&' : '?') + 'v=' + CACHE_VERSION;
-        };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('img[src], source[src], use[href], use[xlink\\:href], image[href]').forEach((el) => {
-                if (el.hasAttribute('href')) {
-                    const href = el.getAttribute('href');
-                    const updatedHref = addVersionParam(href);
-                    if (updatedHref !== href) el.setAttribute('href', updatedHref);
-                }
-
-                if (el.hasAttribute('src')) {
-                    const src = el.getAttribute('src');
-                    const updatedSrc = addVersionParam(src);
-                    if (updatedSrc !== src) el.setAttribute('src', updatedSrc);
-                }
-
-                if (el.hasAttribute('xlink:href')) {
-                    const xlinkHref = el.getAttribute('xlink:href');
-                    const updatedXlinkHref = addVersionParam(xlinkHref);
-                    if (updatedXlinkHref !== xlinkHref) el.setAttribute('xlink:href', updatedXlinkHref);
-                }
-            });
-
-            document.querySelectorAll('source[srcset], img[srcset]').forEach((el) => {
-                const srcset = el.getAttribute('srcset');
-                if (!srcset) return;
-
-                const updatedSrcset = srcset
-                    .split(',')
-                    .map((candidate) => {
-                        const parts = candidate.trim().split(/\s+/);
-                        if (!parts.length) return candidate;
-                        parts[0] = addVersionParam(parts[0]);
-                        return parts.join(' ');
-                    })
-                    .join(', ');
-
-                if (updatedSrcset !== srcset) el.setAttribute('srcset', updatedSrcset);
-            });
-        });
-    </script>
+    <script src="/js/cache-assets.js"></script>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

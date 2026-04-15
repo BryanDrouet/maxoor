@@ -45,6 +45,18 @@ html {
     background-color: var(--color-light-2);
 }
 
+::selection {
+    background-color: rgba(0, 255, 234, 0.38);
+    color: #001a18;
+    text-shadow: none;
+}
+
+::-moz-selection {
+    background-color: rgba(0, 255, 234, 0.38);
+    color: #001a18;
+    text-shadow: none;
+}
+
 body {
     font-family: var(--font-texts);
     color: var(--text-on-dark);
