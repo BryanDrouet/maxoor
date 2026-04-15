@@ -24,26 +24,40 @@ export const ProductManager = {
             const article = document.createElement('article');
             article.classList.add('product-card');
             
-            let priceHtml = `<div class="product-price">${product.price.toFixed(2)}€`;
-            if (product.oldPrice) {
-                priceHtml += `<span class="old-price">${product.oldPrice.toFixed(2)}€</span>`;
-                if (product.discountPercent) {
-                    priceHtml += `<span class="discount-badge">-${product.discountPercent}%</span>`;
+            let priceHtml = '';
+            // Ne pas afficher le prix pour les easter eggs
+            if (!product._link) {
+                priceHtml = `<div class="product-price">${product.price.toFixed(2)}€`;
+                if (product.oldPrice) {
+                    priceHtml += `<span class="old-price">${product.oldPrice.toFixed(2)}€</span>`;
+                    if (product.discountPercent) {
+                        priceHtml += `<span class="discount-badge">-${product.discountPercent}%</span>`;
+                    }
                 }
+                priceHtml += `</div>`;
             }
-            priceHtml += `</div>`;
 
             const finalSrc = product.imageSrc ? product.imageSrc : placeholderSvg;
             const imageAlt = product.alt || product.name || 'Image produit';
+
+            // Vérifier si le produit a un lien spécial (easter egg)
+            let actionHtml = '';
+            if (product._link) {
+                actionHtml = `<a href="${product._link}" class="btn-primary" aria-label="Accéder à ${product.name}">
+                    Découvrir
+                </a>`;
+            } else {
+                actionHtml = `<button class="add-to-cart btn-primary" data-id="${product.id}" aria-label="Ajouter ${product.name} au panier">
+                    Ajouter au panier
+                </button>`;
+            }
 
             article.innerHTML = `
                 <img src="${finalSrc}" alt="${imageAlt}" title="${imageAlt}" loading="lazy" decoding="async" fetchpriority="low">
                 <h3 class="product-title">${product.name}</h3>
                 ${product.description ? `<p class="product-description">${product.description}</p>` : ''}
                 ${priceHtml}
-                <button class="add-to-cart btn-primary" data-id="${product.id}" aria-label="Ajouter ${product.name} au panier">
-                    Ajouter au panier
-                </button>
+                ${actionHtml}
             `;
             productsContainer.appendChild(article);
         });
@@ -57,7 +71,7 @@ export const ProductManager = {
             }
         };
         
-        productsContainer.addEventListener('click', productsContainer._handleCartClick);
+        productsContainer.addEventListener('click', productsContainer._handleCartClick, { passive: true });
     },
 
     renderTeam(teamData) {

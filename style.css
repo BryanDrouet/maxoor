@@ -679,8 +679,8 @@ a:not(header a):not(.btn-primary):not(.btn-secondary):not(.btn-delete):focus-vis
 }
 
 .product-card img {
-    aspect-ratio: 16 / 9;
-    height: auto;
+    aspect-ratio: 16 / 9 !important;
+    max-height: 200px;
 }
 
 .team-card img {

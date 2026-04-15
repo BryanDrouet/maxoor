@@ -51,9 +51,9 @@
         };
 
         if (!isLoaderDebug) {
-            window.addEventListener('load', clearLoadingState, { once: true });
-            window.addEventListener('pageshow', clearLoadingState, { once: true });
-            setTimeout(clearLoadingState, 8000);
+            window.addEventListener('load', clearLoadingState, { once: true, passive: true });
+            window.addEventListener('pageshow', clearLoadingState, { once: true, passive: true });
+            setTimeout(clearLoadingState, 5000);
         }
     </script>
 

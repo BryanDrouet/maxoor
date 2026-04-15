@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <style>
+      @keyframes pulse-ring {
+        0% { 
+          r: 40px; 
+          opacity: 1; 
+        }
+        100% { 
+          r: 120px; 
+          opacity: 0; 
+        }
+      }
+      @keyframes rotate-portal {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      .pulse-circle {
+        animation: pulse-ring 2s ease-out infinite;
+      }
+      .rotate-group {
+        animation: rotate-portal 8s linear infinite;
+        transform-origin: 200px 200px;
+      }
+    </style>
+    <radialGradient id="portalGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#00FFEA;stop-opacity:0.8" />
+      <stop offset="50%" style="stop-color:#00B8A8;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#003D38;stop-opacity:0" />
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="400" fill="#003D38"/>
+  
+  <!-- Outer pulsing ring -->
+  <circle class="pulse-circle" cx="200" cy="200" r="40" fill="none" stroke="#00FFEA" stroke-width="2" opacity="0.6"/>
+  
+  <!-- Rotating portal structure -->
+  <g class="rotate-group">
+    <!-- Concentric circles -->
+    <circle cx="200" cy="200" r="30" fill="none" stroke="#00FFEA" stroke-width="1.5" opacity="0.9" filter="url(#glow)"/>
+    <circle cx="200" cy="200" r="50" fill="none" stroke="#00B8A8" stroke-width="1" opacity="0.7"/>
+    <circle cx="200" cy="200" r="70" fill="none" stroke="#00FFEA" stroke-width="1.5" opacity="0.5"/>
+    <circle cx="200" cy="200" r="90" fill="none" stroke="#00B8A8" stroke-width="1" opacity="0.3"/>
+    
+    <!-- Radial lines -->
+    <g stroke="#00FFEA" stroke-width="1" opacity="0.6">
+      <line x1="200" y1="110" x2="200" y2="40" />
+      <line x1="260.8" y1="139.2" x2="293.7" y2="99.8" />
+      <line x1="290" y1="200" x2="360" y2="200" />
+      <line x1="260.8" y1="260.8" x2="293.7" y2="300.2" />
+      <line x1="200" y1="290" x2="200" y2="360" />
+      <line x1="139.2" y1="260.8" x2="106.3" y2="300.2" />
+      <line x1="110" y1="200" x2="40" y2="200" />
+      <line x1="139.2" y1="139.2" x2="106.3" y2="99.8" />
+    </g>
+  </g>
+  
+  <!-- Central glowing core -->
+  <circle cx="200" cy="200" r="15" fill="url(#portalGradient)" filter="url(#glow)"/>
+  <circle cx="200" cy="200" r="15" fill="none" stroke="#00FFEA" stroke-width="2" opacity="0.8" filter="url(#glow)"/>
+  
+  <!-- Text label -->
+  <text x="200" y="340" text-anchor="middle" font-family="'Abril Fatface', serif" font-size="16" fill="#00FFEA" opacity="0.8" letter-spacing="2">
+    NIVEAU CACHÉ
+  </text>
+</svg>

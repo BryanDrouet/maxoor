@@ -4,6 +4,8 @@
 
 import { StorageManager } from './storage.js';
 
+const CONTACT_FORM_DRAFT_KEY = 'maxoor_contact_form_draft';
+
 export const FormManager = {
     initCookieBanner() {
         const cookieBanner = document.getElementById('cookie-banner');
@@ -21,12 +23,12 @@ export const FormManager = {
         acceptCookies.addEventListener('click', () => {
             StorageManager.setCookieConsent('accepted');
             cookieBanner.classList.remove('show');
-        });
+        }, { passive: true });
 
         rejectCookies.addEventListener('click', () => {
             StorageManager.setCookieConsent('rejected');
             cookieBanner.classList.remove('show');
-        });
+        }, { passive: true });
     },
 
     initContactForm() {
@@ -36,6 +38,57 @@ export const FormManager = {
         const subjectSelect = contactForm.querySelector('#user_subject');
         const customSubjectGroup = contactForm.querySelector('#custom-subject-group');
         const customSubjectInput = contactForm.querySelector('#user_custom_subject');
+
+        const saveDraft = () => {
+            const draft = {};
+
+            contactForm.querySelectorAll('input, textarea, select').forEach((field) => {
+                if (!field.name || field.type === 'hidden' || field.type === 'submit') return;
+
+                if (field.type === 'checkbox') {
+                    draft[field.name] = Boolean(field.checked);
+                    return;
+                }
+
+                draft[field.name] = field.value;
+            });
+
+            try {
+                sessionStorage.setItem(CONTACT_FORM_DRAFT_KEY, JSON.stringify(draft));
+            } catch {
+                // noop
+            }
+        };
+
+        const restoreDraft = () => {
+            let draft = null;
+            try {
+                draft = JSON.parse(sessionStorage.getItem(CONTACT_FORM_DRAFT_KEY) || 'null');
+            } catch {
+                draft = null;
+            }
+
+            if (!draft || typeof draft !== 'object') return;
+
+            contactForm.querySelectorAll('input, textarea, select').forEach((field) => {
+                if (!field.name || !(field.name in draft)) return;
+
+                if (field.type === 'checkbox') {
+                    field.checked = Boolean(draft[field.name]);
+                    return;
+                }
+
+                field.value = draft[field.name] ?? '';
+            });
+        };
+
+        const clearDraft = () => {
+            try {
+                sessionStorage.removeItem(CONTACT_FORM_DRAFT_KEY);
+            } catch {
+                // noop
+            }
+        };
 
         const isCustomSubject = () => subjectSelect?.value === 'Autre demande prestigieuse';
         const updateCustomSubjectVisibility = () => {
@@ -55,9 +108,14 @@ export const FormManager = {
         };
 
         if (subjectSelect) {
-            subjectSelect.addEventListener('change', updateCustomSubjectVisibility);
-            updateCustomSubjectVisibility();
+            subjectSelect.addEventListener('change', updateCustomSubjectVisibility, { passive: true });
         }
+
+        restoreDraft();
+        updateCustomSubjectVisibility();
+
+        contactForm.addEventListener('input', saveDraft, { passive: true });
+        contactForm.addEventListener('change', saveDraft, { passive: true });
 
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -126,6 +184,7 @@ export const FormManager = {
 
                 contactForm.reset();
                 updateCustomSubjectVisibility();
+                clearDraft();
             } catch (error) {
                 console.error('[ContactForm] Erreur envoi:', error);
                 submitBtn.innerHTML = 'Erreur d\'envoi - voir console';

@@ -21,22 +21,22 @@ const PRODUCTS_DATA = [
     // --- GAMME NATURE ---
     {
         id: 'lait-1l',
-        name: 'Le Lait de Maxoor - Nature (1L)',
+        name: 'Le Lait de Maxoor Nature (1L)',
         price: 2.99,
         oldPrice: null,
         discountPercent: null,
-        imageSrc: addCacheVersion("assets/images/product1L.png"), 
+        imageSrc: addCacheVersion("assets/images/productNature1L.png"), 
         alt: `Le Lait de Maxoor - Bouteille 1L`,
         description: `Réveille l'éclat naturel du teint et l'assurance insolente des vingt ans retrouvés.`,
         searchable: true
     },
     {
         id: 'pack-6l',
-        name: 'Pack Rajeunissement - Nature (6x1L)',
+        name: 'Pack Rajeunissement Nature (6x1L)',
         price: 14.99,
         oldPrice: 17.94,
         discountPercent: Math.round(((17.94 - 14.99) / 17.94) * 100),
-        imageSrc: addCacheVersion("assets/images/product6L.png"),
+        imageSrc: addCacheVersion("assets/images/productNature6L.png"),
         alt: `Pack Rajeunissement - Nature (6x1L)`,
         description: `Privilège de lancement : 2 packs achetés = le 3ème offert.`,
         searchable: true
@@ -137,6 +137,21 @@ const PRODUCTS_DATA = [
         alt: `L'Édition Nuit Étoilée - Bouteille 1L`,
         description: `Infusé à l'Or 24 Carats. Pour un teint qui irradie littéralement dans le noir.`,
         searchable: true
+    },
+    
+    // --- EASTER EGG CACHÉ ---
+    {
+        id: 'x7a3k2p9m4',
+        name: 'Cookie',
+        price: 0,
+        oldPrice: null,
+        discountPercent: null,
+        imageSrc: addCacheVersion("assets/images/genesis.png"),
+        alt: `Portail vers l'easter egg "Cookie" de Maxoor Inc.`,
+        description: `Accès à l'easter egg "Cookie" de Maxoor Inc. Seuls les initiés peuvent trouver cet easter egg.`,
+        searchable: false,
+        _hidden: true,
+        _link: '/019d92d8-9683-7849-a1c4-87b45a839fce/'
     }
 ];
 

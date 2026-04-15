@@ -49,19 +49,19 @@ export const CartManager = {
         const promoCodeInput = document.getElementById('promo-code');
 
         if (cartBtn) {
-            cartBtn.addEventListener('click', () => this.toggle(true));
+            cartBtn.addEventListener('click', () => this.toggle(true), { passive: true });
         }
 
         if (closeCartBtn) {
-            closeCartBtn.addEventListener('click', () => this.toggle(false));
+            closeCartBtn.addEventListener('click', () => this.toggle(false), { passive: true });
         }
 
         if (cartOverlay) {
-            cartOverlay.addEventListener('click', () => this.toggle(false));
+            cartOverlay.addEventListener('click', () => this.toggle(false), { passive: true });
         }
 
         if (clearCartBtn) {
-            clearCartBtn.addEventListener('click', () => this.clearCart());
+            clearCartBtn.addEventListener('click', () => this.clearCart(), { passive: true });
         }
 
         if (cartItemsContainer) {
@@ -70,15 +70,15 @@ export const CartManager = {
                 const removeBtn = e.target.closest('.remove-item');
                 if (addBtn) this.addItem(addBtn.dataset.id);
                 if (removeBtn) this.removeItem(removeBtn.dataset.id);
-            });
+            }, { passive: true });
         }
 
         if (applyPromoBtn && promoCodeInput) {
-            applyPromoBtn.addEventListener('click', () => this.applyPromoCode(promoCodeInput));
+            applyPromoBtn.addEventListener('click', () => this.applyPromoCode(promoCodeInput), { passive: true });
             promoCodeInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') applyPromoBtn.click();
-            });
-            promoCodeInput.addEventListener('input', () => this.updatePromoButtonState(applyPromoBtn, promoCodeInput));
+            }, { passive: true });
+            promoCodeInput.addEventListener('input', () => this.updatePromoButtonState(applyPromoBtn, promoCodeInput), { passive: true });
         }
     },
 

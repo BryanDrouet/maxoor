@@ -146,6 +146,7 @@ function createImageViewer(viewerElement) {
         state.lastActiveImage = sourceImage;
         state.open = true;
         viewerElement.hidden = false;
+        viewerElement.removeAttribute('inert');
         viewerElement.classList.add('is-open');
         viewerElement.setAttribute('aria-hidden', 'false');
         document.documentElement.classList.add('has-image-viewer-open');
@@ -183,11 +184,14 @@ function createImageViewer(viewerElement) {
         state.open = false;
         viewerElement.classList.remove('is-open');
         viewerElement.setAttribute('aria-hidden', 'true');
+        viewerElement.setAttribute('inert', '');
         document.documentElement.classList.remove('has-image-viewer-open');
         viewerElement.hidden = true;
         state.pointers.clear();
         state.pointerMode = 'idle';
         state.dragStart = null;
+        // Retour au focus sur l'image qui a lancé le viewer
+        state.lastActiveImage?.focus({ preventScroll: true });
     };
 
     const reset = () => {
@@ -371,20 +375,20 @@ function createImageViewer(viewerElement) {
         }
     };
 
-    backdrop.addEventListener('click', close);
-    closeButtons.forEach((button) => button.addEventListener('click', close));
-    stage.addEventListener('pointerdown', onPointerDown);
-    stage.addEventListener('pointermove', onPointerMove);
-    stage.addEventListener('pointerup', endPointer);
-    stage.addEventListener('pointercancel', endPointer);
-    stage.addEventListener('pointerleave', endPointer);
+    backdrop.addEventListener('click', close, { passive: true });
+    closeButtons.forEach((button) => button.addEventListener('click', close, { passive: true }));
+    stage.addEventListener('pointerdown', onPointerDown, { passive: true });
+    stage.addEventListener('pointermove', onPointerMove, { passive: true });
+    stage.addEventListener('pointerup', endPointer, { passive: true });
+    stage.addEventListener('pointercancel', endPointer, { passive: true });
+    stage.addEventListener('pointerleave', endPointer, { passive: true });
     stage.addEventListener('wheel', onWheel, { passive: false });
-    document.addEventListener('click', onDocumentClick, true);
-    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('click', onDocumentClick, { capture: true, passive: false });
+    document.addEventListener('keydown', onKeyDown, { passive: true });
 
-    zoomInButton?.addEventListener('click', () => zoomBy(0.2));
-    zoomOutButton?.addEventListener('click', () => zoomBy(-0.2));
-    resetButton?.addEventListener('click', reset);
+    zoomInButton?.addEventListener('click', () => zoomBy(0.2), { passive: true });
+    zoomOutButton?.addEventListener('click', () => zoomBy(-0.2), { passive: true });
+    resetButton?.addEventListener('click', reset, { passive: true });
 
     updateTransform();
 

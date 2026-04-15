@@ -112,7 +112,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         patchNodeTree(document.documentElement);
-    });
+    }, { passive: true });
 
     const normalizeAssetKey = (rawUrl) => {
         try {
@@ -268,5 +268,5 @@
                 clearRefreshGuard();
             });
         }, 250);
-    });
+    }, { passive: true });
 })();
