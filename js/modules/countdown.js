@@ -18,7 +18,7 @@ export const CountdownManager = {
         if (!countdown) return;
 
         if (distance < 0) {
-            countdown.innerHTML = '<div style="grid-column: 1/-1; color: var(--color-light-1); font-size: 1.5rem; font-weight: bold;">🎉 Maxoor is LIVE!</div>';
+            countdown.closest('.launch-countdown-section')?.classList.add('hidden');
             return;
         }
 

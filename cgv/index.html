@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGV | Maxoor Inc.</title>
+    <meta name="description" content="Conditions Générales de Vente du site Maxoor Inc.">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="robots" content="index, follow">
+
+    <link rel="canonical" href="https://maxoor.bryan.ovh/cgv/">
+    <link rel="icon" type="image/svg+xml" href="/assets/images/logo.svg" sizes="any">
+    <link rel="apple-touch-icon" href="/assets/images/logo.svg">
+
+    <script>
+        if (typeof CACHE_VERSION === 'undefined') {
+            var CACHE_VERSION = Date.now();
+        }
+
+        const isLocalAssetPath = (url) => {
+            return /^\/?assets\//.test(url)
+                || /^\.\/assets\//.test(url)
+                || /^\.\.\/assets\//.test(url)
+                || /^\.?\/?(css|js)\//.test(url)
+                || /^\.\.\/(css|js)\//.test(url)
+                || /^[^:]+\.(css|js|png|svg)(\?|#|$)/i.test(url);
+        };
+
+        const hasTargetExt = (url) => /\.(css|js|png|svg)(\?|#|$)/i.test(url);
+
+        const addVersionParam = (url) => {
+            if (!url || /[?&]v=/.test(url) || !isLocalAssetPath(url) || !hasTargetExt(url)) {
+                return url;
+            }
+            return url + (url.includes('?') ? '&' : '?') + 'v=' + CACHE_VERSION;
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('link[href], script[src], img[src], source[src], use[href], use[xlink\\:href], image[href]').forEach((el) => {
+                if (el.hasAttribute('href')) {
+                    const href = el.getAttribute('href');
+                    const updatedHref = addVersionParam(href);
+                    if (updatedHref !== href) el.setAttribute('href', updatedHref);
+                }
+
+                if (el.hasAttribute('src')) {
+                    const src = el.getAttribute('src');
+                    const updatedSrc = addVersionParam(src);
+                    if (updatedSrc !== src) el.setAttribute('src', updatedSrc);
+                }
+
+                if (el.hasAttribute('xlink:href')) {
+                    const xlinkHref = el.getAttribute('xlink:href');
+                    const updatedXlinkHref = addVersionParam(xlinkHref);
+                    if (updatedXlinkHref !== xlinkHref) el.setAttribute('xlink:href', updatedXlinkHref);
+                }
+            });
+
+            document.querySelectorAll('source[srcset], img[srcset]').forEach((el) => {
+                const srcset = el.getAttribute('srcset');
+                if (!srcset) return;
+
+                const updatedSrcset = srcset
+                    .split(',')
+                    .map((candidate) => {
+                        const parts = candidate.trim().split(/\s+/);
+                        if (!parts.length) return candidate;
+                        parts[0] = addVersionParam(parts[0]);
+                        return parts.join(' ');
+                    })
+                    .join(', ');
+
+                if (updatedSrcset !== srcset) el.setAttribute('srcset', updatedSrcset);
+            });
+        });
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Chivo+Mono:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <span>Maxoor Inc.</span>
+        </div>
+        <nav aria-label="Navigation principale">
+            <ul>
+                <li><a href="/">Accueil</a></li>
+                <li><a href="/launch/">Lancement</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Conditions Générales de Vente</h1>
+                <h2>Cadre contractuel et commercial</h2>
+                <p>Ce document définit les bases d'utilisation commerciale du site et sert de version éditable au format Markdown.</p>
+            </div>
+            <div class="hero-image">
+                <img src="/assets/images/logo.svg" alt="Logo Maxoor" loading="eager" fetchpriority="high" decoding="async" width="320" height="320">
+            </div>
+        </section>
+
+        <section class="product-info-section" id="cgv">
+            <div class="section-header">
+                <h2>Vente, livraison et responsabilité</h2>
+                <p>Le contenu suivant peut être ajusté dans le fichier Markdown associé.</p>
+            </div>
+            <div class="product-info-content">
+                <article class="info-card reveal active">
+                    <h3>Objet</h3>
+                    <p>Les présentes CGV encadrent les relations entre Maxoor Inc. et toute personne consultant le site ou passant commande.</p>
+                </article>
+                <article class="info-card reveal active">
+                    <h3>Produits</h3>
+                    <p>Les produits et services sont présentés avec soin. Les descriptions et visuels sont indicatifs et peuvent évoluer.</p>
+                </article>
+                <article class="info-card reveal active">
+                    <h3>Prix</h3>
+                    <p>Les prix sont indiqués en euros TTC sauf mention contraire. Le prix applicable est celui affiché au moment de la commande.</p>
+                </article>
+                <article class="info-card reveal active">
+                    <h3>Paiement</h3>
+                    <p>Les modalités de paiement doivent être précisées avant l'ouverture de toute vente réelle. À ce stade, aucune transaction commerciale n'est activée.</p>
+                </article>
+                <article class="info-card reveal active">
+                    <h3>Livraison</h3>
+                    <p>Les délais et frais de livraison devront être définis le cas échéant selon l'organisation commerciale retenue.</p>
+                </article>
+                <article class="info-card reveal active">
+                    <h3>Rétractation</h3>
+                    <p>Si des ventes à distance sont mises en place, le droit de rétractation sera appliqué conformément aux règles légales en vigueur.</p>
+                </article>
+                <article class="info-card reveal active">
+                    <h3>Responsabilité</h3>
+                    <p>Maxoor Inc. ne saurait être tenue responsable d'un usage non conforme du site, d'une interruption de service ou d'erreurs d'affichage non intentionnelles.</p>
+                </article>
+                <article class="info-card reveal active">
+                    <h3>Données personnelles</h3>
+                    <p>Les données liées à la navigation et aux échanges sont traitées conformément à la <a href="/politique-de-confidentialite/">Politique de Confidentialité</a>.</p>
+                </article>
+                <article class="info-card reveal active">
+                    <h3>Droit applicable</h3>
+                    <p>Les présentes CGV sont soumises au droit français.</p>
+                </article>
+                <article class="info-card reveal active">
+                    <h3>Contact</h3>
+                    <p>Pour toute question : <a href="mailto:bryan.drouet24@gmail.com">bryan.drouet24@gmail.com</a></p>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Maxoor Inc. Tous droits réservés.</p>
+            <p class="legal-links">
+                <a href="/mentions-legales/">Mentions Légales</a> | 
+                <a href="/politique-de-confidentialite/">Politique de Confidentialité</a> | 
+                <a href="/cgv/">CGV</a>
+            </p>
+            <p class="parody-note footer-parody-note">Ce site est une parodie et n'est en aucun cas réel.</p>
+        </div>
+    </footer>
+</body>
+</html>

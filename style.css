@@ -118,6 +118,28 @@ nav a:hover {
     color: var(--color-light-1);
 }
 
+/* Liens hypertexte: soulignement anime gauche -> droite, compatible multi-ligne */
+a:not(header a):not(.btn-primary):not(.btn-secondary):not(.btn-delete) {
+    text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0 0.12em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    text-decoration-skip-ink: none;
+    position: relative;
+    z-index: 1;
+    transition: background-size 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+    color: var(--color-light-2);
+    font-weight: bold;
+}
+
+a:not(header a):not(.btn-primary):not(.btn-secondary):not(.btn-delete):hover,
+a:not(header a):not(.btn-primary):not(.btn-secondary):not(.btn-delete):focus-visible {
+    background-size: 100% 0.12em;
+}
+
 .cart-btn {
     background: transparent;
     border: none;
@@ -280,18 +302,33 @@ nav a:hover {
     justify-content: center;
 }
 
+.hero-image:has(img[src*=".svg"]) {
+    flex: initial;
+}
+
 .hero-image img {
     max-width: 100%;
     height: auto;
     border-radius: var(--border-radius);
     border: 1px solid var(--color-light-2);
-    background-color: var(--color-dark-1);
     min-height: 400px;
     width: 100%;
     object-fit: cover;
     transition: var(--transition);
     border-left: 0 !important;
     border-right: 0 !important;
+}
+
+.hero-image img[src*=".svg"] {
+    max-width: min(100%, 420px);
+    max-height: 55vh;
+    width: auto;
+    min-height: 0;
+    object-fit: contain;
+    border: none;
+    background-color: none;
+    border-radius: none;
+    object-fit: contain;
 }
 
 .hero-image:hover img {
@@ -311,7 +348,7 @@ nav a:hover {
     color: var(--color-light-1);
 }
 
-.shop-section, .team-section, .contact-section, .partnership-section {
+.partnership-section, .product-info-section, .shop-section, .team-section, .contact-section {
     padding: 5% 5%;
     border-top: 1px solid rgba(0, 255, 234, 0.1);
     display: flex;
@@ -602,13 +639,6 @@ nav a:hover {
 
 .partnership-video:hover {
     box-shadow: 0 15px 40px rgba(0, 255, 234, 0.2);
-}
-
-.product-info-section {
-    padding: 4rem 3%;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
 }
 
 .product-info-content {
@@ -1271,7 +1301,7 @@ footer {
     color: var(--color-light-1);
     margin-bottom: 1.5rem;
     font-size: 1.5rem;
-    border-bottom: 1px solid var(--color-dark-1);
+    border-bottom: 1px solid rgba(0, 184, 168, 0.5);
     padding-bottom: 0.5rem;
 }
 

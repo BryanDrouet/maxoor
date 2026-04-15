@@ -9,7 +9,7 @@
     <meta name="theme-color" content="#00665D">
     
     <meta property="og:title" content="Maxoor Inc. - Lancement Exclusif">
-    <meta property="og:description" content="Compte à rebours vers le lancement de Maxoor Inc. Rejoignez Batsave!">
+    <meta property="og:description" content="Compte à rebours vers le lancement de Maxoor Inc. Accédez en avant-première.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://maxoor.bryan.ovh/launch/">
     <meta property="og:image" content="https://maxoor.bryan.ovh/assets/images/logo.svg">
@@ -23,7 +23,7 @@
     <link rel="apple-touch-icon" href="/assets/images/logo.svg">
     
     <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="../css/components/launch.css">
+    <link rel="stylesheet" href="./launch.css">
     
     <script src="https://unpkg.com/lucide@latest" defer></script>
     <script type="module" src="./launch-init.js" defer></script>
@@ -92,22 +92,29 @@
     </script>
 </head>
 <body>
-    <main class="launch-hero" role="main">
-        <article class="launch-content">
-            <div class="launch-brand">
-                <img
-                    class="milk-bottle-icon"
-                    src="/assets/images/logo.svg"
-                    alt="Logo Maxoor"
-                    width="100"
-                    height="140"
-                >
+    <header>
+        <div class="logo">
+            <span>Maxoor Inc.</span>
+        </div>
+    </header>
 
+    <main>
+        <section class="hero launch-hero">
+            <div class="hero-content">
                 <h1>Maxoor Inc.</h1>
+                <a href="/" class="btn-primary">Accéder au site</a>
             </div>
+            <div class="hero-image">
+                <img src="/assets/images/logo.svg" alt="Logo Maxoor" loading="eager" fetchpriority="high" decoding="async" width="320" height="320">
+            </div>
+        </section>
 
-            <section class="countdown" role="region" aria-label="Compte à rebours">
+        <section class="product-info-section launch-countdown-section" aria-label="Compte à rebours du lancement">
+            <div class="section-header">
                 <h2>Lancement dans :</h2>
+                <p>Compte à rebours en temps réel avant l'ouverture.</p>
+            </div>
+            <div class="countdown" role="region" aria-label="Compte à rebours">
                 <div class="countdown-item">
                     <span class="countdown-number" id="countdown-days">00</span>
                     <span class="countdown-label">Jours</span>
@@ -124,65 +131,77 @@
                     <span class="countdown-number" id="countdown-seconds">00</span>
                     <span class="countdown-label">Secondes</span>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <section class="reminder-section" role="region" aria-label="Rappel du lancement">
-                <h3>Rappel du lancement</h3>
-                <p>Ajoutez l'evenement dans votre agenda avec un rappel 15 minutes avant et un rappel a l'heure du lancement.</p>
-                <div class="calendar-actions">
-                    <a
-                        class="btn-primary"
-                        href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Lancement%20Maxoor%20Inc.&dates=20260414T184500Z%2F20260414T194500Z&details=Ajoutez%20deux%20notifications%20%3A%2015%20minutes%20avant%20et%20a%20l%27heure%20du%20lancement.&location=https%3A%2F%2Fmaxoor.bryan.ovh%2F&ctz=Europe%2FParis"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Ajouter sur Google Agenda
-                    </a>
-                    <a class="btn-secondary" href="/assets/calendar/maxoor-launch.ics" download>
-                        Ajouter sur Apple Calendar
-                    </a>
-                </div>
-            </section>
+        <section class="product-info-section">
+            <div class="section-header">
+                <h2>Rappel du lancement</h2>
+                <p>Ajoutez l'événement dans votre agenda avec un rappel 15 minutes avant et à l'heure du lancement.</p>
+            </div>
+            <div class="product-info-content">
+                <article class="info-card reveal active">
+                    <h3>Agenda</h3>
+                    <p>Ajoutez le lancement à votre calendrier pour ne rien manquer.</p>
+                    <div class="calendar-actions">
+                        <a
+                            class="btn-primary"
+                            href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Lancement%20Maxoor%20Inc.&dates=20260414T184500Z%2F20260414T194500Z&details=Ajoutez%20deux%20notifications%20%3A%2015%20minutes%20avant%20et%20a%20l%27heure%20du%20lancement.&location=https%3A%2F%2Fmaxoor.bryan.ovh%2F&ctz=Europe%2FParis"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Ajouter sur Google Agenda
+                        </a>
+                        <a class="btn-secondary" href="/assets/calendar/maxoor-launch.ics" download>
+                            Ajouter sur Apple Calendar
+                        </a>
+                    </div>
+                </article>
 
-            <section class="access-section" role="region" aria-label="Accès anticipé">
-                <h3>Accès Anticipé</h3>
-                <p>Entrez votre mot de passe pour accéder à la plateforme Maxoor</p>
-                
-                <form class="password-form" action="#" method="POST">
-                    <input 
-                        type="text" 
-                        id="username-field" 
-                        name="username" 
-                        value="maxoor_user"
-                        hidden
-                        aria-hidden="true"
-                        autocomplete="username"
-                    >
-                    <input 
-                        type="password" 
-                        id="password-input" 
-                        name="password" 
-                        placeholder="Mot de passe"
-                        required
-                        autocomplete="new-password"
-                        aria-label="Mot de passe d'accès anticipé"
-                    >
-                    <button type="submit" class="btn-primary">Accéder</button>
-                </form>
+                <article class="info-card reveal active" id="access">
+                    <h3>Accès anticipé</h3>
+                    <p>Entrez votre mot de passe pour accéder à la plateforme Maxoor.</p>
 
-                <div class="error-message" role="alert" aria-live="polite"></div>
-                <div class="success-message" role="status" aria-live="polite"></div>
-            </section>
+                    <form class="password-form" action="#" method="POST">
+                        <input 
+                            type="text" 
+                            id="username-field" 
+                            name="username" 
+                            value="maxoor_user"
+                            hidden
+                            aria-hidden="true"
+                            autocomplete="username"
+                        >
+                        <input 
+                            type="password" 
+                            id="password-input" 
+                            name="password" 
+                            placeholder="Mot de passe"
+                            required
+                            autocomplete="new-password"
+                            aria-label="Mot de passe d'accès anticipé"
+                        >
+                        <button type="submit" class="btn-primary">Accéder</button>
+                    </form>
 
-            <section class="batsave-promo" role="region" aria-label="Promotion Batsave">
-                <h3>
-                    Découvrez Batsave
-                </h3>
-                <p>Streamer gaming, créateur de contenu et passionné d'innovation. Rejoignez la communauté Maxoor et suivez les meilleures streams gaming!</p>
-                <a href="/batsave/" class="btn-secondary">Voir le profil Batsave</a>
-            </section>
-        </article>
+                    <div class="error-message" role="alert" aria-live="polite"></div>
+                    <div class="success-message" role="status" aria-live="polite"></div>
+                </article>
+            </div>
+        </section>
     </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Maxoor Inc. Tous droits réservés.</p>
+            <p class="legal-links">
+                <a href="/mentions-legales/">Mentions Légales</a> | 
+                <a href="/politique-de-confidentialite/">Politique de Confidentialité</a> | 
+                <a href="/cgv/">CGV</a>
+            </p>
+            <p class="parody-note footer-parody-note">Ce site est une parodie et n'est en aucun cas réel.</p>
+        </div>
+    </footer>
 
 </body>
 </html>

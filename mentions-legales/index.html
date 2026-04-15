@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentions Légales | Maxoor Inc.</title>
+    <meta name="description" content="Mentions légales du site Maxoor Inc.">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="robots" content="index, follow">
+
+    <link rel="canonical" href="https://maxoor.bryan.ovh/mentions-legales/">
+    <link rel="icon" type="image/svg+xml" href="/assets/images/logo.svg" sizes="any">
+    <link rel="apple-touch-icon" href="/assets/images/logo.svg">
+
+    <script>
+        if (typeof CACHE_VERSION === 'undefined') {
+            var CACHE_VERSION = Date.now();
+        }
+
+        const isLocalAssetPath = (url) => {
+            return /^\/?assets\//.test(url)
+                || /^\.\/assets\//.test(url)
+                || /^\.\.\/assets\//.test(url)
+                || /^\.?\/?(css|js)\//.test(url)
+                || /^\.\.\/(css|js)\//.test(url)
+                || /^[^:]+\.(css|js|png|svg)(\?|#|$)/i.test(url);
+        };
+
+        const hasTargetExt = (url) => /\.(css|js|png|svg)(\?|#|$)/i.test(url);
+
+        const addVersionParam = (url) => {
+            if (!url || /[?&]v=/.test(url) || !isLocalAssetPath(url) || !hasTargetExt(url)) {
+                return url;
+            }
+            return url + (url.includes('?') ? '&' : '?') + 'v=' + CACHE_VERSION;
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('link[href], script[src], img[src], source[src], use[href], use[xlink\\:href], image[href]').forEach((el) => {
+                if (el.hasAttribute('href')) {
+                    const href = el.getAttribute('href');
+                    const updatedHref = addVersionParam(href);
+                    if (updatedHref !== href) el.setAttribute('href', updatedHref);
+                }
+
+                if (el.hasAttribute('src')) {
+                    const src = el.getAttribute('src');
+                    const updatedSrc = addVersionParam(src);
+                    if (updatedSrc !== src) el.setAttribute('src', updatedSrc);
+                }
+
+                if (el.hasAttribute('xlink:href')) {
+                    const xlinkHref = el.getAttribute('xlink:href');
+                    const updatedXlinkHref = addVersionParam(xlinkHref);
+                    if (updatedXlinkHref !== xlinkHref) el.setAttribute('xlink:href', updatedXlinkHref);
+                }
+            });
+
+            document.querySelectorAll('source[srcset], img[srcset]').forEach((el) => {
+                const srcset = el.getAttribute('srcset');
+                if (!srcset) return;
+
+                const updatedSrcset = srcset
+                    .split(',')
+                    .map((candidate) => {
+                        const parts = candidate.trim().split(/\s+/);
+                        if (!parts.length) return candidate;
+                        parts[0] = addVersionParam(parts[0]);
+                        return parts.join(' ');
+                    })
+                    .join(', ');
+
+                if (updatedSrcset !== srcset) el.setAttribute('srcset', updatedSrcset);
+            });
+        });
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Chivo+Mono:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <span>Maxoor Inc.</span>
+        </div>
+        <nav aria-label="Navigation principale">
+            <ul>
+                <li><a href="/">Accueil</a></li>
+                <li><a href="/launch/">Lancement</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Mentions Légales</h1>
+                <h2>Informations d'identification du site</h2>
+                <p>Cette page regroupe les informations légales du site Maxoor Inc. et sert de base éditable au format Markdown.</p>
+            </div>
+            <div class="hero-image">
+                <img src="/assets/images/logo.svg" alt="Logo Maxoor" loading="eager" fetchpriority="high" decoding="async" width="320" height="320">
+            </div>
+        </section>
+
+        <section class="product-info-section" id="mentions-legales">
+            <div class="section-header">
+                <h2>Cadre légal</h2>
+                <p>Les informations ci-dessous peuvent être complétées dans le fichier Markdown associé.</p>
+            </div>
+            <div class="product-info-content">
+                <article class="info-card reveal active">
+                    <h3>Éditeur du site</h3>
+                    <p><strong>Maxoor Inc.</strong></p>
+                    <p>Contact : <a href="mailto:bryan.drouet24@gmail.com">bryan.drouet24@gmail.com</a></p>
+                    <p>Forme juridique, SIREN, SIRET, capital social et adresse du siège : à compléter dans le document Markdown.</p>
+                </article>
+                <article class="info-card reveal active">
+                    <h3>Hébergement</h3>
+                    <p>Le site est hébergé par GitHub, Inc. / GitHub Pages.</p>
+                    <p>88 Colin P Kelly Jr St, San Francisco, CA 94107, États-Unis.</p>
+                </article>
+                <article class="info-card reveal active">
+                    <h3>Propriété intellectuelle</h3>
+                    <p>Les textes, visuels, illustrations, icônes, logos, vidéos et l'ensemble de la structure du site sont protégés par le droit d'auteur et le droit des marques.</p>
+                    <p>Toute reproduction ou diffusion non autorisée est interdite.</p>
+                </article>
+                <article class="info-card reveal active">
+                    <h3>Responsabilité</h3>
+                    <p>Maxoor Inc. s'efforce de fournir des contenus exacts et à jour, sans toutefois garantir l'absence totale d'erreur. L'utilisateur reste responsable de l'usage qu'il fait du site.</p>
+                </article>
+                <article class="info-card reveal active">
+                    <h3>Données personnelles</h3>
+                    <p>Les règles applicables au traitement des données personnelles sont détaillées dans la <a href="/politique-de-confidentialite/">Politique de Confidentialité</a>.</p>
+                </article>
+                <article class="info-card reveal active">
+                    <h3>Mise à jour</h3>
+                    <p>Dernière mise à jour : 15 avril 2026.</p>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Maxoor Inc. Tous droits réservés.</p>
+            <p class="legal-links">
+                <a href="/mentions-legales/">Mentions Légales</a> | 
+                <a href="/politique-de-confidentialite/">Politique de Confidentialité</a> | 
+                <a href="/cgv/">CGV</a>
+            </p>
+            <p class="parody-note footer-parody-note">Ce site est une parodie et n'est en aucun cas réel.</p>
+        </div>
+    </footer>
+</body>
+</html>
