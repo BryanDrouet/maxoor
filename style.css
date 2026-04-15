@@ -253,8 +253,8 @@ img {
 
 @media (max-width: 768px) {
     .image-viewer__panel {
-        width: min(100vw - 0.75rem, 1400px);
-        height: min(100vh - 0.75rem, 1100px);
+        width: min(100dvw - 0.75rem, 1400px);
+        height: min(100dvh - 0.75rem, 1100px);
         padding: 0.75rem;
     }
 
