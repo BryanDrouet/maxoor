@@ -1,7 +1,7 @@
 (function () {
     const VERSION_KEY = 'maxoor_asset_version';
     const META_KEY = 'maxoor_asset_signatures';
-    const REFRESH_PARAM = 'asset-refresh';
+    const REFRESH_GUARD_KEY = 'maxoor_asset_refresh_guard';
     const IGNORED_DEV_ASSET_PATTERNS = [
         /\/fiveserver\.js$/i,
         /\/livereload\.js$/i,
@@ -152,11 +152,28 @@
         }
     };
 
-    const cleanupRefreshParam = () => {
-        const current = new URL(window.location.href);
-        if (!current.searchParams.has(REFRESH_PARAM)) return;
-        current.searchParams.delete(REFRESH_PARAM);
-        window.history.replaceState({}, '', current.toString());
+    const getRefreshGuard = () => {
+        try {
+            return sessionStorage.getItem(REFRESH_GUARD_KEY) || '';
+        } catch {
+            return '';
+        }
+    };
+
+    const setRefreshGuard = (value) => {
+        try {
+            sessionStorage.setItem(REFRESH_GUARD_KEY, value);
+        } catch {
+            // noop
+        }
+    };
+
+    const clearRefreshGuard = () => {
+        try {
+            sessionStorage.removeItem(REFRESH_GUARD_KEY);
+        } catch {
+            // noop
+        }
     };
 
     const detectAssetChanges = async () => {
@@ -195,17 +212,22 @@
         saveMeta(nextMeta);
 
         if (hasChanged) {
-            setVersion(String(Date.now()));
+            const nextVersion = String(Date.now());
+            const guardValue = getRefreshGuard();
 
-            const refreshedUrl = new URL(window.location.href);
-            if (refreshedUrl.searchParams.get(REFRESH_PARAM) !== '1') {
-                refreshedUrl.searchParams.set(REFRESH_PARAM, '1');
-                window.location.replace(refreshedUrl.toString());
+            setVersion(nextVersion);
+
+            if (guardValue !== nextVersion) {
+                setRefreshGuard(nextVersion);
+                window.location.reload();
                 return;
             }
+
+            clearRefreshGuard();
+            return;
         }
 
-        cleanupRefreshParam();
+        clearRefreshGuard();
     };
 
     const printStartupBanner = () => {
@@ -243,7 +265,7 @@
 
         setTimeout(() => {
             detectAssetChanges().catch(() => {
-                cleanupRefreshParam();
+                clearRefreshGuard();
             });
         }, 250);
     });
