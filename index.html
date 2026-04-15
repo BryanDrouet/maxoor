@@ -214,13 +214,17 @@
                     <input type="email" id="user_email" name="email" required aria-required="true" autocomplete="email">
                 </div>
                 <div class="form-group">
-                    <label for="user_subject">Objet de la demande</label>
-                    <select id="user_subject" name="subject" autocomplete="off">
-                        <option value="">Sélectionnez un motif</option>
+                    <label for="user_subject">Objet de la demande <span class="required-asterisk">*</span></label>
+                    <select id="user_subject" name="subject" autocomplete="off" required aria-required="true">
+                        <option value="" disabled selected>Sélectionnez un motif</option>
                         <option value="Où est mon élixir ?">Où est mon élixir ?</option>
                         <option value="Je suis retourné(e) en maternelle">Je suis retourné(e) en maternelle</option>
                         <option value="Autre demande prestigieuse">Autre demande prestigieuse</option>
                     </select>
+                </div>
+                <div class="form-group custom-subject-group" id="custom-subject-group" hidden>
+                    <label for="user_custom_subject">Objet personnalisé <span class="required-asterisk">*</span></label>
+                    <input type="text" id="user_custom_subject" name="custom_subject" autocomplete="off" placeholder="Précisez votre objet...">
                 </div>
                 <div class="form-group">
                     <label for="user_message">Votre message <span class="required-asterisk">*</span></label>

@@ -33,6 +33,32 @@ export const FormManager = {
         const contactForm = document.getElementById('contact-form');
         if (!contactForm) return;
 
+        const subjectSelect = contactForm.querySelector('#user_subject');
+        const customSubjectGroup = contactForm.querySelector('#custom-subject-group');
+        const customSubjectInput = contactForm.querySelector('#user_custom_subject');
+
+        const isCustomSubject = () => subjectSelect?.value === 'Autre demande prestigieuse';
+        const updateCustomSubjectVisibility = () => {
+            if (!subjectSelect || !customSubjectGroup || !customSubjectInput) return;
+
+            if (isCustomSubject()) {
+                customSubjectGroup.hidden = false;
+                customSubjectInput.required = true;
+                customSubjectInput.setAttribute('aria-required', 'true');
+            } else {
+                customSubjectGroup.hidden = true;
+                customSubjectInput.required = false;
+                customSubjectInput.removeAttribute('aria-required');
+                customSubjectInput.value = '';
+                customSubjectInput.setCustomValidity('');
+            }
+        };
+
+        if (subjectSelect) {
+            subjectSelect.addEventListener('change', updateCustomSubjectVisibility);
+            updateCustomSubjectVisibility();
+        }
+
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -42,6 +68,20 @@ export const FormManager = {
             const originalText = submitBtn.innerHTML;
             const formData = new FormData(contactForm);
             const actionUrl = contactForm.getAttribute('action') || '';
+
+            // Si "Autre" est choisi, l'objet personnalise devient obligatoire
+            if (isCustomSubject() && customSubjectInput) {
+                const customSubjectValue = customSubjectInput.value.trim();
+                if (!customSubjectValue) {
+                    customSubjectInput.setCustomValidity('Veuillez renseigner un objet personnalisé.');
+                    customSubjectInput.reportValidity();
+                    return;
+                }
+
+                customSubjectInput.setCustomValidity('');
+                formData.set('subject', customSubjectValue);
+                formData.set('custom_subject', customSubjectValue);
+            }
 
             console.group('[ContactForm] Submit debug');
             console.log('Action URL:', actionUrl);
@@ -85,6 +125,7 @@ export const FormManager = {
                 if (typeof lucide !== 'undefined') lucide.createIcons();
 
                 contactForm.reset();
+                updateCustomSubjectVisibility();
             } catch (error) {
                 console.error('[ContactForm] Erreur envoi:', error);
                 submitBtn.innerHTML = 'Erreur d\'envoi - voir console';
