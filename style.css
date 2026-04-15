@@ -316,13 +316,25 @@ nav a:hover {
     border-top: 1px solid rgba(0, 255, 234, 0.1);
     display: flex;
     flex-direction: column;
-    gap: 4rem;
+    gap: 2rem;
 }
 
 .products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 3rem;
+}
+
+.products-empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(0, 255, 234, 0.35);
+    background: rgba(0, 255, 234, 0.07);
+    color: var(--color-light-1);
+    font-family: var(--font-texts);
+    font-size: 0.95rem;
 }
 
 .team-grid {
@@ -794,6 +806,32 @@ nav a:hover {
 
 .contact-form .btn-primary,
 #checkout-btn.btn-primary {
+    width: 100%;
+}
+
+.cart-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.clear-cart-btn {
+    flex: 0 0 auto;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.clear-cart-btn i {
+    width: 18px;
+    height: 18px;
+}
+
+.cart-actions #checkout-btn.btn-primary {
     width: 100%;
 }
 
@@ -1372,6 +1410,16 @@ footer {
         font-size: 0.8rem;
     }
 
+    .cart-actions {
+        gap: 0.4rem;
+    }
+
+    .clear-cart-btn {
+        width: 40px;
+        min-width: 40px;
+        height: 40px;
+    }
+
     .cart-panel {
         max-width: 100%;
         width: 100%;
@@ -1725,5 +1773,144 @@ footer {
 
     footer {
         font-size: 0.75rem;
+    }
+}
+
+/* ============================================
+   SEARCH & FILTERS STYLING
+   ============================================ */
+
+.search-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid rgba(0, 255, 234, 0.15);
+    margin-bottom: 2rem;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    padding: 0 1rem;
+    height: 3.5rem;
+    background: rgba(0, 255, 234, 0.05);
+    border: 2px solid rgba(0, 255, 234, 0.2);
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+}
+
+.search-box:focus-within {
+    border-color: var(--color-light-1);
+    background: rgba(0, 255, 234, 0.1);
+    box-shadow: 0 0 15px rgba(0, 255, 234, 0.15);
+}
+
+.search-box i {
+    color: var(--color-light-2);
+    flex-shrink: 0;
+    opacity: 0.7;
+}
+
+#search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-on-dark);
+    font-family: var(--font-texts);
+    font-size: 1rem;
+    outline: none;
+}
+
+#search-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.reset-search-btn {
+    background: none;
+    border: none;
+    color: var(--color-light-2);
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    opacity: 0;
+    pointer-events: none;
+}
+
+#search-input:not(:placeholder-shown) ~ .reset-search-btn {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.reset-search-btn:hover {
+    color: var(--color-light-1);
+    transform: rotate(90deg);
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.filter-btn {
+    padding: 0.75rem 1.5rem;
+    background: rgba(0, 255, 234, 0.1);
+    border: 2px solid rgba(0, 255, 234, 0.3);
+    color: var(--text-on-dark);
+    font-family: var(--font-texts);
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.filter-btn:hover {
+    border-color: var(--color-light-1);
+    background: rgba(0, 255, 234, 0.15);
+    transform: translateY(-2px);
+}
+
+.filter-btn.active {
+    background: var(--color-light-1);
+    color: var(--text-on-light);
+    border-color: var(--color-light-1);
+    box-shadow: 0 4px 12px rgba(0, 255, 234, 0.3);
+}
+
+/* Responsive search */
+@media (max-width: 768px) {
+    .search-container {
+        padding: 1.5rem 0;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .search-box {
+        height: 3rem;
+        padding: 0 0.75rem;
+    }
+
+    #search-input {
+        font-size: 0.95rem;
+    }
+
+    .filter-buttons {
+        gap: 0.75rem;
+    }
+
+    .filter-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+        flex: 1;
+        min-width: auto;
     }
 }

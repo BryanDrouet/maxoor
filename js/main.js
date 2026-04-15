@@ -7,9 +7,10 @@ import { AuthManager } from './modules/auth.js';
 import { CartManager } from './modules/cart.js';
 import { ProductManager } from './modules/products.js';
 import { FormManager } from './modules/forms.js';
+import { initSearchUI } from './modules/search.js';
 
-// Cache busting pour les ressources statiques
-var CACHE_VERSION = Date.now();
+// Version cache stable pour permettre le cache navigateur entre les chargements
+var CACHE_VERSION = '2026-04-15';
 const addCacheVersion = (url) => {
     if (url.startsWith('assets/') || url.startsWith('/assets/')) {
         return url + '?v=' + CACHE_VERSION;
@@ -26,7 +27,9 @@ const PRODUCTS_DATA = [
         oldPrice: null,
         discountPercent: null,
         imageSrc: addCacheVersion("assets/images/product1L.png"), 
-        imagePrompt: `Le Lait de Maxoor - Bouteille 1L`
+        imagePrompt: `Le Lait de Maxoor - Bouteille 1L`,
+        description: `Réveille l'éclat naturel du teint et l'assurance insolente des vingt ans retrouvés.`,
+        searchable: true
     },
     {
         id: 'pack-6l',
@@ -35,7 +38,8 @@ const PRODUCTS_DATA = [
         oldPrice: 17.94,
         discountPercent: Math.round(((17.94 - 14.99) / 17.94) * 100),
         imageSrc: addCacheVersion("assets/images/product6L.png"),
-        description: `Privilège de lancement : 2 packs achetés = le 3ème offert.`
+        description: `Privilège de lancement : 2 packs achetés = le 3ème offert.`,
+        searchable: true
     },
 
     // --- GAMME BANANE IMPÉRIALE ---
@@ -46,7 +50,8 @@ const PRODUCTS_DATA = [
         oldPrice: null,
         discountPercent: null,
         imageSrc: addCacheVersion("assets/images/productBanane1L.png"), 
-        description: `Restaure l'éclat et l'énergie inépuisable d'un enfant de 4 ans.`
+        description: `Restaure l'éclat et l'énergie inépuisable d'un enfant de 4 ans.`,
+        searchable: true
     },
     {
         id: 'pack-banane-6l',
@@ -55,7 +60,8 @@ const PRODUCTS_DATA = [
         oldPrice: 20.94,
         discountPercent: Math.round(((20.94 - 17.49) / 20.94) * 100),
         imageSrc: addCacheVersion("assets/images/productBanane6L.png"),
-        description: `Pack premium Banane Impériale, disponible hors offre de lancement.`
+        description: `Pack premium Banane Impériale.`,
+        searchable: true
     },
 
     // --- GAMME FRAISE SAUVAGE ---
@@ -66,7 +72,8 @@ const PRODUCTS_DATA = [
         oldPrice: null,
         discountPercent: null,
         imageSrc: addCacheVersion("assets/images/productFraise1L.png"), 
-        description: `Efface la fatigue corporate et rend les joues roses de l'innocence.`
+        description: `Efface la fatigue corporate et rend les joues roses de l'innocence.`,
+        searchable: true
     },
     {
         id: 'pack-fraise-6l',
@@ -75,7 +82,8 @@ const PRODUCTS_DATA = [
         oldPrice: 20.94,
         discountPercent: Math.round(((20.94 - 17.49) / 20.94) * 100),
         imageSrc: addCacheVersion("assets/images/productFraise6L.png"),
-        description: `Pack premium Fraise Sauvage, disponible hors offre de lancement.`
+        description: `Pack premium Fraise Sauvage.`,
+        searchable: true
     }/*,
 
     
@@ -87,7 +95,8 @@ const PRODUCTS_DATA = [
         oldPrice: null,
         discountPercent: null,
         imageSrc: addCacheVersion("assets/images/productCacao1L.png"), 
-        description: `Comble les rides profondes creusées par le cynisme et les impôts.`
+        description: `Comble les rides profondes creusées par le cynisme et les impôts.`,
+        searchable: true
     },
     {
         id: 'pack-cacao-6l',
@@ -96,7 +105,8 @@ const PRODUCTS_DATA = [
         oldPrice: 23.94,
         discountPercent: Math.round(((23.94 - 19.99) / 23.94) * 100),
         imageSrc: addCacheVersion("assets/images/productCacao6L.png"),
-        description: `Pack premium Cacao Grand Cru, disponible hors offre de lancement.`
+        description: `Pack premium Cacao Grand Cru.`,
+        searchable: true
     },
 
     // --- HAUTE COUTURE (FORMULES PRESTIGE) ---
@@ -107,7 +117,8 @@ const PRODUCTS_DATA = [
         oldPrice: null,
         discountPercent: null,
         imageSrc: addCacheVersion("assets/images/productMillesime1L.png"), 
-        description: `Un rajeunissement lent et élégant. Pour perdre 10 ans avec distinction.`
+        description: `Un rajeunissement lent et élégant. Pour perdre 10 ans avec distinction.`,
+        searchable: true
     },
     {
         id: 'lait-or-1l',
@@ -116,7 +127,8 @@ const PRODUCTS_DATA = [
         oldPrice: 120.00,
         discountPercent: Math.round(((120.00 - 99.99) / 120.00) * 100),
         imageSrc: addCacheVersion("assets/images/productOr1L.png"), 
-        description: `Infusé à l'Or 24 Carats. Pour un teint qui irradie littéralement dans le noir.`
+        description: `Infusé à l'Or 24 Carats. Pour un teint qui irradie littéralement dans le noir.`,
+        searchable: true
     }*/
 ];
 
@@ -159,6 +171,8 @@ function updateHeaderHeight() {
 }
 
 // Initialisation au chargement du DOM
+let revealObserver;
+
 document.addEventListener('DOMContentLoaded', () => {
     AuthManager.checkPageAccess();
     AuthManager.initLogoutCommand();
@@ -169,6 +183,26 @@ document.addEventListener('DOMContentLoaded', () => {
     FormManager.initCookieBanner();
     FormManager.initContactForm();
 
+    // Initialiser les animations de reveal en premier
+    revealObserver = createRevealObserver();
+
+    // Initialiser la recherche et les filtres
+    const renderFilteredProducts = (filteredProducts) => {
+        ProductManager.renderProducts(filteredProducts, (id) => CartManager.addItem(id));
+        
+        // Réappliquer les animations reveal pour les nouvelles cartes
+        const newCards = document.querySelectorAll('.products-grid .product-card');
+        newCards.forEach(card => {
+            card.classList.add('reveal');
+            revealObserver.observe(card);
+        });
+        
+        // Reinitialiser les icônes Lucide pour les nouvelles cartes
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    };
+    
+    initSearchUI(PRODUCTS_DATA, renderFilteredProducts);
+
     // Initialiser les icônes Lucide
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
@@ -177,30 +211,35 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * Initialise les animations de révélation des éléments
+ * Crée un observer pour les animations de révélation
  */
-function initRevealAnimations() {
+function createRevealObserver() {
     const observerOptions = {
-        threshold: 0.1,
-        rootMargin: "0px 0px -50px 0px"
+        threshold: 0.01,
+        rootMargin: "0px 0px 200px 0px"
     };
 
-    const observer = new IntersectionObserver((entries) => {
+    return new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('active');
-                observer.unobserve(entry.target);
+                revealObserver.unobserve(entry.target);
             }
         });
     }, observerOptions);
+}
 
+/**
+ * Initialise les animations de révélation des éléments
+ */
+function initRevealAnimations() {
     document.querySelectorAll('.hero-content, .hero-image, .section-header, .promo-banner, .contact-form, .partnership-content').forEach(el => {
         el.classList.add('reveal');
-        observer.observe(el);
+        revealObserver.observe(el);
     });
 
     document.querySelectorAll('.product-card, .team-card, .info-card').forEach((el) => {
         el.classList.add('reveal');
-        observer.observe(el);
+        revealObserver.observe(el);
     });
 }

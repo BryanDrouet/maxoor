@@ -45,21 +45,6 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="https://maxoor.bryan.ovh/">
     
-    <!-- Cache busting pour les ressources statiques -->
-    <script>
-        if (typeof CACHE_VERSION === 'undefined') {
-            var CACHE_VERSION = Date.now();
-        }
-        document.addEventListener('DOMContentLoaded', () => {
-            // Ajouter le cache busting à tous les types d'images (urls relatives et absolues)
-            document.querySelectorAll('img[src^="/assets/"], img[src^="./assets/"], img[src^="../assets/"], img[src^="assets/"]').forEach(img => {
-                if (!img.src.includes('?v=')) {
-                    img.src += '?v=' + CACHE_VERSION;
-                }
-            });
-        });
-    </script>
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Chivo+Mono:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
@@ -95,7 +80,7 @@
                 <p class="legal-voice">Attention, un surdosage peut entraîner la perte soudaine de votre permis de conduire. Ne pas utiliser pour la pâte à crêpes. Pour votre santé, évitez de rajeunir entre les repas.</p>
             </div>
             <div class="hero-image">
-                <img src="assets/images/header.png" alt="Le Lait de Maxoor." id="hero-img-placeholder">
+                <img src="assets/images/header.png" alt="Le Lait de Maxoor." id="hero-img-placeholder" loading="eager" fetchpriority="high" decoding="async">
             </div>
         </section>
 
@@ -177,6 +162,33 @@
                 <h2>Collection Prestige</h2>
                 <p>Découvrez nos élixirs de jouvence.</p>
             </div>
+            
+            <!-- Barre de recherche et filtres -->
+            <div class="search-container">
+                <div class="search-box">
+                    <i data-lucide="search" aria-hidden="true"></i>
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        placeholder="Rechercher par nom ou description..." 
+                        aria-label="Rechercher les produits"
+                        autocomplete="off"
+                    >
+                    <button id="reset-search" class="reset-search-btn" aria-label="Réinitialiser la recherche" title="Réinitialiser">
+                        <i data-lucide="x" aria-hidden="true"></i>
+                    </button>
+                </div>
+                
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter-gamme="all">Tous les produits</button>
+                    <button class="filter-btn" data-filter-gamme="Nature">Nature</button>
+                    <button class="filter-btn" data-filter-gamme="Banane Impériale">Banane</button>
+                    <button class="filter-btn" data-filter-gamme="Fraise Sauvage">Fraise</button>
+                    <button class="filter-btn" data-filter-gamme="Cacao Grand Cru">Cacao</button>
+                    <button class="filter-btn" data-filter-gamme="Prestige">Prestige</button>
+                </div>
+            </div>
+            
             <div class="products-grid" id="products-container" role="list" aria-label="Liste des produits"></div>
         </section>
 
@@ -259,7 +271,12 @@
                 </div>
                 <div><strong>Total: <span id="cart-total-price">0.00€</span></strong></div>
             </div>
-            <button id="checkout-btn" class="btn-primary checkout-victim" disabled>Victime de son succès</button>
+            <div class="cart-actions">
+                <button id="clear-cart-btn" class="btn-secondary clear-cart-btn" aria-label="Vider le panier" title="Vider le panier" disabled>
+                    <i data-lucide="trash-2" aria-hidden="true"></i>
+                </button>
+                <button id="checkout-btn" class="btn-primary checkout-victim" disabled>Victime de son succès</button>
+            </div>
             <p class="parody-note cart-parody-note">Site parodique, aucune vente réelle n'est effectuée.</p>
         </div>
     </div>

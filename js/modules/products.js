@@ -12,7 +12,19 @@ export const ProductManager = {
         const productsContainer = document.getElementById('products-container');
         if (!productsContainer) return;
 
+        // Vide le conteneur avant de remplir
+        productsContainer.innerHTML = '';
+
         const placeholderSvg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'><rect width='400' height='300' fill='%23003D38'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%2300B8A8'>Image via Gemini</text></svg>`;
+
+        if (!productsData.length) {
+            productsContainer.innerHTML = `
+                <div class="products-empty-state" role="status" aria-live="polite">
+                    Aucun resultat pour cette recherche.
+                </div>
+            `;
+            return;
+        }
 
         productsData.forEach(product => {
             const article = document.createElement('article');
@@ -30,7 +42,7 @@ export const ProductManager = {
             const finalSrc = product.imageSrc ? product.imageSrc : placeholderSvg;
 
             article.innerHTML = `
-                <img src="${finalSrc}" alt="${product.imagePrompt}" title="${product.imagePrompt}">
+                <img src="${finalSrc}" alt="${product.imagePrompt}" title="${product.imagePrompt}" loading="lazy" decoding="async" fetchpriority="low">
                 <h3 class="product-title">${product.name}</h3>
                 ${product.description ? `<p class="product-description">${product.description}</p>` : ''}
                 ${priceHtml}
@@ -41,19 +53,18 @@ export const ProductManager = {
             productsContainer.appendChild(article);
         });
 
-        productsContainer.addEventListener('click', (e) => {
+        // Ajouter le listener qu'une seule fois (delegation)
+        // Supprimer les anciens listeners en remplaçant le conteneur visuellement
+        productsContainer.removeEventListener('click', productsContainer._handleCartClick);
+        
+        productsContainer._handleCartClick = (e) => {
             const btn = e.target.closest('.add-to-cart');
             if (btn) {
                 onAddToCart(btn.dataset.id);
-                const originalText = btn.innerHTML;
-                btn.innerHTML = `<i data-lucide="check" aria-hidden="true"></i> Sélectionné`;
-                if (typeof lucide !== 'undefined') lucide.createIcons();
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    if (typeof lucide !== 'undefined') lucide.createIcons();
-                }, 1000);
             }
-        });
+        };
+        
+        productsContainer.addEventListener('click', productsContainer._handleCartClick);
     },
 
     /**
@@ -73,7 +84,7 @@ export const ProductManager = {
             const finalSrc = member.imageSrc ? member.imageSrc : placeholderSvg;
 
             div.innerHTML = `
-                <img src="${finalSrc}" alt="${member.imagePrompt}" title="${member.imagePrompt}">
+                <img src="${finalSrc}" alt="${member.imagePrompt}" title="${member.imagePrompt}" loading="lazy" decoding="async" fetchpriority="low">
                 <h3><span>${member.name}</span></h3>
                 <p>${member.role}</p>
             `;

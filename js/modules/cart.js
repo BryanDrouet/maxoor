@@ -11,6 +11,7 @@ export const CartManager = {
     promoDiscount: 0,
     freeShipping: false,
     SHIPPING_COST: 4.99,
+    MAX_TOTAL: 500,
 
     /**
      * Initialise les éléments DOM du panier
@@ -28,6 +29,9 @@ export const CartManager = {
                 StorageManager.savePromoCode(null);
             }
         }
+
+        // Garantit que le total final du panier charge ne depasse pas le plafond.
+        this.normalizeCartToMaxTotal();
 
         this.setupEventListeners();
         this.update();
@@ -48,6 +52,7 @@ export const CartManager = {
         const closeCartBtn = document.getElementById('close-cart');
         const cartOverlay = document.getElementById('cart-overlay');
         const cartItemsContainer = document.getElementById('cart-items');
+        const clearCartBtn = document.getElementById('clear-cart-btn');
         const applyPromoBtn = document.getElementById('apply-promo');
         const promoCodeInput = document.getElementById('promo-code');
 
@@ -61,6 +66,10 @@ export const CartManager = {
 
         if (cartOverlay) {
             cartOverlay.addEventListener('click', () => this.toggle(false));
+        }
+
+        if (clearCartBtn) {
+            clearCartBtn.addEventListener('click', () => this.clearCart());
         }
 
         if (cartItemsContainer) {
@@ -79,6 +88,15 @@ export const CartManager = {
             });
             promoCodeInput.addEventListener('input', () => this.updatePromoButtonState(applyPromoBtn, promoCodeInput));
         }
+    },
+
+    /**
+     * Vide tout le panier
+     */
+    clearCart() {
+        this.cart = [];
+        StorageManager.saveCart(this.cart);
+        this.update();
     },
 
     /**
@@ -111,10 +129,70 @@ export const CartManager = {
      * @param {string} id
      */
     addItem(id) {
+        const projectedCart = [...this.cart, id];
+        const projectedTotals = this.calculateTotalsForCart(projectedCart);
+
+        if (projectedTotals.total > this.MAX_TOTAL) {
+            this.showPromoMessage(`Plafond panier atteint: total maximum ${this.MAX_TOTAL.toFixed(2)}EUR.`, 'error');
+            this.toggle(true);
+            return;
+        }
+
         this.cart.push(id);
         StorageManager.saveCart(this.cart);
         this.update();
-        this.toggle(true);
+    },
+
+    /**
+     * Calcule les totaux (sous-total, reduction, livraison, total final)
+     * pour un etat donne du panier.
+     */
+    calculateTotalsForCart(cartItems) {
+        const itemCounts = cartItems.reduce((acc, itemId) => {
+            acc[itemId] = (acc[itemId] || 0) + 1;
+            return acc;
+        }, {});
+
+        let subtotal = 0;
+
+        for (const [id, quantity] of Object.entries(itemCounts)) {
+            const product = this.productsData.find(p => p.id === id);
+            if (!product) continue;
+
+            let itemTotal = product.price * quantity;
+
+            // Offre de lancement: 2 packs achetes = le 3eme offert.
+            if (id === 'pack-6l' && quantity >= 3) {
+                const freePacks = Math.floor(quantity / 3);
+                itemTotal -= freePacks * product.price;
+            }
+
+            subtotal += itemTotal;
+        }
+
+        const { discount, freeShipping } = PromoManager.calculateDiscount(this.appliedPromoCode, subtotal, itemCounts);
+        const shippingCost = freeShipping ? 0 : this.SHIPPING_COST;
+        const total = subtotal - discount + shippingCost;
+
+        return { subtotal, discount, freeShipping, shippingCost, total };
+    },
+
+    /**
+     * Reduit le panier charge depuis le stockage si le total final depasse le plafond.
+     */
+    normalizeCartToMaxTotal() {
+        let changed = false;
+
+        while (this.cart.length > 0) {
+            const totals = this.calculateTotalsForCart(this.cart);
+            if (totals.total <= this.MAX_TOTAL) break;
+            this.cart.pop();
+            changed = true;
+        }
+
+        if (changed) {
+            StorageManager.saveCart(this.cart);
+        }
     },
 
     /**
@@ -198,6 +276,17 @@ export const CartManager = {
 
         // Si un code est appliqué et le champ est vide -> supprimer le code
         if (!code && this.appliedPromoCode) {
+            const previousPromoCode = this.appliedPromoCode;
+            this.appliedPromoCode = null;
+
+            const totalsWithoutPromo = this.calculateTotalsForCart(this.cart);
+            if (totalsWithoutPromo.total > this.MAX_TOTAL) {
+                this.appliedPromoCode = previousPromoCode;
+                this.showPromoMessage(`Impossible de supprimer le code: total maximum ${this.MAX_TOTAL.toFixed(2)}EUR depasse.`, 'error');
+                this.updatePromoButtonState(applyPromoBtn, input);
+                return;
+            }
+
             this.appliedPromoCode = null;
             this.showPromoMessage('✓ Code promo supprimé', 'success');
             StorageManager.savePromoCode(null);
@@ -241,6 +330,7 @@ export const CartManager = {
         const shippingDisplay = document.getElementById('shipping-display');
         const shippingAmount = document.getElementById('shipping-amount');
         const freeShippingDisplay = document.getElementById('free-shipping-display');
+        const clearCartBtn = document.getElementById('clear-cart-btn');
         const checkoutBtn = document.getElementById('checkout-btn');
 
         const itemCounts = this.cart.reduce((acc, itemId) => {
@@ -399,6 +489,16 @@ export const CartManager = {
             } else {
                 checkoutBtn.disabled = false;
                 checkoutBtn.style.opacity = '1';
+            }
+        }
+
+        if (clearCartBtn) {
+            if (this.cart.length === 0) {
+                clearCartBtn.disabled = true;
+                clearCartBtn.style.opacity = '0.5';
+            } else {
+                clearCartBtn.disabled = false;
+                clearCartBtn.style.opacity = '1';
             }
         }
     },

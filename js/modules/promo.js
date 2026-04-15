@@ -90,7 +90,7 @@ export const PromoManager = {
             discount = packQuantity > 0 ? 5 : 0;
         } else if (appliedCode === 'MYNTHOS10') {
             discount = Math.round(subtotal * 0.1 * 100) / 100;
-        } else if (appliedCode === 'BATSAVE' || appliedCode === 'MAXOOR' || appliedCode === 'BRYAN_DROUET') {
+        } else if (appliedCode === 'BATSAVE' || appliedCode === 'MAXOOR' || appliedCode === 'BRYAN_DROUET' || appliedCode === 'JEWIN') {
             freeShipping = true;
         }
         
