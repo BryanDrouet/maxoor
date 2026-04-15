@@ -34,9 +34,10 @@ export const ProductManager = {
             priceHtml += `</div>`;
 
             const finalSrc = product.imageSrc ? product.imageSrc : placeholderSvg;
+            const imageAlt = product.alt || product.name || 'Image produit';
 
             article.innerHTML = `
-                <img src="${finalSrc}" alt="${product.imagePrompt}" title="${product.imagePrompt}" loading="lazy" decoding="async" fetchpriority="low">
+                <img src="${finalSrc}" alt="${imageAlt}" title="${imageAlt}" loading="lazy" decoding="async" fetchpriority="low">
                 <h3 class="product-title">${product.name}</h3>
                 ${product.description ? `<p class="product-description">${product.description}</p>` : ''}
                 ${priceHtml}
@@ -70,9 +71,10 @@ export const ProductManager = {
             div.classList.add('team-card');
             
             const finalSrc = member.imageSrc ? member.imageSrc : placeholderSvg;
+            const imageAlt = member.alt || member.name || 'Portrait equipe';
 
             div.innerHTML = `
-                <img src="${finalSrc}" alt="${member.imagePrompt}" title="${member.imagePrompt}" loading="lazy" decoding="async" fetchpriority="low">
+                <img src="${finalSrc}" alt="${imageAlt}" title="${imageAlt}" loading="lazy" decoding="async" fetchpriority="low">
                 <h3><span>${member.name}</span></h3>
                 <p>${member.role}</p>
             `;

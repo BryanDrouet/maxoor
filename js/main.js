@@ -26,7 +26,7 @@ const PRODUCTS_DATA = [
         oldPrice: null,
         discountPercent: null,
         imageSrc: addCacheVersion("assets/images/product1L.png"), 
-        imagePrompt: `Le Lait de Maxoor - Bouteille 1L`,
+        alt: `Le Lait de Maxoor - Bouteille 1L`,
         description: `Réveille l'éclat naturel du teint et l'assurance insolente des vingt ans retrouvés.`,
         searchable: true
     },
@@ -37,6 +37,7 @@ const PRODUCTS_DATA = [
         oldPrice: 17.94,
         discountPercent: Math.round(((17.94 - 14.99) / 17.94) * 100),
         imageSrc: addCacheVersion("assets/images/product6L.png"),
+        alt: `Pack Rajeunissement - Nature (6x1L)`,
         description: `Privilège de lancement : 2 packs achetés = le 3ème offert.`,
         searchable: true
     },
@@ -49,6 +50,7 @@ const PRODUCTS_DATA = [
         oldPrice: null,
         discountPercent: null,
         imageSrc: addCacheVersion("assets/images/productBanane1L.png"), 
+        alt: `Nectar de Banane Impériale - Bouteille 1L`,
         description: `Restaure l'éclat et l'énergie inépuisable d'un enfant de 4 ans.`,
         searchable: true
     },
@@ -59,6 +61,7 @@ const PRODUCTS_DATA = [
         oldPrice: 20.94,
         discountPercent: Math.round(((20.94 - 17.49) / 20.94) * 100),
         imageSrc: addCacheVersion("assets/images/productBanane6L.png"),
+        alt: `Pack Banane Impériale (6x1L)`,
         description: `Pack premium Banane Impériale.`,
         searchable: true
     },
@@ -71,6 +74,7 @@ const PRODUCTS_DATA = [
         oldPrice: null,
         discountPercent: null,
         imageSrc: addCacheVersion("assets/images/productFraise1L.png"), 
+        alt: `Rosée de Fraise Sauvage - Bouteille 1L`,
         description: `Efface la fatigue corporate et rend les joues roses de l'innocence.`,
         searchable: true
     },
@@ -81,6 +85,7 @@ const PRODUCTS_DATA = [
         oldPrice: 20.94,
         discountPercent: Math.round(((20.94 - 17.49) / 20.94) * 100),
         imageSrc: addCacheVersion("assets/images/productFraise6L.png"),
+        alt: `Pack Fraise Sauvage (6x1L)`,
         description: `Pack premium Fraise Sauvage.`,
         searchable: true
     },
@@ -94,6 +99,7 @@ const PRODUCTS_DATA = [
         oldPrice: null,
         discountPercent: null,
         imageSrc: addCacheVersion("assets/images/productCacao1L.png"), 
+        alt: `Cacao Grand Cru Absolu - Bouteille 1L`,
         description: `Comble les rides profondes creusées par le cynisme et les impôts.`,
         searchable: true
     },
@@ -104,6 +110,7 @@ const PRODUCTS_DATA = [
         oldPrice: 23.94,
         discountPercent: Math.round(((23.94 - 19.99) / 23.94) * 100),
         imageSrc: addCacheVersion("assets/images/productCacao6L.png"),
+        alt: `Pack Cacao Grand Cru (6x1L)`,
         description: `Pack premium Cacao Grand Cru.`,
         searchable: true
     },
@@ -116,6 +123,7 @@ const PRODUCTS_DATA = [
         oldPrice: null,
         discountPercent: null,
         imageSrc: addCacheVersion("assets/images/productMillesime1L.png"), 
+        alt: `Le Millésime - Bouteille 1L`,
         description: `Un rajeunissement lent et élégant. Pour perdre 10 ans avec distinction.`,
         searchable: true
     },
@@ -126,6 +134,7 @@ const PRODUCTS_DATA = [
         oldPrice: 120.00,
         discountPercent: Math.round(((120.00 - 99.99) / 120.00) * 100),
         imageSrc: addCacheVersion("assets/images/productOr1L.png"), 
+        alt: `L'Édition Nuit Étoilée - Bouteille 1L`,
         description: `Infusé à l'Or 24 Carats. Pour un teint qui irradie littéralement dans le noir.`,
         searchable: true
     }
@@ -137,28 +146,28 @@ const TEAM_DATA = [
         name: 'Maxoor',
         role: 'Producteur & Président',
         imageSrc: addCacheVersion("assets/images/teamMaxoor.png"), 
-        imagePrompt: `Portrait de Maxoor, producteur et président de Maxoor Inc.`
+        alt: `Portrait de Maxoor, producteur et président de Maxoor Inc.`
     },
     {
         id: 'bryan',
         name: 'Bryan_Drouet',
         role: 'Co-Directeur Stratégique',
         imageSrc: addCacheVersion("assets/images/teamBryan_Drouet.png"), 
-        imagePrompt: `Portrait de Bryan_Drouet, co-directeur stratégique de Maxoor Inc.`
+        alt: `Portrait de Bryan_Drouet, co-directeur stratégique de Maxoor Inc.`
     },
     {
         id: 'batsave',
         name: 'Batsave',
         role: 'Co-Directeur Créatif',
         imageSrc: addCacheVersion("assets/images/teamBatsave.png"),
-        imagePrompt: `Portrait de Batsave, co-directeur créatif de Maxoor Inc.`
+        alt: `Portrait de Batsave, co-directeur créatif de Maxoor Inc.`
     },
     {
         id: 'jewin',
         name: 'Jewin',
         role: 'Goûteur de nos différents produits',
         imageSrc: addCacheVersion("assets/images/teamJewin.png"),
-        imagePrompt: `Portrait de Jewin, goûteur officiel des produits cosmétiques de Maxoor Inc.`
+        alt: `Portrait de Jewin, goûteur officiel des produits cosmétiques de Maxoor Inc.`
     }
 ];
 
