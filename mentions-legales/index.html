@@ -13,6 +13,25 @@
     <link rel="apple-touch-icon" href="/assets/images/logo.svg">
 
     <script>
+        const isLoaderDebug = new URLSearchParams(window.location.search).get('debug') === 'true';
+        document.documentElement.classList.add('is-loading');
+        if (isLoaderDebug) {
+            document.documentElement.classList.add('is-loading-debug');
+        }
+
+        const clearLoadingState = () => {
+            document.documentElement.classList.remove('is-loading');
+            document.documentElement.classList.remove('is-loading-debug');
+        };
+
+        if (!isLoaderDebug) {
+            window.addEventListener('load', clearLoadingState, { once: true });
+            window.addEventListener('pageshow', clearLoadingState, { once: true });
+            setTimeout(clearLoadingState, 8000);
+        }
+    </script>
+
+    <script>
         if (typeof CACHE_VERSION === 'undefined') {
             var CACHE_VERSION = Date.now();
         }
@@ -21,12 +40,10 @@
             return /^\/?assets\//.test(url)
                 || /^\.\/assets\//.test(url)
                 || /^\.\.\/assets\//.test(url)
-                || /^\.?\/?(css|js)\//.test(url)
-                || /^\.\.\/(css|js)\//.test(url)
-                || /^[^:]+\.(css|js|png|svg)(\?|#|$)/i.test(url);
+                || /^[^:]+\.(png|svg|jpe?g|webp|gif|avif)(\?|#|$)/i.test(url);
         };
 
-        const hasTargetExt = (url) => /\.(css|js|png|svg)(\?|#|$)/i.test(url);
+        const hasTargetExt = (url) => /\.(png|svg|jpe?g|webp|gif|avif)(\?|#|$)/i.test(url);
 
         const addVersionParam = (url) => {
             if (!url || /[?&]v=/.test(url) || !isLocalAssetPath(url) || !hasTargetExt(url)) {
@@ -36,7 +53,7 @@
         };
 
         document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('link[href], script[src], img[src], source[src], use[href], use[xlink\\:href], image[href]').forEach((el) => {
+            document.querySelectorAll('img[src], source[src], use[href], use[xlink\\:href], image[href]').forEach((el) => {
                 if (el.hasAttribute('href')) {
                     const href = el.getAttribute('href');
                     const updatedHref = addVersionParam(href);
@@ -79,20 +96,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Chivo+Mono:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
+    <script src="/js/modules/layout.js" defer></script>
     <script src="https://unpkg.com/lucide@latest" defer></script>
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <a href="/" aria-label="Retour à l'accueil">Maxoor Inc.</a>
-        </div>
-        <nav aria-label="Navigation principale">
-            <ul>
-                <li><a href="/">Accueil</a></li>
-                <li><a href="/launch/">Lancement</a></li>
-            </ul>
-        </nav>
-    </header>
+    <div id="page-loader" class="page-loader" aria-live="polite" aria-label="Chargement de la page">
+        <div class="page-loader__text">CHARGEMENT EN COURS...</div>
+        <div class="page-loader__spinner" aria-hidden="true"></div>
+    </div>
+    <header data-shared-header="simple"></header>
 
     <main>
         <section class="hero">
@@ -144,16 +156,6 @@
         </section>
     </main>
 
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2026 Maxoor Inc. Tous droits réservés.</p>
-            <p class="legal-links">
-                <a href="/mentions-legales/">Mentions Légales</a> | 
-                <a href="/politique-de-confidentialite/">Politique de Confidentialité</a> | 
-                <a href="/cgv/">CGV</a>
-            </p>
-            <p class="parody-note footer-parody-note">Ce site est une parodie et n'est en aucun cas réel.</p>
-        </div>
-    </footer>
+    <footer data-shared-footer="true"></footer>
 </body>
 </html>

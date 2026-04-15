@@ -171,7 +171,9 @@ function updateHeaderHeight() {
 
 let revealObserver;
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    await (window.layoutReadyPromise || Promise.resolve());
+
     AuthManager.checkPageAccess();
     AuthManager.initLogoutCommand();
 
