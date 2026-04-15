@@ -14,7 +14,7 @@ export const PromoManager = {
     validate(code) {
         const upperCode = code.trim().toUpperCase();
         
-        if (upperCode === 'MAXOOR' || upperCode === 'BRYAN_DROUET') {
+        if (upperCode === 'MAXOOR' || upperCode === 'BRYAN_DROUET' || upperCode === 'BATSAVE' || upperCode === 'JEWIN') {
             return {
                 valid: true,
                 code: upperCode,
