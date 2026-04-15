@@ -83,7 +83,7 @@ const PRODUCTS_DATA = [
         imageSrc: addCacheVersion("assets/images/productFraise6L.png"),
         description: `Pack premium Fraise Sauvage.`,
         searchable: true
-    }/*,
+    },
 
     
     // --- GAMME CACAO GRAND CRU ---
@@ -128,7 +128,7 @@ const PRODUCTS_DATA = [
         imageSrc: addCacheVersion("assets/images/productOr1L.png"), 
         description: `Infusé à l'Or 24 Carats. Pour un teint qui irradie littéralement dans le noir.`,
         searchable: true
-    }*/
+    }
 ];
 
 const TEAM_DATA = [

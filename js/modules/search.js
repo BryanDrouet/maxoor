@@ -9,6 +9,7 @@ export class SearchManager {
         this.filteredProducts = [...this.allProducts];
         this.searchQuery = '';
         this.selectedGameme = 'all';
+        this.selectedContainer = 'all';
         this.gammes = this.extractGamemes();
     }
 
@@ -20,11 +21,11 @@ export class SearchManager {
                 gamme = 'Banane Impériale';
             } else if (product.id.includes('fraise')) {
                 gamme = 'Fraise Sauvage';
-            //} else if (product.id.includes('cacao')) {
-            //    gamme = 'Cacao Grand Cru';
+            } else if (product.id.includes('cacao')) {
+                gamme = 'Cacao Grand Cru';
             //} else if (product.id.includes('millesime') || product.id.includes('or')) {
             //    gamme = 'Prestige';
-            //} else {
+            } else {
                 gamme = 'Nature';
             }
             
@@ -48,6 +49,12 @@ export class SearchManager {
         return this.filteredProducts;
     }
 
+    filterByContainer(containerType) {
+        this.selectedContainer = containerType;
+        this.applyFilters();
+        return this.filteredProducts;
+    }
+
 applyFilters() {
     let results = [...this.allProducts];
 
@@ -55,6 +62,13 @@ applyFilters() {
         results = results.filter(product => {
             const productGameme = this.getProductGameme(product);
             return productGameme === this.selectedGameme;
+        });
+    }
+
+    if (this.selectedContainer !== 'all') {
+        results = results.filter(product => {
+            const productContainer = this.getProductContainer(product);
+            return productContainer === this.selectedContainer;
         });
     }
 
@@ -77,11 +91,16 @@ applyFilters() {
     return this.filteredProducts;
 }
 
+    getProductContainer(product) {
+        if (product.id.includes('pack-')) return 'pack';
+        return 'bottle';
+    }
+
     getProductGameme(product) {
         if (product.id.includes('banane')) return 'Banane Impériale';
         if (product.id.includes('fraise')) return 'Fraise Sauvage';
-        // if (product.id.includes('cacao')) return 'Cacao Grand Cru';
-        // if (product.id.includes('millesime') || product.id.includes('or')) return 'Prestige';
+        if (product.id.includes('cacao')) return 'Cacao Grand Cru';
+        //if (product.id.includes('millesime') || product.id.includes('or')) return 'Prestige';
         return 'Nature';
     }
 
@@ -92,6 +111,7 @@ applyFilters() {
     reset() {
         this.searchQuery = '';
         this.selectedGameme = 'all';
+        this.selectedContainer = 'all';
         this.filteredProducts = [...this.allProducts];
         return this.filteredProducts;
     }
@@ -101,21 +121,28 @@ export function initSearchUI(products, renderCallback) {
     const searchManager = new SearchManager(products);
     
     const searchInput = document.getElementById('search-input');
-    const filterButtons = document.querySelectorAll('[data-filter-gamme]');
+    const gammeFilterButtons = document.querySelectorAll('[data-filter-gamme]');
+    const containerFilterButtons = document.querySelectorAll('[data-filter-container]');
     const resetBtn = document.getElementById('reset-search');
 
-    if (!searchInput || !filterButtons.length) {
+    if (!searchInput || !gammeFilterButtons.length) {
         console.error('[SearchUI] Éléments de recherche non trouvés');
         return searchManager;
     }
 
-    const activeButton = document.querySelector('[data-filter-gamme].active');
-    if (activeButton) {
-        const initialGameme = activeButton.dataset.filterGamme;
+    const activeGammeButton = document.querySelector('[data-filter-gamme].active');
+    if (activeGammeButton) {
+        const initialGameme = activeGammeButton.dataset.filterGamme;
         searchManager.filterByGameme(initialGameme);
         console.log(`[SearchUI] Initialisation avec filtre: ${initialGameme}`);
         renderCallback(searchManager.getFilteredProducts());
     } else {
+        renderCallback(searchManager.getFilteredProducts());
+    }
+
+    const activeContainerButton = document.querySelector('[data-filter-container].active');
+    if (activeContainerButton) {
+        searchManager.filterByContainer(activeContainerButton.dataset.filterContainer);
         renderCallback(searchManager.getFilteredProducts());
     }
 
@@ -125,20 +152,32 @@ export function initSearchUI(products, renderCallback) {
         renderCallback(searchManager.getFilteredProducts());
     });
 
-    filterButtons.forEach(btn => {
+    gammeFilterButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
             const gamme = e.currentTarget.dataset.filterGamme;
             
-            filterButtons.forEach(b => b.classList.remove('active'));
+            gammeFilterButtons.forEach(b => b.classList.remove('active'));
             e.currentTarget.classList.add('active');
-            
-            searchInput.value = '';
-            searchManager.searchQuery = '';
-            
+
             searchManager.filterByGameme(gamme);
             
             console.log(`[SearchUI] Filtre gamme: ${gamme}, Produits trouvés: ${searchManager.getFilteredProducts().length}`);
+            renderCallback(searchManager.getFilteredProducts());
+        });
+    });
+
+    containerFilterButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const containerType = e.currentTarget.dataset.filterContainer;
+
+            containerFilterButtons.forEach(b => b.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+
+            searchManager.filterByContainer(containerType);
+
+            console.log(`[SearchUI] Filtre contenant: ${containerType}, Produits trouvés: ${searchManager.getFilteredProducts().length}`);
             renderCallback(searchManager.getFilteredProducts());
         });
     });
@@ -147,9 +186,14 @@ export function initSearchUI(products, renderCallback) {
         resetBtn.addEventListener('click', () => {
             searchInput.value = '';
             searchManager.reset();
-            filterButtons.forEach(b => b.classList.remove('active'));
-            if (filterButtons.length > 0) {
-                filterButtons[0].classList.add('active');
+            gammeFilterButtons.forEach(b => b.classList.remove('active'));
+            if (gammeFilterButtons.length > 0) {
+                gammeFilterButtons[0].classList.add('active');
+            }
+
+            containerFilterButtons.forEach(b => b.classList.remove('active'));
+            if (containerFilterButtons.length > 0) {
+                containerFilterButtons[0].classList.add('active');
             }
             console.log(`[SearchUI] Réinitialisation - Produits affichés: ${searchManager.getFilteredProducts().length}`);
             renderCallback(searchManager.getFilteredProducts());
