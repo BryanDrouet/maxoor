@@ -20,7 +20,9 @@ const GAME_STATE = {
     resetCount: 0,
     lastSaveTime: Date.now(),
     runStartedAt: Date.now(),
-    totalPlayTimeMs: 0
+    totalPlayTimeMs: 0,
+    maxComboReached: 1,
+    maxTotalPerSecond: 0
 };
 
 function getValidatedGameSpeed() {
@@ -155,30 +157,30 @@ const UPGRADES = {
 };
 
 const BATTLE_PASS_REWARDS = {
-    1: { milestone: 1000, reward: 'Déverrouille "Pipette de Dégustation en Or"', icon: '<img src="icons/up_pipette.png">' },
-    2: { milestone: 3000, reward: 'Qualité +10%', icon: '<img src="icons/bp_chart.png">' },
+    1: { milestone: 1000, reward: 'Prochaine récompense au prochain palier', icon: '<img src="icons/bp_chart.png">' },
+    2: { milestone: 3000, reward: 'Déverrouille "Pipette de Dégustation en Or"', icon: '<img src="icons/up_pipette.png">' },
     3: { milestone: 6000, reward: 'Déverrouille "Filtration au Carbone Noir"', icon: '<img src="icons/up_filtre.png">' },
-    4: { milestone: 10000, reward: 'Qualité +20%', icon: '<img src="icons/bp_chart.png">' },
+    4: { milestone: 10000, reward: 'Prochaine récompense au prochain palier', icon: '<img src="icons/bp_chart.png">' },
     5: { milestone: 15000, reward: 'Déverrouille "Gant en Soie de Maxoor"', icon: '<img src="icons/up_gant.png">' },
     6: { milestone: 25000, reward: 'Déverrouille "Synergie Cosmétique"', icon: '<img src="icons/up_synergie.png">' },
-    7: { milestone: 40000, reward: 'Qualité +50%', icon: '<img src="icons/bp_chart.png">' },
+    7: { milestone: 40000, reward: 'Prochaine récompense au prochain palier', icon: '<img src="icons/bp_chart.png">' },
     8: { milestone: 60000, reward: 'Déverrouille "Infusion de Minéraux Lunaires"', icon: '<img src="icons/up_lune.png">' },
-    9: { milestone: 90000, reward: 'Qualité +100%', icon: '<img src="icons/bp_chart.png">' },
+    9: { milestone: 90000, reward: 'Prochaine récompense au prochain palier', icon: '<img src="icons/bp_chart.png">' },
     10: { milestone: 130000, reward: 'Déverrouille "Sceptre de Jouvence Absolue"', icon: '<img src="icons/up_sceptre.png">' },
-    11: { milestone: 180000, reward: 'Bonus de Prestige x2', icon: '<img src="icons/bp_star.png">' },
+    11: { milestone: 180000, reward: 'Prochaine récompense au prochain palier', icon: '<img src="icons/bp_star.png">' },
     12: { milestone: 250000, reward: 'Déverrouille "Résonance Cellulaire"', icon: '<img src="icons/up_resonance.png">' },
-    13: { milestone: 350000, reward: 'Qualité +300%', icon: '<img src="icons/bp_chart.png">' },
-    14: { milestone: 500000, reward: 'Qualité +400%', icon: '<img src="icons/bp_chart.png">' },
+    13: { milestone: 350000, reward: 'Prochaine récompense dans deux paliers', icon: '<img src="icons/bp_chart.png">' },
+    14: { milestone: 500000, reward: 'Prochaine récompense au prochain palier', icon: '<img src="icons/bp_chart.png">' },
     15: { milestone: 700000, reward: 'Déverrouille "Distillation Spatio-Temporelle"', icon: '<img src="icons/up_distillation.png">' },
-    16: { milestone: 1000000, reward: 'Qualité +500%', icon: '<img src="icons/bp_chart.png">' },
-    17: { milestone: 1500000, reward: 'Qualité +1000%', icon: '<img src="icons/bp_chart.png">' },
-    18: { milestone: 2250000, reward: 'Production x3 temporaire', icon: '<img src="icons/bp_clock.png">' },
-    19: { milestone: 3375000, reward: 'Qualité +2000%', icon: '<img src="icons/bp_chart.png">' },
-    20: { milestone: 5062500, reward: 'Prestige Accessible! 🌟', icon: '<img src="icons/bp_star.png">' },
-    21: { milestone: 7593750, reward: 'Qualité +3000%', icon: '<img src="icons/bp_chart.png">' },
-    22: { milestone: 11390625, reward: 'Production x4 temporaire', icon: '<img src="icons/bp_clock.png">' },
-    23: { milestone: 17085938, reward: 'Qualité +5000%', icon: '<img src="icons/bp_chart.png">' },
-    24: { milestone: 25628906, reward: 'Rebirth Déverrouillé! 👑', icon: '<img src="icons/bp_crown.png">' },
+    16: { milestone: 1000000, reward: 'Prochaine récompense dans quatre paliers', icon: '<img src="icons/bp_chart.png">' },
+    17: { milestone: 1500000, reward: 'Prochaine récompense dans trois paliers', icon: '<img src="icons/bp_chart.png">' },
+    18: { milestone: 2250000, reward: 'Prochaine récompense dans deux paliers', icon: '<img src="icons/bp_clock.png">' },
+    19: { milestone: 3375000, reward: 'Prochaine récompense au prochain palier', icon: '<img src="icons/bp_chart.png">' },
+    20: { milestone: 5062500, reward: 'Prestige Accessible! 🌟 (Rebirth dès 3 Prestiges)', icon: '<img src="icons/bp_star.png">' },
+    21: { milestone: 7593750, reward: 'Prochaine récompense dans trois paliers', icon: '<img src="icons/bp_chart.png">' },
+    22: { milestone: 11390625, reward: 'Prochaine récompense dans deux paliers', icon: '<img src="icons/bp_clock.png">' },
+    23: { milestone: 17085938, reward: 'Prochaine récompense au prochain palier', icon: '<img src="icons/bp_chart.png">' },
+    24: { milestone: 25628906, reward: 'Palier légendaire atteint 👑', icon: '<img src="icons/bp_crown.png">' },
     25: { milestone: 50000000, reward: 'Maître de Maxoor! 🏆', icon: '<img src="icons/bp_trophy.png">' }
 };
 
@@ -191,6 +193,7 @@ function initGame() {
     initUpgrades();
     initClickerHitbox();
     renderAll();
+    checkBattlePassProgress();
     updateComboDisplay();
     setInterval(generatePassiveIncome, 100);
     setupEventListeners();
@@ -244,7 +247,7 @@ function handlePrestigeClick() {
     if (canRebirth) {
         const isFinalRebirth = GAME_STATE.rebirthCount >= FINAL_REBIRTH_AT - 1;
         const confirmed = confirm(isFinalRebirth
-            ? "🏁 DERNIERE RENAISSANCE - C'est votre 3e Rebirth. Cette action met fin à la partie et lance un reset COMPLET du jeu (tout est effacé).\n\nÊtes-vous sûr ?"
+            ? "🏁 DERNIERE RENAISSANCE - C'est votre 3e Rebirth. Cette action met fin à la partie et relance une nouvelle run. Vos statistiques globales sont conservées.\n\nÊtes-vous sûr ?"
             : "🔄 RENAISSANCE - Recommencer complètement à 0 (lait, générateurs, améliorations, BP niveau 1) mais conserver tous vos multiplicateurs de clics et +0.1x bonus supplémentaire.\n\nÊtes-vous sûr?");
         if (confirmed) {
             rebirth();
@@ -356,6 +359,9 @@ function updateDisplay() {
     const tapPerSecond = calculateTapPerSecond();
     const generatorPerSecond = calculatePerSecond();
     const totalPerSecond = tapPerSecond + generatorPerSecond;
+    const currentComboValue = calculateEffectiveClickMultiplier();
+    GAME_STATE.maxComboReached = Math.max(GAME_STATE.maxComboReached || 1, currentComboValue);
+    GAME_STATE.maxTotalPerSecond = Math.max(GAME_STATE.maxTotalPerSecond || 0, totalPerSecond);
     document.getElementById('tap-per-second').textContent = formatNumber(tapPerSecond);
     document.getElementById('gen-per-second').textContent = formatNumber(generatorPerSecond);
     document.getElementById('milk-per-second').textContent = formatNumber(totalPerSecond);
@@ -445,7 +451,7 @@ function checkBattlePassProgress() {
         if (desc) {
             desc.removeAttribute('hidden');
             desc.innerHTML = isFinalRebirth
-                ? '<strong>3e Rebirth = fin de partie</strong><br>Déclenche un reset COMPLET du jeu.'
+                ? '<strong>3e Rebirth = fin de partie</strong><br>Redémarre une run à 0 en conservant les statistiques globales.'
                 : '<strong>Renaissance à 0</strong> mais garder tous les multiplicateurs de clics + bonus +0.1x supplémentaire';
         }
     } else if (GAME_STATE.battlePass.level >= 20) {
@@ -462,8 +468,11 @@ function checkBattlePassProgress() {
     } else {
         const btn = document.getElementById('prestige-btn');
         const desc = document.getElementById('prestige-description');
+        const finalRunReady = GAME_STATE.prestigeLevel >= PRESTIGE_REQUIRED_FOR_REBIRTH
+            && GAME_STATE.rebirthCount >= FINAL_REBIRTH_AT - 1;
         if (btn) {
             btn.disabled = true;
+            btn.textContent = finalRunReady ? '🏁 Fin du jeu' : '⭐ Prestige';
         }
         if (desc) {
             desc.setAttribute('hidden', '');
@@ -644,6 +653,7 @@ function prestige() {
         initGenerators();
         initUpgrades();
         renderAll();
+        checkBattlePassProgress();
         saveGame();
     }
 }
@@ -656,9 +666,9 @@ function rebirth() {
         }
 
         if (GAME_STATE.rebirthCount >= FINAL_REBIRTH_AT - 1) {
-            performCompleteReset();
+            performCompleteReset({ wipeAllStats: false, incrementGameCompletions: true });
             saveGame();
-            alert('🏁 Fin du jeu atteinte: 3e Rebirth effectué. Reset complet appliqué.');
+            alert('🏁 Fin du jeu atteinte: 3e Rebirth effectué. Nouvelle run lancée et statistiques globales conservées.');
             return;
         }
 
@@ -678,18 +688,26 @@ function rebirth() {
         initGenerators();
         initUpgrades();
         renderAll();
+        checkBattlePassProgress();
         saveGame();
         alert(`🎉 Rebirth #${GAME_STATE.rebirthCount}! Multiplicateur: x${rebirthBoost.toFixed(2)}`);
     }
 }
 
-function performCompleteReset() {
+function performCompleteReset(options = {}) {
+    const {
+        wipeAllStats = false,
+        incrementGameCompletions = false
+    } = options;
+
     commitSessionPlayTime();
-    const resetCount = GAME_STATE.resetCount || 0;
-    localStorage.removeItem('maxoor-sanctuary-save');
+
+    if (wipeAllStats) {
+        localStorage.removeItem('maxoor-sanctuary-save');
+    }
+
     GAME_STATE.milk = 0;
     GAME_STATE.totalMilk = 0;
-    GAME_STATE.totalMilkAllTime = 0;
     GAME_STATE.clickMultiplier = 1;
     GAME_STATE.generatorMultiplier = 1;
     GAME_STATE.combo = 1;
@@ -699,17 +717,30 @@ function performCompleteReset() {
     GAME_STATE.upgrades = {};
     GAME_STATE.prestigeLevel = 0;
     GAME_STATE.rebirthCount = 0;
-    GAME_STATE.resetCount = resetCount + 1;
     GAME_STATE.runStartedAt = Date.now();
+
+    if (incrementGameCompletions) {
+        GAME_STATE.resetCount = (GAME_STATE.resetCount || 0) + 1;
+    }
+
+    if (wipeAllStats) {
+        GAME_STATE.totalMilkAllTime = 0;
+        GAME_STATE.totalPlayTimeMs = 0;
+        GAME_STATE.maxComboReached = 1;
+        GAME_STATE.maxTotalPerSecond = 0;
+        GAME_STATE.resetCount = 0;
+    }
+
     initGenerators();
     initUpgrades();
     renderAll();
+    checkBattlePassProgress();
 }
 
 function resetGame() {
     const resetWarning = '⚠️ RESET TOTAL\n\nCe reset supprime VRAIMENT tout le jeu sur cette sauvegarde: lait, progression Battle Pass, générateurs, améliorations, prestige, rebirth et multiplicateurs.\n\nCette action est irréversible. Continuer ?';
     if (confirm(resetWarning)) {
-        performCompleteReset();
+        performCompleteReset({ wipeAllStats: true, incrementGameCompletions: false });
     }
 }
 
@@ -733,6 +764,12 @@ function loadGame() {
             }
             if (typeof GAME_STATE.totalPlayTimeMs !== 'number') {
                 GAME_STATE.totalPlayTimeMs = 0;
+            }
+            if (typeof GAME_STATE.maxComboReached !== 'number') {
+                GAME_STATE.maxComboReached = 1;
+            }
+            if (typeof GAME_STATE.maxTotalPerSecond !== 'number') {
+                GAME_STATE.maxTotalPerSecond = 0;
             }
         } catch (err) {
             console.error('Erreur de chargement:', err);
@@ -798,6 +835,8 @@ function updateStatsPanel() {
     const speed = document.getElementById('stats-speed');
     const clickMult = document.getElementById('stats-click-mult');
     const totalPlayTime = document.getElementById('stats-total-playtime');
+    const maxCombo = document.getElementById('stats-max-combo');
+    const maxTotalPerSecond = document.getElementById('stats-max-total-per-second');
 
     if (resetCount) resetCount.textContent = String(GAME_STATE.resetCount || 0);
     if (totalMilk) totalMilk.textContent = formatNumber(Math.floor(GAME_STATE.totalMilkAllTime || 0));
@@ -807,6 +846,8 @@ function updateStatsPanel() {
     if (speed) speed.textContent = `x${GAME_SPEED}`;
     if (clickMult) clickMult.textContent = `x${calculateAllMultipliers().toFixed(2)}`;
     if (totalPlayTime) totalPlayTime.textContent = formatMilliseconds((GAME_STATE.totalPlayTimeMs || 0) + Math.max(0, Date.now() - GAME_STATE.runStartedAt));
+    if (maxCombo) maxCombo.textContent = `x${(GAME_STATE.maxComboReached || 1).toFixed(2)}`;
+    if (maxTotalPerSecond) maxTotalPerSecond.textContent = formatNumber(GAME_STATE.maxTotalPerSecond || 0);
 }
 
 function updateBuyButtons() {
