@@ -25,6 +25,11 @@ html {
     scrollbar-color: var(--color-dark-1) var(--color-dark-2);
 }
 
+*:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
 ::-webkit-scrollbar {
     width: 12px;
 }
@@ -66,6 +71,14 @@ body {
     word-wrap: break-word;
     overflow-wrap: break-word;
     word-break: break-word;
+}
+
+img,
+iframe,
+button {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
 }
 
 html.is-loading,
@@ -201,8 +214,7 @@ img {
     aspect-ratio: 1/1;
 }
 
-.image-viewer__action:hover,
-.image-viewer__action:focus-visible {
+.image-viewer__action:hover {
     background: rgba(0, 255, 234, 0.16);
     border-color: var(--color-light-1);
 }
@@ -318,8 +330,7 @@ header {
     transition: var(--transition);
 }
 
-.logo a:hover,
-.logo a:focus-visible {
+.logo a:hover {
     color: var(--color-light-1);
 }
 
@@ -360,8 +371,7 @@ a:not(header a):not(.btn-primary):not(.btn-secondary):not(.btn-delete) {
     font-weight: bold;
 }
 
-a:not(header a):not(.btn-primary):not(.btn-secondary):not(.btn-delete):hover,
-a:not(header a):not(.btn-primary):not(.btn-secondary):not(.btn-delete):focus-visible {
+a:not(header a):not(.btn-primary):not(.btn-secondary):not(.btn-delete):hover {
     background-size: 100% 0.12em;
 }
 
@@ -504,8 +514,7 @@ a:not(header a):not(.btn-primary):not(.btn-secondary):not(.btn-delete):focus-vis
 
 .btn-primary.checkout-victim:hover,
 .btn-primary.checkout-victim:focus,
-.btn-primary.checkout-victim:active,
-.btn-primary.checkout-victim:focus-visible {
+.btn-primary.checkout-victim:active {
     background-color: #8b8b8b;
     border-color: #8b8b8b;
     box-shadow: none;
@@ -1059,8 +1068,7 @@ a:not(header a):not(.btn-primary):not(.btn-secondary):not(.btn-delete):focus-vis
     transition: color 0.2s ease;
 }
 
-.markdown-content .markdown-spoiler:hover,
-.markdown-content .markdown-spoiler:focus-visible {
+.markdown-content .markdown-spoiler:hover {
     color: var(--text-on-dark);
 }
 
@@ -1261,11 +1269,6 @@ a:not(header a):not(.btn-primary):not(.btn-secondary):not(.btn-delete):focus-vis
 
 .checkbox-group input:checked + label::after {
     transform: translateX(1.36rem) translateY(-48%);
-}
-
-.checkbox-group input:focus-visible + label::before {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 255, 234, 0.25);
 }
 
 .contact-form .btn-primary,
