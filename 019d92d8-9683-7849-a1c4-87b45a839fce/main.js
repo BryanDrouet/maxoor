@@ -240,7 +240,7 @@ function setupEventListeners() {
 }
 
 function handlePrestigeClick() {
-    const canRebirth = GAME_STATE.battlePass.level >= 25 && GAME_STATE.prestigeLevel >= PRESTIGE_REQUIRED_FOR_REBIRTH;
+    const canRebirth = GAME_STATE.battlePass.level >= 20 && GAME_STATE.prestigeLevel >= PRESTIGE_REQUIRED_FOR_REBIRTH;
     if (canRebirth) {
         const isFinalRebirth = GAME_STATE.rebirthCount >= FINAL_REBIRTH_AT - 1;
         const confirmed = confirm(isFinalRebirth
@@ -434,7 +434,7 @@ function checkBattlePassProgress() {
     }
 
     updateBattlePassDisplay();
-    if (GAME_STATE.battlePass.level >= 25 && GAME_STATE.prestigeLevel >= PRESTIGE_REQUIRED_FOR_REBIRTH) {
+    if (GAME_STATE.battlePass.level >= 20 && GAME_STATE.prestigeLevel >= PRESTIGE_REQUIRED_FOR_REBIRTH) {
         const btn = document.getElementById('prestige-btn');
         const desc = document.getElementById('prestige-description');
         const isFinalRebirth = GAME_STATE.rebirthCount >= FINAL_REBIRTH_AT - 1;
@@ -457,11 +457,7 @@ function checkBattlePassProgress() {
         }
         if (desc) {
             desc.removeAttribute('hidden');
-            if (GAME_STATE.battlePass.level >= 25) {
-                desc.innerHTML = `<strong>Rebirth nécessite ${PRESTIGE_REQUIRED_FOR_REBIRTH} Prestige</strong><br>Prestige actuel: ${GAME_STATE.prestigeLevel}/${PRESTIGE_REQUIRED_FOR_REBIRTH}`;
-            } else {
-                desc.innerHTML = '<strong>Recommencer à 0</strong> mais garder +0.5x multiplicateur de clics permanent';
-            }
+            desc.innerHTML = `<strong>Rebirth nécessite ${PRESTIGE_REQUIRED_FOR_REBIRTH} Prestige</strong><br>Prestige actuel: ${GAME_STATE.prestigeLevel}/${PRESTIGE_REQUIRED_FOR_REBIRTH}`;
         }
     } else {
         const btn = document.getElementById('prestige-btn');
@@ -653,7 +649,7 @@ function prestige() {
 }
 
 function rebirth() {
-    if (GAME_STATE.battlePass.level >= 25) {
+    if (GAME_STATE.battlePass.level >= 20) {
         if (GAME_STATE.prestigeLevel < PRESTIGE_REQUIRED_FOR_REBIRTH) {
             alert(`⚠️ Rebirth nécessite ${PRESTIGE_REQUIRED_FOR_REBIRTH} Prestige! Vous en avez: ${GAME_STATE.prestigeLevel}`);
             return;
