@@ -2,12 +2,11 @@
 -# Tous les changements ne seront pas notés (comme le changement/l'ajout d'un détail par exemple), cette page sera mise à jour dès qu'une nouveautée sortira.
 ---
 ## À venir : 
-- 1 tout nouveau produit. 
--# Nouveau produit pas nouveaux goûts. 
+- Un tout nouveau produit. 
+-# Nouveau produit pas nouveau goût. 
 ---
 ## 16/04/2026
-- L'easter egg a été ajouté code promo du goûteur a été ajouté. 
--# Indice : ||Basé sur le cookie le plus connu du monde||. 
+- L'easter egg a été ajouté, 
 - 3 nouveaux goûts sont disponibles à la vente. 
 ---
 ## 15/04/2026
