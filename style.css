@@ -928,6 +928,10 @@ a:not(header a):not(.btn-primary):not(.btn-secondary):not(.btn-delete):hover {
     font-size: 0.95rem;
 }
 
+.alchemy-section .info-card li {
+    list-style: none;
+}
+
 .info-card strong {
     color: var(--color-light-2);
 }
@@ -1768,7 +1772,7 @@ footer {
     }
 
     .hero-image img {
-        min-height: 250px;
+        height: 250px;
     }
 
     .section-header h2 {
@@ -2019,7 +2023,7 @@ footer {
     }
 
     .logo {
-        font-size: 0.9rem;
+        font-size: 2.5rem;
         letter-spacing: 0.5px;
     }
 
