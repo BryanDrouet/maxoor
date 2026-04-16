@@ -177,7 +177,7 @@ const PRODUCTS_DATA = [
     {
         id: 'pack-amende-6l',
         name: 'Pack Amende Forfaitaire (6x1L)',
-        price: 499.99,
+        price: 494.99,
         oldPrice: 810.00,
         discountPercent: Math.round(((810.00 - 499.99) / 810.00) * 100),
         imageSrc: addCacheVersion("assets/images/products/amende6L.png"),

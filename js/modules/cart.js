@@ -11,7 +11,7 @@ export const CartManager = {
     promoDiscount: 0,
     freeShipping: false,
     SHIPPING_COST: 4.99,
-    MAX_TOTAL: 500,
+    MAX_TOTAL: 1000,
 
     init(productsData) {
         this.productsData = productsData;
@@ -114,7 +114,7 @@ export const CartManager = {
         const projectedTotals = this.calculateTotalsForCart(projectedCart);
 
         if (projectedTotals.total > this.MAX_TOTAL) {
-            this.showPromoMessage(`Plafond panier atteint: total maximum ${this.MAX_TOTAL.toFixed(2)}EUR.`, 'error');
+            this.showPromoMessage(`Plafond panier atteint: total maximum ${this.MAX_TOTAL.toFixed(2)}€.`, 'error');
             this.toggle(true);
             return;
         }
@@ -232,7 +232,7 @@ export const CartManager = {
             const totalsWithoutPromo = this.calculateTotalsForCart(this.cart);
             if (totalsWithoutPromo.total > this.MAX_TOTAL) {
                 this.appliedPromoCode = previousPromoCode;
-                this.showPromoMessage(`Impossible de supprimer le code: total maximum ${this.MAX_TOTAL.toFixed(2)}EUR depasse.`, 'error');
+                this.showPromoMessage(`Impossible de supprimer le code: total maximum ${this.MAX_TOTAL.toFixed(2)}€ depasse.`, 'error');
                 this.updatePromoButtonState(applyPromoBtn, input);
                 return;
             }
