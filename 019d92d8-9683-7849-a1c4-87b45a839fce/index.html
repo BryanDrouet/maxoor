@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/019d92d8-9683-7849-a1c4-87b45a839fce/">
+    <title>Le Sanctuaire Caché | Cookie Clicker</title>
+    <meta name="description" content="L'expérience ultime de rajeunissement">
+    <link rel="icon" type="image/svg+xml" href="../assets/images/logo.svg" sizes="any">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Chivo+Mono:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+</head>
+<body>
+    <div class="mobile-blocker" role="alert" aria-live="polite">
+        <div class="mobile-blocker-content">
+            <h2>Jeu Non Disponible Sur Mobile</h2>
+            <p>Passe sur PC ou tablette pour jouer.</p>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- HEADER COMPACT -->
+        <header class="compact-header">
+            <div>
+                <h1>Sanctuaire Caché</h1>
+            </div>
+            <div class="header-actions">
+                <button id="stats-btn" class="settings-btn stats-header-btn" aria-label="Ouvrir les stats">
+                    <span>Stats</span>
+                </button>
+                <button id="reset-btn" class="settings-btn reset-header-btn" aria-label="Reset total">
+                    <span>Reset total</span>
+                </button>
+            </div>
+        </header>
+
+        <div id="stats-panel" class="stats-panel" hidden>
+            <div class="stats-panel-header">
+                <h2>Statistiques</h2>
+                <button id="stats-close-btn" class="stats-panel-close" aria-label="Fermer les statistiques">&times;</button>
+            </div>
+            <div class="stats-panel-grid">
+                <div class="stats-panel-item">
+                    <span>Resets totaux</span>
+                    <strong id="stats-reset-count">0</strong>
+                </div>
+                <div class="stats-panel-item">
+                    <span>Lait cumulés</span>
+                    <strong id="stats-total-milk">0</strong>
+                </div>
+                <div class="stats-panel-item">
+                    <span>Prestiges actuels</span>
+                    <strong id="stats-prestige-count">0</strong>
+                </div>
+                <div class="stats-panel-item">
+                    <span>Rebirths</span>
+                    <strong id="stats-rebirth-count">0</strong>
+                </div>
+                <div class="stats-panel-item">
+                    <span>Niveau BP</span>
+                    <strong id="stats-bp-level">Niv. 1/25</strong>
+                </div>
+                <div class="stats-panel-item">
+                    <span>Vitesse</span>
+                    <strong id="stats-speed">x1</strong>
+                </div>
+                <div class="stats-panel-item">
+                    <span>Multiplicateur clic</span>
+                    <strong id="stats-click-mult">x1.00</strong>
+                </div>
+                <div class="stats-panel-item">
+                    <span>Temps total joué</span>
+                    <strong id="stats-total-playtime">00:00:00</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN GRID LAYOUT -->
+        <main class="main-grid">
+            <!-- LEFT: STATS & BATTLE PASS -->
+            <aside class="sidebar-left">
+                <div class="stats-compact">
+                    <div class="stat-mini">
+                        <span class="stat-label">Lait</span>
+                        <span class="stat-value" id="milk-count">0</span>
+                    </div>
+                    <div class="stat-mini">
+                        <span class="stat-label">Clic /sec</span>
+                        <span class="stat-value" id="tap-per-second">0</span>
+                    </div>
+                    <div class="stat-mini">
+                        <span class="stat-label">Prod /sec</span>
+                        <span class="stat-value" id="gen-per-second">0</span>
+                    </div>
+                    <div class="stat-mini">
+                        <span class="stat-label">Total /sec</span>
+                        <span class="stat-value" id="milk-per-second">0</span>
+                    </div>
+                    <div class="stat-mini">
+                        <span class="stat-label">Multi</span>
+                        <span class="stat-value" id="multiplier">x1</span>
+                    </div>
+                    <div class="stat-mini">
+                        <span class="stat-label">Temps game</span>
+                        <span class="stat-value" id="game-runtime">00:00:00</span>
+                    </div>
+                    <div class="combo-counter" id="combo-multiplier"></div>
+                </div>
+
+                <div class="bp-compact">
+                    <div class="bp-mini-header" id="bp-level-display">Battle Pass Niv. 1/25</div>
+                    <div class="bp-next-reward" id="bp-next-reward">Déverrouille "Pipette de Dégustation en Or"</div>
+                    <div class="bp-mini-bar">
+                        <div class="bp-mini-progress" id="bp-progress"></div>
+                    </div>
+                    <div class="bp-mini-text" id="bp-progress-text">0 / 100</div>
+                </div>
+
+                <div class="prestige-mini">
+                    <button id="prestige-btn" class="prestige-btn-compact" disabled>
+                        ⭐ Prestige
+                    </button>
+                    <div id="prestige-description" class="prestige-description" hidden>
+                        <strong>Recommencer à 0</strong> mais garder +0.5x multiplicateur de clics permanent
+                    </div>
+                </div>
+            </aside>
+
+            <!-- CENTER: CLICKER -->
+            <section class="center-clicker">
+                <div class="clicker-wrapper">
+                    <button id="main-clicker" class="main-button-compact" title="Cliquez!">
+                        <img src="icons/verre.png" alt="Verre de lait" class="clicker-image">
+                    </button>
+                    <div class="click-feedback" id="click-feedback"></div>
+                </div>
+            </section>
+
+            <!-- RIGHT: SHOP MINIMAL -->
+            <aside class="sidebar-right">
+                <div class="mini-shop">
+                    <div class="shop-header">Générateurs</div>
+                    <div class="generators-mini" id="generators-grid"></div>
+                </div>
+
+                <div class="mini-upgrades">
+                    <div class="upgrades-header">Améliorations</div>
+                    <div class="upgrades-mini" id="upgrades-grid"></div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
+
