@@ -22,6 +22,372 @@ const IMAGE_VIEWER_HTML = `
 `;
 
 let imageViewerState = null;
+let markdownEnginePromise = null;
+
+function escapeHtml(value) {
+    return value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function sanitizeUrl(rawUrl) {
+    const value = rawUrl.trim();
+    if (!value) return '#';
+
+    if (
+        value.startsWith('#') ||
+        value.startsWith('/') ||
+        value.startsWith('./') ||
+        value.startsWith('../')
+    ) {
+        return value;
+    }
+
+    try {
+        const parsed = new URL(value, window.location.origin);
+        if (parsed.protocol === 'http:' || parsed.protocol === 'https:' || parsed.protocol === 'mailto:') {
+            return value;
+        }
+    } catch {
+        return '#';
+    }
+
+    return '#';
+}
+
+function renderInlineMarkdown(text) {
+    let rendered = escapeHtml(text);
+
+    rendered = rendered.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+    rendered = rendered.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_match, label, url) => {
+        const safeUrl = escapeHtml(sanitizeUrl(url));
+        const isExternal = /^https?:\/\//i.test(safeUrl);
+        const rel = isExternal ? ' rel="noopener noreferrer" target="_blank"' : '';
+        return `<a href="${safeUrl}"${rel}>${label}</a>`;
+    });
+
+    rendered = rendered.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    rendered = rendered.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+    rendered = rendered.replace(/~~([^~]+)~~/g, '<del>$1</del>');
+    rendered = rendered.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    rendered = rendered.replace(/_([^_]+)_/g, '<em>$1</em>');
+    rendered = rendered.replace(/\|\|([^|]+)\|\|/g, '<span class="markdown-spoiler">$1</span>');
+
+    rendered = rendered.replace(/(^|\s)(https?:\/\/[^\s<]+)/g, (_match, prefix, url) => {
+        const safeUrl = escapeHtml(sanitizeUrl(url));
+        return `${prefix}<a href="${safeUrl}" rel="noopener noreferrer" target="_blank">${safeUrl}</a>`;
+    });
+
+    return rendered;
+}
+
+function renderMarkdownFallback(markdownSource) {
+    const lines = markdownSource.replace(/\r\n?/g, '\n').split('\n');
+    const html = [];
+    let paragraphBuffer = [];
+    let blockquoteBuffer = [];
+    let inUnorderedList = false;
+    let inOrderedList = false;
+
+    const flushParagraph = () => {
+        if (paragraphBuffer.length === 0) return;
+        html.push(`<p>${renderInlineMarkdown(paragraphBuffer.join(' '))}</p>`);
+        paragraphBuffer = [];
+    };
+
+    const closeLists = () => {
+        if (inUnorderedList) {
+            html.push('</ul>');
+            inUnorderedList = false;
+        }
+        if (inOrderedList) {
+            html.push('</ol>');
+            inOrderedList = false;
+        }
+    };
+
+    const flushBlockquote = () => {
+        if (blockquoteBuffer.length === 0) return;
+        const quoteContent = blockquoteBuffer
+            .map((line) => renderInlineMarkdown(line))
+            .join('<br>');
+        html.push(`<blockquote><p>${quoteContent}</p></blockquote>`);
+        blockquoteBuffer = [];
+    };
+
+    for (const line of lines) {
+        const trimmed = line.trim();
+
+        if (!trimmed) {
+            flushParagraph();
+            closeLists();
+            flushBlockquote();
+            continue;
+        }
+
+        const blockquoteMatch = trimmed.match(/^>\s?(.*)$/);
+        if (blockquoteMatch) {
+            flushParagraph();
+            closeLists();
+            blockquoteBuffer.push(blockquoteMatch[1]);
+            continue;
+        }
+
+        flushBlockquote();
+
+        const headingMatch = trimmed.match(/^(#{1,6})\s+(.+)$/);
+        if (headingMatch) {
+            flushParagraph();
+            closeLists();
+            const level = headingMatch[1].length;
+            html.push(`<h${level}>${renderInlineMarkdown(headingMatch[2])}</h${level}>`);
+            continue;
+        }
+
+        const dividerMatch = trimmed.match(/^([-*_])\1{2,}$/);
+        if (dividerMatch) {
+            flushParagraph();
+            closeLists();
+            html.push('<hr>');
+            continue;
+        }
+
+        const subtleLineMatch = trimmed.match(/^-#\s+(.+)$/);
+        if (subtleLineMatch) {
+            flushParagraph();
+            closeLists();
+            html.push(`<p class="markdown-subtle">${renderInlineMarkdown(subtleLineMatch[1])}</p>`);
+            continue;
+        }
+
+        const taskItemMatch = trimmed.match(/^[-*+]\s+\[( |x|X)\]\s+(.+)$/);
+        if (taskItemMatch) {
+            flushParagraph();
+            if (inOrderedList) {
+                html.push('</ol>');
+                inOrderedList = false;
+            }
+            if (!inUnorderedList) {
+                html.push('<ul>');
+                inUnorderedList = true;
+            }
+
+            const isChecked = taskItemMatch[1].toLowerCase() === 'x';
+            const checkmark = isChecked ? '&#10003;' : '&nbsp;';
+            html.push(`<li class="markdown-task-item"><span class="markdown-task-box" aria-hidden="true">${checkmark}</span><span>${renderInlineMarkdown(taskItemMatch[2])}</span></li>`);
+            continue;
+        }
+
+        const unorderedListMatch = trimmed.match(/^[-*+]\s+(.+)$/) || trimmed.match(/^•\s+(.+)$/);
+        if (unorderedListMatch) {
+            flushParagraph();
+            if (inOrderedList) {
+                html.push('</ol>');
+                inOrderedList = false;
+            }
+            if (!inUnorderedList) {
+                html.push('<ul>');
+                inUnorderedList = true;
+            }
+            html.push(`<li>${renderInlineMarkdown(unorderedListMatch[1])}</li>`);
+            continue;
+        }
+
+        const orderedListMatch = trimmed.match(/^\d+[\.)]\s+(.+)$/);
+        if (orderedListMatch) {
+            flushParagraph();
+            if (inUnorderedList) {
+                html.push('</ul>');
+                inUnorderedList = false;
+            }
+            if (!inOrderedList) {
+                html.push('<ol>');
+                inOrderedList = true;
+            }
+            html.push(`<li>${renderInlineMarkdown(orderedListMatch[1])}</li>`);
+            continue;
+        }
+
+        closeLists();
+        paragraphBuffer.push(trimmed);
+    }
+
+    flushParagraph();
+    closeLists();
+    flushBlockquote();
+
+    return html.join('\n');
+}
+
+function loadExternalScript(src, globalName) {
+    if (globalName && typeof window[globalName] !== 'undefined') {
+        return Promise.resolve(window[globalName]);
+    }
+
+    return new Promise((resolve, reject) => {
+        const existing = document.querySelector(`script[data-lib="${src}"]`);
+        if (existing) {
+            existing.addEventListener('load', () => resolve(globalName ? window[globalName] : true), { once: true });
+            existing.addEventListener('error', () => reject(new Error(`Impossible de charger ${src}`)), { once: true });
+            return;
+        }
+
+        const script = document.createElement('script');
+        script.src = src;
+        script.async = true;
+        script.defer = true;
+        script.dataset.lib = src;
+        script.addEventListener('load', () => resolve(globalName ? window[globalName] : true), { once: true });
+        script.addEventListener('error', () => reject(new Error(`Impossible de charger ${src}`)), { once: true });
+        document.head.appendChild(script);
+    });
+}
+
+function normalizeMarkdownForDiscordSyntax(markdownSource) {
+    const normalizedLines = markdownSource.replace(/\r\n?/g, '\n').split('\n').map((line) => {
+        if (/^\s*•\s+/.test(line)) {
+            return line.replace(/^(\s*)•\s+/, '$1- ');
+        }
+
+        if (/^\s*\d+\)\s+/.test(line)) {
+            return line.replace(/^(\s*\d+)\)\s+/, '$1. ');
+        }
+
+        return line;
+    });
+
+    return normalizedLines.join('\n');
+}
+
+function setupMarkedExtensions(markedLib) {
+    const subtleBlockExtension = {
+        name: 'discordSubtleLine',
+        level: 'block',
+        start(src) {
+            const match = src.match(/^-#\s/m);
+            return match ? match.index : undefined;
+        },
+        tokenizer(src) {
+            const match = /^-#\s+(.+)(?:\n|$)/.exec(src);
+            if (!match) return undefined;
+
+            return {
+                type: 'discordSubtleLine',
+                raw: match[0],
+                text: match[1]
+            };
+        },
+        renderer(token) {
+            return `<p class="markdown-subtle">${markedLib.parseInline(token.text || '')}</p>`;
+        }
+    };
+
+    const spoilerInlineExtension = {
+        name: 'discordSpoiler',
+        level: 'inline',
+        start(src) {
+            const match = src.match(/\|\|/);
+            return match ? match.index : undefined;
+        },
+        tokenizer(src) {
+            const match = /^\|\|([\s\S]+?)\|\|/.exec(src);
+            if (!match) return undefined;
+
+            return {
+                type: 'discordSpoiler',
+                raw: match[0],
+                text: match[1]
+            };
+        },
+        renderer(token) {
+            return `<span class="markdown-spoiler">${markedLib.parseInline(token.text || '')}</span>`;
+        }
+    };
+
+    const renderer = new markedLib.Renderer();
+    renderer.link = ({ href, title, tokens }) => {
+        const safeHref = sanitizeUrl(href || '');
+        const label = markedLib.Parser.parseInline(tokens || []);
+        const titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
+        const isExternal = /^https?:\/\//i.test(safeHref);
+        const relAttrs = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
+        return `<a href="${escapeHtml(safeHref)}"${titleAttr}${relAttrs}>${label}</a>`;
+    };
+
+    markedLib.use({
+        gfm: true,
+        breaks: true,
+        renderer,
+        extensions: [subtleBlockExtension, spoilerInlineExtension]
+    });
+}
+
+async function getMarkdownEngine() {
+    if (markdownEnginePromise) return markdownEnginePromise;
+
+    markdownEnginePromise = (async () => {
+        await loadExternalScript('https://cdn.jsdelivr.net/npm/marked/marked.min.js', 'marked');
+        await loadExternalScript('https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js', 'DOMPurify');
+
+        if (typeof window.marked === 'undefined' || typeof window.DOMPurify === 'undefined') {
+            throw new Error('Moteur Markdown indisponible');
+        }
+
+        setupMarkedExtensions(window.marked);
+
+        return {
+            marked: window.marked,
+            DOMPurify: window.DOMPurify
+        };
+    })();
+
+    return markdownEnginePromise;
+}
+
+async function renderMarkdown(markdownSource) {
+    const normalized = normalizeMarkdownForDiscordSyntax(markdownSource);
+
+    try {
+        const { marked, DOMPurify } = await getMarkdownEngine();
+        const renderedHtml = marked.parse(normalized);
+
+        return DOMPurify.sanitize(renderedHtml, {
+            USE_PROFILES: { html: true }
+        });
+    } catch (error) {
+        console.warn('[Markdown] Fallback parser utilise:', error);
+        return renderMarkdownFallback(normalized);
+    }
+}
+
+async function initMarkdownContent() {
+    const markdownBlocks = Array.from(document.querySelectorAll('[data-markdown-src]'));
+    if (markdownBlocks.length === 0) return;
+
+    await Promise.all(
+        markdownBlocks.map(async (block) => {
+            const sourcePath = block.getAttribute('data-markdown-src');
+            if (!sourcePath) return;
+
+            try {
+                const response = await fetch(sourcePath, { cache: 'no-store' });
+                if (!response.ok) {
+                    throw new Error(`Impossible de charger ${sourcePath} (${response.status})`);
+                }
+
+                const markdownSource = await response.text();
+                block.innerHTML = await renderMarkdown(markdownSource);
+            } catch (error) {
+                console.error('[Markdown] Erreur de chargement:', error);
+                block.innerHTML = '<p>Impossible de charger ce contenu pour le moment.</p>';
+            }
+        })
+    );
+}
 
 async function injectPartial(selector, partialPath) {
     const container = document.querySelector(selector);
@@ -47,6 +413,8 @@ async function initSharedLayout() {
     if (footer) {
         await injectPartial('[data-shared-footer]', '/partials/footer.html');
     }
+
+    await initMarkdownContent();
 
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
