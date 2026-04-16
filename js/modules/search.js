@@ -37,6 +37,12 @@ export class SearchManager {
                 gamme = 'Fraise Sauvage';
             } else if (product.id.includes('cacao')) {
                 gamme = 'Cacao Grand Cru';
+            } else if (product.id.includes('coco')) {
+                gamme = 'Délice Coco-Lacté';
+            } else if (product.id.includes('amande')) {
+                gamme = 'Amande Royale';
+            } else if (product.id.includes('amende')) {
+                gamme = 'Amende Forfaitaire';
             } else if (product.id.includes('millesime') || product.id.includes('or')) {
                 gamme = 'Prestige';
             } else {
@@ -135,6 +141,9 @@ applyFilters() {
         if (product.id.includes('banane')) return 'Banane Impériale';
         if (product.id.includes('fraise')) return 'Fraise Sauvage';
         if (product.id.includes('cacao')) return 'Cacao Grand Cru';
+        if (product.id.includes('coco')) return 'Délice Coco-Lacté';
+        if (product.id.includes('amande')) return 'Amande Royale';
+        if (product.id.includes('amende')) return 'Amende Forfaitaire';
         if (product.id.includes('millesime') || product.id.includes('or')) return 'Prestige';
         return 'Nature';
     }
@@ -156,6 +165,8 @@ export function initSearchUI(products, renderCallback) {
     const searchManager = new SearchManager(products);
     
     const searchInput = document.getElementById('search-input');
+    const gammeFilterSelect = document.getElementById('gamme-filter-select');
+    const containerFilterSelect = document.getElementById('container-filter-select');
     const gammeFilterButtons = document.querySelectorAll('[data-filter-gamme]');
     const containerFilterButtons = document.querySelectorAll('[data-filter-container]');
     const resetBtn = document.getElementById('reset-search');
@@ -188,18 +199,24 @@ export function initSearchUI(products, renderCallback) {
         }
     };
 
-    if (!searchInput || !gammeFilterButtons.length) {
+    if (!searchInput || (!gammeFilterButtons.length && !gammeFilterSelect)) {
         console.error('[SearchUI] Éléments de recherche non trouvés');
         return searchManager;
     }
 
     const persistedState = loadSearchState();
-    const initialGameme = persistedState.gamme || document.querySelector('[data-filter-gamme].active')?.dataset.filterGamme || 'all';
-    const initialContainer = persistedState.container || document.querySelector('[data-filter-container].active')?.dataset.filterContainer || 'all';
+    const initialGameme = persistedState.gamme || gammeFilterSelect?.value || document.querySelector('[data-filter-gamme].active')?.dataset.filterGamme || 'all';
+    const initialContainer = persistedState.container || containerFilterSelect?.value || document.querySelector('[data-filter-container].active')?.dataset.filterContainer || 'all';
     const initialQuery = persistedState.query || '';
 
     gammeFilterButtons.forEach((b) => b.classList.toggle('active', b.dataset.filterGamme === initialGameme));
+    if (gammeFilterSelect) {
+        gammeFilterSelect.value = initialGameme;
+    }
     containerFilterButtons.forEach((b) => b.classList.toggle('active', b.dataset.filterContainer === initialContainer));
+    if (containerFilterSelect) {
+        containerFilterSelect.value = initialContainer;
+    }
 
     searchManager.filterByGameme(initialGameme);
     searchManager.filterByContainer(initialContainer);
@@ -228,6 +245,9 @@ export function initSearchUI(products, renderCallback) {
             
             gammeFilterButtons.forEach(b => b.classList.remove('active'));
             e.currentTarget.classList.add('active');
+            if (gammeFilterSelect) {
+                gammeFilterSelect.value = gamme;
+            }
 
             searchManager.filterByGameme(gamme);
 
@@ -236,6 +256,18 @@ export function initSearchUI(products, renderCallback) {
         }, { passive: false });
     });
 
+    if (gammeFilterSelect) {
+        gammeFilterSelect.addEventListener('change', (e) => {
+            const gamme = e.currentTarget.value;
+
+            gammeFilterButtons.forEach(b => b.classList.toggle('active', b.dataset.filterGamme === gamme));
+
+            searchManager.filterByGameme(gamme);
+            renderCallback(searchManager.getFilteredProducts());
+            saveSearchState();
+        }, { passive: true });
+    }
+
     containerFilterButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -243,6 +275,9 @@ export function initSearchUI(products, renderCallback) {
 
             containerFilterButtons.forEach(b => b.classList.remove('active'));
             e.currentTarget.classList.add('active');
+            if (containerFilterSelect) {
+                containerFilterSelect.value = containerType;
+            }
 
             searchManager.filterByContainer(containerType);
 
@@ -250,6 +285,18 @@ export function initSearchUI(products, renderCallback) {
             saveSearchState();
         }, { passive: false });
     });
+
+    if (containerFilterSelect) {
+        containerFilterSelect.addEventListener('change', (e) => {
+            const containerType = e.currentTarget.value;
+
+            containerFilterButtons.forEach(b => b.classList.toggle('active', b.dataset.filterContainer === containerType));
+
+            searchManager.filterByContainer(containerType);
+            renderCallback(searchManager.getFilteredProducts());
+            saveSearchState();
+        }, { passive: true });
+    }
 
     if (resetBtn) {
         resetBtn.addEventListener('click', () => {
@@ -259,10 +306,16 @@ export function initSearchUI(products, renderCallback) {
             if (gammeFilterButtons.length > 0) {
                 gammeFilterButtons[0].classList.add('active');
             }
+            if (gammeFilterSelect) {
+                gammeFilterSelect.value = 'all';
+            }
 
             containerFilterButtons.forEach(b => b.classList.remove('active'));
             if (containerFilterButtons.length > 0) {
                 containerFilterButtons[0].classList.add('active');
+            }
+            if (containerFilterSelect) {
+                containerFilterSelect.value = 'all';
             }
             renderCallback(searchManager.getFilteredProducts());
             clearSearchState();

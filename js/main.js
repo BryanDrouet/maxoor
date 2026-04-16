@@ -90,7 +90,6 @@ const PRODUCTS_DATA = [
         searchable: true
     },
 
-    
     // --- GAMME CACAO GRAND CRU ---
     {
         id: 'lait-cacao-1l',
@@ -112,6 +111,78 @@ const PRODUCTS_DATA = [
         imageSrc: addCacheVersion("assets/images/products/cacao6L.png"),
         alt: `Pack Cacao Grand Cru (6x1L)`,
         description: `Pack premium Cacao Grand Cru.`,
+        searchable: true
+    },
+
+    // --- GAMME COCO ---
+    {
+        id: 'lait-coco-1l',
+        name: 'Délice Coco-Lacté (1L)',
+        price: 3.49,
+        oldPrice: null,
+        discountPercent: null,
+        imageSrc: addCacheVersion("assets/images/products/coco1L.png"), 
+        alt: `Délice Coco-Lacté - Bouteille 1L`,
+        description: `L'illusion parfaite des tropiques. 100% lait pur de nos bêtes, 0% végétal.`,
+        searchable: true
+    },
+    {
+        id: 'pack-coco-6l',
+        name: 'Pack Délice Coco-Lacté (6x1L)',
+        price: 17.49,
+        oldPrice: 20.94,
+        discountPercent: Math.round(((20.94 - 17.49) / 20.94) * 100),
+        imageSrc: addCacheVersion("assets/images/products/coco6L.png"),
+        alt: `Pack Délice Coco-Lacté (6x1L)`,
+        description: `Pack premium Délice Coco-Lacté.`,
+        searchable: true
+    },
+
+    // --- GAMME AMANDE ---
+    {
+        id: 'lait-amande-1l',
+        name: 'Élixir Amande Royale (1L)',
+        price: 3.49,
+        oldPrice: null,
+        discountPercent: null,
+        imageSrc: addCacheVersion("assets/images/products/amande1L.png"), 
+        alt: `Élixir Amande Royale - Bouteille 1L`,
+        description: `Le réconfort de l'amande, le miracle de l'alchimie laitière. (Sans fruits à coque).`,
+        searchable: true
+    },
+    {
+        id: 'pack-amande-6l',
+        name: 'Pack Amande Royale (6x1L)',
+        price: 17.49,
+        oldPrice: 20.94,
+        discountPercent: Math.round(((20.94 - 17.49) / 20.94) * 100),
+        imageSrc: addCacheVersion("assets/images/products/amande6L.png"),
+        alt: `Pack Amande Royale (6x1L)`,
+        description: `Pack premium Amande Royale.`,
+        searchable: true
+    },
+
+    // --- GAMME AMENDE (La blague fiscale) ---
+    {
+        id: 'lait-amende-1l',
+        name: 'Lait d\'Amende Forfaitaire (1L)',
+        price: 135.00,
+        oldPrice: null,
+        discountPercent: null,
+        imageSrc: addCacheVersion("assets/images/products/amende1L.png"), 
+        alt: `Lait d'Amende Forfaitaire - Bouteille 1L`,
+        description: `Un goût amer distillé à partir d'infractions. Le crime paie, votre peau aussi.`,
+        searchable: true
+    },
+    {
+        id: 'pack-amende-6l',
+        name: 'Pack Amende Forfaitaire (6x1L)',
+        price: 499.99,
+        oldPrice: 810.00,
+        discountPercent: Math.round(((810.00 - 499.99) / 810.00) * 100),
+        imageSrc: addCacheVersion("assets/images/products/amende6L.png"),
+        alt: `Pack Amende Forfaitaire (6x1L)`,
+        description: `Pack premium Amende Forfaitaire.`,
         searchable: true
     },
 

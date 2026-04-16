@@ -182,19 +182,28 @@
                     </button>
                 </div>
                 
-                <div class="filter-buttons">
-                    <button class="filter-btn active" data-filter-gamme="all">Tous les produits</button>
-                    <button class="filter-btn" data-filter-gamme="Nature">Nature</button>
-                    <button class="filter-btn" data-filter-gamme="Banane Impériale">Banane</button>
-                    <button class="filter-btn" data-filter-gamme="Fraise Sauvage">Fraise</button>
-                    <button class="filter-btn" data-filter-gamme="Cacao Grand Cru">Cacao</button>
-                    <button class="filter-btn" data-filter-gamme="Prestige">Prestige</button>
+                <div class="filter-select-wrap">
+                    <label class="visually-hidden" for="gamme-filter-select">Filtrer par gamme</label>
+                    <select id="gamme-filter-select" class="filter-select" aria-label="Filtrer les produits par gamme">
+                        <option value="all">Tous les produits</option>
+                        <option value="Nature">Nature</option>
+                        <option value="Banane Impériale">Banane</option>
+                        <option value="Fraise Sauvage">Fraise</option>
+                        <option value="Cacao Grand Cru">Cacao</option>
+                        <option value="Délice Coco-Lacté">Coco</option>
+                        <option value="Amande Royale">Amande</option>
+                        <option value="Amende Forfaitaire">Amende</option>
+                        <option value="Prestige">Prestige</option>
+                    </select>
                 </div>
 
-                <div class="filter-buttons">
-                    <button class="filter-btn active" data-filter-container="all">Tous les contenants</button>
-                    <button class="filter-btn" data-filter-container="bottle">Bouteilles seules</button>
-                    <button class="filter-btn" data-filter-container="pack">Packs</button>
+                <div class="filter-select-wrap">
+                    <label class="visually-hidden" for="container-filter-select">Filtrer par contenant</label>
+                    <select id="container-filter-select" class="filter-select" aria-label="Filtrer les produits par contenant">
+                        <option value="all">Tous les contenants</option>
+                        <option value="bottle">Bouteilles seules</option>
+                        <option value="pack">Packs</option>
+                    </select>
                 </div>
             </div>
             
