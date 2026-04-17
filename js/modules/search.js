@@ -3,8 +3,32 @@
  * Supporte la recherche regex et les filtres dynamiques
  */
 
-// Easter egg detection (SHA-256 de "cookie easter")
-const _EGG_HASH = '012ab64ff2b079cd2db28087cd5c71b3dfe259adede53bf997fb446aedc5b4be';
+// === GENERATION D'UN HASH SHA-256 SANS INSTALLATION :
+// Dans la console du navigateur (F12), exécuter :
+// crypto.subtle.digest('SHA-256', new TextEncoder().encode('X easter'.trim().toLowerCase())).then(h => console.log([...new Uint8Array(h)].map(b => b.toString(16).padStart(2, '0')).join('')))
+
+// Configuration des easter eggs.
+// - hashes: 1 hash ou plusieurs hash possibles pour le meme easter egg
+// - hiddenProductIds: IDs de produits caches a afficher pour cet easter egg
+//   (laisser [] pour afficher tous les produits caches)
+const EASTER_EGGS = [
+    {
+        id: 'cookie-portal',
+        hashes: [
+            '012ab64ff2b079cd2db28087cd5c71b3dfe259adede53bf997fb446aedc5b4be', // "cookie easter"
+            'a7b4921959366eef1ac212e67389e9e74b2ddc2496b4f1230de14e6ace546415', // "cookieeaster"
+            'a1c662c845df3bbe0b72647e9c00861337b124ef2244999c9f164495179a34dc', // "easter cookie"
+            '35bd04cce456406f28cd2a6d8d6d69f994a00f2969ab113ceaba720ede2621b3', // "eastercookie"
+            'd7e83e28a04b537e64424546b14caf9b67bad2f28dabce68116e0d372319fa00' // "cookie"
+        ],
+        hiddenProductIds: ['x7a3k2p9m4']
+    }
+];
+
+const EASTER_EGGS_WITH_HASH_SET = EASTER_EGGS.map(egg => ({
+    ...egg,
+    hashSet: new Set(egg.hashes)
+}));
 const SEARCH_STATE_KEY = 'maxoor_search_state';
 
 async function _computeHash(text) {
@@ -19,12 +43,13 @@ export class SearchManager {
     constructor(productsData) {
         this.allProducts = productsData.filter(p => p.searchable !== false);
         this.allHiddenProducts = productsData.filter(p => p._hidden === true);
+        this.easterEggs = EASTER_EGGS_WITH_HASH_SET;
         this.filteredProducts = [...this.allProducts];
         this.searchQuery = '';
         this.selectedGameme = 'all';
         this.selectedContainer = 'all';
         this.gammes = this.extractGamemes();
-        this.easterEggUnlocked = false;
+        this.activeEasterEggIds = new Set();
     }
 
     extractGamemes() {
@@ -67,14 +92,17 @@ export class SearchManager {
 
     async _checkEasterEgg() {
         if (this.searchQuery.length === 0) {
-            this.easterEggUnlocked = false;
+            this.activeEasterEggIds.clear();
             return;
         }
         try {
             const computedHash = await _computeHash(this.searchQuery);
-            this.easterEggUnlocked = (computedHash === _EGG_HASH);
+            const matchedEggs = this.easterEggs
+                .filter(egg => egg.hashSet.has(computedHash))
+                .map(egg => egg.id);
+            this.activeEasterEggIds = new Set(matchedEggs);
         } catch (e) {
-            this.easterEggUnlocked = false;
+            this.activeEasterEggIds.clear();
         }
     }
 
@@ -91,9 +119,9 @@ export class SearchManager {
     }
 
 applyFilters() {
-    // Cas spécial: si easter egg déverrouillé, retourner UNIQUEMENT le produit caché
-    if (this.easterEggUnlocked) {
-        this.filteredProducts = this.allHiddenProducts;
+    // Cas spécial: si un easter egg est déverrouillé, afficher uniquement ses produits cachés
+    if (this.activeEasterEggIds.size > 0) {
+        this.filteredProducts = this.getUnlockedHiddenProducts();
         return this.filteredProducts;
     }
 
@@ -132,6 +160,30 @@ applyFilters() {
     return this.filteredProducts;
 }
 
+    getUnlockedHiddenProducts() {
+        const targetedIds = new Set();
+        let showAllHiddenProducts = false;
+
+        this.easterEggs.forEach(egg => {
+            if (!this.activeEasterEggIds.has(egg.id)) {
+                return;
+            }
+
+            if (!Array.isArray(egg.hiddenProductIds) || egg.hiddenProductIds.length === 0) {
+                showAllHiddenProducts = true;
+                return;
+            }
+
+            egg.hiddenProductIds.forEach(id => targetedIds.add(id));
+        });
+
+        if (showAllHiddenProducts) {
+            return this.allHiddenProducts;
+        }
+
+        return this.allHiddenProducts.filter(product => targetedIds.has(product.id));
+    }
+
     getProductContainer(product) {
         if (product.id.includes('pack-')) return 'pack';
         return 'bottle';
@@ -156,6 +208,7 @@ applyFilters() {
         this.searchQuery = '';
         this.selectedGameme = 'all';
         this.selectedContainer = 'all';
+        this.activeEasterEggIds.clear();
         this.filteredProducts = [...this.allProducts];
         return this.filteredProducts;
     }
