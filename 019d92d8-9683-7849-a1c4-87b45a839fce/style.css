@@ -679,12 +679,12 @@ button {
 }
 
 /* Cartes non achetables */
-.generator-card:has(.buy-btn[style*="display: none"]) {
+.generator-card.locked {
     opacity: 0.5;
     cursor: default;
 }
 
-.generator-card:has(.buy-btn[style*="display: none"]):hover {
+.generator-card.locked:hover {
     border-color: rgba(0, 255, 234, 0.2);
     background: rgba(0, 61, 56, 0.6);
 }
@@ -753,6 +753,21 @@ button {
     justify-content: center;
     word-break: break-word;
     outline: none;
+}
+
+.buy-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-xs);
+}
+
+.buy-actions .buy-btn {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-xs);
+    margin-top: 0;
+    font-size: var(--font-xs);
 }
 
 .buy-btn:hover:not(:disabled) {

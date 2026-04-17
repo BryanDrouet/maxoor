@@ -184,6 +184,78 @@ const BATTLE_PASS_REWARDS = {
     25: { milestone: 50000000, reward: 'Maître de Maxoor! 🏆', icon: '<img src="icons/bp_trophy.png">' }
 };
 
+const GENERATOR_PROGRESS_ORDER = ['harvesters', 'herbalists', 'farmers', 'labs', 'facility'];
+const UPGRADE_PROGRESS_ORDER = Object.entries(UPGRADES)
+    .sort(([, a], [, b]) => {
+        if (a.requiredLevel !== b.requiredLevel) {
+            return a.requiredLevel - b.requiredLevel;
+        }
+        return a.cost - b.cost;
+    })
+    .map(([key]) => key);
+
+function getGeneratorUnlockStatus(key) {
+    const generator = GENERATORS[key];
+    if (!generator) {
+        return { available: false, message: 'Usine inconnue' };
+    }
+
+    if (GAME_STATE.battlePass.level < generator.requiredLevel) {
+        return {
+            available: false,
+            message: `Niveau ${generator.requiredLevel} requis`
+        };
+    }
+
+    const index = GENERATOR_PROGRESS_ORDER.indexOf(key);
+    if (index <= 0) {
+        return { available: true, message: '' };
+    }
+
+    const previousKey = GENERATOR_PROGRESS_ORDER[index - 1];
+    const previousGenerator = GENERATORS[previousKey];
+    const previousCount = GAME_STATE.generators[previousKey]?.count || 0;
+    if (previousCount < 10) {
+        return {
+            available: false,
+            message: `Achetez 10 ${previousGenerator.name} (${previousCount}/10)`
+        };
+    }
+
+    return { available: true, message: '' };
+}
+
+function getUpgradeUnlockStatus(key) {
+    const upgrade = UPGRADES[key];
+    if (!upgrade) {
+        return { available: false, message: 'Amélioration inconnue' };
+    }
+
+    if (GAME_STATE.battlePass.level < upgrade.requiredLevel) {
+        return {
+            available: false,
+            message: `Niveau ${upgrade.requiredLevel} requis`
+        };
+    }
+
+    const index = UPGRADE_PROGRESS_ORDER.indexOf(key);
+    if (index <= 0) {
+        return { available: true, message: '' };
+    }
+
+    const previousKey = UPGRADE_PROGRESS_ORDER[index - 1];
+    const previousUpgrade = UPGRADES[previousKey];
+    const previousPurchased = GAME_STATE.upgrades[previousKey]?.purchased;
+    if (!previousPurchased) {
+        return {
+            available: false,
+            message: `Achetez d'abord "${previousUpgrade.name}"`
+        };
+    }
+
+    return { available: true, message: '' };
+}
+
 function initGame() {
     if (window.lucide) {
         lucide.createIcons();
@@ -539,10 +611,14 @@ function renderGenerators() {
         const count = GAME_STATE.generators[key].count;
         const cost = calculateCost(gen.baseCost, count);
         const hasMoney = GAME_STATE.milk >= cost;
-        const available = GAME_STATE.battlePass.level >= gen.requiredLevel;
+        const unlockStatus = getGeneratorUnlockStatus(key);
+        const available = unlockStatus.available;
         const canBuy = hasMoney && available;
+        const canBuyTen = available && canAffordGeneratorQuantity(key, 10);
+        const maxAffordable = available ? getMaxAffordableGeneratorPurchases(key) : 0;
+        const canBuyMax = available && maxAffordable > 0;
         const card = document.createElement('div');
-        card.className = 'generator-card';
+        card.className = `generator-card ${!canBuy ? 'locked' : ''}`;
         card.setAttribute('data-price', Math.round(cost));
         card.setAttribute('data-id', key);
         card.innerHTML = `
@@ -551,12 +627,24 @@ function renderGenerators() {
             <div class="generator-effect">${gen.description}</div>
             <div class="generator-price">💰 ${formatNumber(Math.round(cost))}</div>
             <div class="generator-count">Vous avez: ${count}</div>
-            ${!available ? `<div style="color: #888; font-size: 0.85rem;">Niveau ${gen.requiredLevel} requis</div>` : ''}
-            <button class="buy-btn" 
-                    onclick="buyGenerator('${key}')" 
-                    style="display: ${canBuy ? 'block' : 'none'}">
-                Acheter
-            </button>
+                ${!available ? `<div style="color: #888; font-size: 0.85rem;">${unlockStatus.message}</div>` : ''}
+            <div class="buy-actions">
+                <button class="buy-btn" data-buy-type="one"
+                        onclick="buyGenerator('${key}')"
+                        ${canBuy ? '' : 'disabled'}>
+                    Acheter
+                </button>
+                <button class="buy-btn" data-buy-type="ten"
+                        onclick="buyGeneratorQuantity('${key}', 10)"
+                        ${canBuyTen ? '' : 'disabled'}>
+                    x10
+                </button>
+                <button class="buy-btn" data-buy-type="max"
+                        onclick="buyGeneratorMax('${key}')"
+                        ${canBuyMax ? '' : 'disabled'}>
+                    Tout
+                </button>
+            </div>
         `;
         grid.appendChild(card);
     });
@@ -573,10 +661,12 @@ function renderUpgrades() {
     });
     sortedUpgrades.forEach(([key, upgrade]) => {
         const purchased = GAME_STATE.upgrades[key].purchased;
-        const available = GAME_STATE.battlePass.level >= upgrade.requiredLevel;
+        const unlockStatus = getUpgradeUnlockStatus(key);
+        const available = unlockStatus.available;
         const hasMoney = GAME_STATE.milk >= upgrade.cost;
+        const canBuy = available && hasMoney;
         const card = document.createElement('div');
-        card.className = `upgrade-card ${!available ? 'locked' : ''} ${purchased ? 'purchased' : ''}`;
+        card.className = `upgrade-card ${(!purchased && !canBuy) ? 'locked' : ''} ${purchased ? 'purchased' : ''}`;
         card.setAttribute('data-price', upgrade.cost);
         card.setAttribute('data-id', key);
         let html = `
@@ -585,10 +675,10 @@ function renderUpgrades() {
             <div class="upgrade-effect">${upgrade.effect}</div>
                         ${purchased ? '<div class="upgrade-bought-label">✓ ACHETÉ</div>' : 
               `<div class="upgrade-price">💰 ${formatNumber(upgrade.cost)}</div>`}
-            ${!available ? `<div style="color: #888; font-size: 0.85rem;">Niveau ${upgrade.requiredLevel} requis</div>` : ''}
+                        ${!available ? `<div style="color: #888; font-size: 0.85rem;">${unlockStatus.message}</div>` : ''}
         `;
-        if (!purchased && available) {
-            html += `<button class="buy-btn" onclick="buyUpgrade('${key}')" ${hasMoney ? '' : 'disabled'}>Acheter</button>`;
+        if (!purchased) {
+            html += `<button class="buy-btn" onclick="buyUpgrade('${key}')" ${canBuy ? '' : 'disabled'}>Acheter</button>`;
         }
         card.innerHTML = html;
         grid.appendChild(card);
@@ -596,27 +686,84 @@ function renderUpgrades() {
 }
 
 function buyGenerator(key) {
+    buyGeneratorQuantity(key, 1);
+}
+
+function calculateGeneratorBatchCost(key, quantity) {
     const gen = GENERATORS[key];
+    if (!gen || quantity <= 0) return 0;
     const count = GAME_STATE.generators[key].count;
-    const cost = calculateCost(gen.baseCost, count);
-    if (GAME_STATE.battlePass.level < gen.requiredLevel) {
-        alert(`❌ Tu dois atteindre le niveau ${gen.requiredLevel} (tu es au niveau ${GAME_STATE.battlePass.level})`);
+    let totalCost = 0;
+    for (let i = 0; i < quantity; i++) {
+        totalCost += calculateCost(gen.baseCost, count + i);
+    }
+    return totalCost;
+}
+
+function canAffordGeneratorQuantity(key, quantity) {
+    const totalCost = calculateGeneratorBatchCost(key, quantity);
+    return GAME_STATE.milk >= totalCost;
+}
+
+function getMaxAffordableGeneratorPurchases(key) {
+    const gen = GENERATORS[key];
+    if (!gen) return 0;
+    let simulatedMilk = GAME_STATE.milk;
+    let simulatedCount = GAME_STATE.generators[key].count;
+    let purchases = 0;
+    const MAX_SIMULATED_PURCHASES = 50000;
+
+    while (purchases < MAX_SIMULATED_PURCHASES) {
+        const nextCost = calculateCost(gen.baseCost, simulatedCount);
+        if (simulatedMilk < nextCost) break;
+        simulatedMilk -= nextCost;
+        simulatedCount++;
+        purchases++;
+    }
+
+    return purchases;
+}
+
+function buyGeneratorQuantity(key, quantity) {
+    const gen = GENERATORS[key];
+    if (!gen || quantity <= 0) return;
+    const unlockStatus = getGeneratorUnlockStatus(key);
+    if (!unlockStatus.available) {
+        alert(`❌ ${unlockStatus.message}`);
         return;
     }
-    if (GAME_STATE.milk >= cost) {
-        GAME_STATE.milk -= cost;
-        GAME_STATE.generators[key].count++;
+
+    const totalCost = calculateGeneratorBatchCost(key, quantity);
+    if (GAME_STATE.milk >= totalCost) {
+        GAME_STATE.milk -= totalCost;
+        GAME_STATE.generators[key].count += quantity;
         renderAll();
         saveGame();
     } else {
-        alert(`❌ Tu n'as pas assez d'argent! Il te manque ${formatNumber(Math.round(cost - GAME_STATE.milk))}`);
+        alert(`❌ Tu n'as pas assez d'argent! Il te manque ${formatNumber(Math.round(totalCost - GAME_STATE.milk))}`);
     }
+}
+
+function buyGeneratorMax(key) {
+    const unlockStatus = getGeneratorUnlockStatus(key);
+    if (!unlockStatus.available) {
+        alert(`❌ ${unlockStatus.message}`);
+        return;
+    }
+
+    const maxPurchases = getMaxAffordableGeneratorPurchases(key);
+    if (maxPurchases <= 0) {
+        return;
+    }
+
+    buyGeneratorQuantity(key, maxPurchases);
 }
 
 function buyUpgrade(key) {
     const upgrade = UPGRADES[key];
-    if (GAME_STATE.battlePass.level < upgrade.requiredLevel) {
-        alert(`❌ Tu dois atteindre le niveau ${upgrade.requiredLevel} (tu es au niveau ${GAME_STATE.battlePass.level})`);
+    const unlockStatus = getUpgradeUnlockStatus(key);
+    if (!unlockStatus.available) {
+        alert(`❌ ${unlockStatus.message}`);
         return;
     }
     if (GAME_STATE.milk >= upgrade.cost && 
@@ -851,33 +998,48 @@ function updateStatsPanel() {
 }
 
 function updateBuyButtons() {
-    document.querySelectorAll('.buy-btn').forEach(btn => {
-        if (btn.textContent.includes('ACHETÉ')) return;
-        const parent = btn.closest('.generator-card, .upgrade-card');
-        if (!parent) return;
-        const price = parseInt(parent.getAttribute('data-price'));
-        const key = parent.getAttribute('data-id');
-        if (isNaN(price) || !key) return;
-        
-        let requiredLevel = 0;
-        const isGenerator = parent.classList.contains('generator-card');
-        
-        if (isGenerator) {
-            requiredLevel = GENERATORS[key].requiredLevel;
+    document.querySelectorAll('.generator-card').forEach(card => {
+        const key = card.getAttribute('data-id');
+        if (!key || !GENERATORS[key]) return;
+
+        const unlockStatus = getGeneratorUnlockStatus(key);
+        const canBuyOne = unlockStatus.available && canAffordGeneratorQuantity(key, 1);
+        const canBuyTen = unlockStatus.available && canAffordGeneratorQuantity(key, 10);
+        const canBuyMax = unlockStatus.available && getMaxAffordableGeneratorPurchases(key) > 0;
+
+        if (canBuyOne) {
+            card.classList.remove('locked');
         } else {
-            requiredLevel = UPGRADES[key].requiredLevel;
-        }
-        
-        const hasLevel = GAME_STATE.battlePass.level >= requiredLevel;
-        const hasMoney = GAME_STATE.milk >= price;
-
-        if (isGenerator) {
-            btn.style.display = (hasLevel && hasMoney) ? 'block' : 'none';
-            return;
+            card.classList.add('locked');
         }
 
-        btn.style.display = hasLevel ? 'block' : 'none';
-        btn.disabled = !hasMoney;
+        const oneBtn = card.querySelector('.buy-btn[data-buy-type="one"]');
+        const tenBtn = card.querySelector('.buy-btn[data-buy-type="ten"]');
+        const maxBtn = card.querySelector('.buy-btn[data-buy-type="max"]');
+
+        if (oneBtn) oneBtn.disabled = !canBuyOne;
+        if (tenBtn) tenBtn.disabled = !canBuyTen;
+        if (maxBtn) maxBtn.disabled = !canBuyMax;
+    });
+
+    document.querySelectorAll('.upgrade-card').forEach(card => {
+        if (card.classList.contains('purchased')) return;
+        const key = card.getAttribute('data-id');
+        if (!key || !UPGRADES[key]) return;
+
+        const unlockStatus = getUpgradeUnlockStatus(key);
+        const canBuy = unlockStatus.available && GAME_STATE.milk >= UPGRADES[key].cost;
+        const btn = card.querySelector('.buy-btn');
+
+        if (canBuy) {
+            card.classList.remove('locked');
+        } else {
+            card.classList.add('locked');
+        }
+
+        if (btn) {
+            btn.disabled = !canBuy;
+        }
     });
 }
 
