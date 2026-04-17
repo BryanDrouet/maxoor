@@ -37,6 +37,15 @@ function getValidatedGameSpeed() {
 const GAME_SPEED = getValidatedGameSpeed();
 const FINAL_REBIRTH_AT = 3;
 const PRESTIGE_REQUIRED_FOR_REBIRTH = 3;
+const MAX_GENERATOR_BATCH_SIMULATION = 64;
+const GENERATOR_COST_GROWTH = 1.2;
+const UI_REFRESH_INTERVAL_MS = 250;
+
+const UI_CACHE = {
+    generatorCards: new Map(),
+    upgradeCards: new Map(),
+    lastBuyButtonsRefreshAt: 0
+};
 
 const GENERATORS = {
     harvesters: {
@@ -601,6 +610,7 @@ function renderAll() {
 function renderGenerators() {
     const grid = document.getElementById('generators-grid');
     grid.innerHTML = '';
+    UI_CACHE.generatorCards.clear();
     const sortedGenerators = Object.entries(GENERATORS).sort(([, a], [, b]) => {
         if (a.requiredLevel !== b.requiredLevel) {
             return a.requiredLevel - b.requiredLevel;
@@ -623,6 +633,9 @@ function renderGenerators() {
         card.className = `generator-card ${!canBuy ? 'locked' : ''}`;
         card.setAttribute('data-price', Math.round(cost));
         card.setAttribute('data-id', key);
+        const oneButtonMarkup = `<span class="buy-btn-main">Acheter</span><span class="buy-btn-price">${formatNumber(Math.round(cost))}</span>`;
+        const tenButtonMarkup = `<span class="buy-btn-main">x10</span><span class="buy-btn-price">${formatNumber(Math.round(costForTen))}</span>`;
+        const maxButtonMarkup = `<span class="buy-btn-main">Tout</span><span class="buy-btn-price">${canBuyMax ? formatNumber(Math.round(costForMax)) : '---'}</span>`;
         card.innerHTML = `
             <div class="generator-icon">${gen.icon}</div>
             <div class="generator-name">${gen.name}</div>
@@ -633,39 +646,53 @@ function renderGenerators() {
                 <button class="buy-btn" data-buy-type="one"
                         onclick="buyGenerator('${key}')"
                         ${canBuy ? '' : 'disabled'}>
-                    <span class="buy-btn-main">Acheter</span>
-                    <span class="buy-btn-price">${formatNumber(Math.round(cost))}</span>
+                    ${oneButtonMarkup}
                 </button>
                 <button class="buy-btn" data-buy-type="ten"
                         onclick="buyGeneratorQuantity('${key}', 10)"
                         ${canBuyTen ? '' : 'disabled'}>
-                    <span class="buy-btn-main">x10</span>
-                    <span class="buy-btn-price">${formatNumber(Math.round(costForTen))}</span>
+                    ${tenButtonMarkup}
                 </button>
                 <button class="buy-btn" data-buy-type="max"
                         onclick="buyGeneratorMax('${key}')"
                         ${canBuyMax ? '' : 'disabled'}>
-                    <span class="buy-btn-main">Tout</span>
-                    <span class="buy-btn-price">${canBuyMax ? formatNumber(Math.round(costForMax)) : '---'}</span>
+                    ${maxButtonMarkup}
                 </button>
             </div>
         `;
+        UI_CACHE.generatorCards.set(key, {
+            card,
+            countEl: card.querySelector('.generator-count'),
+            oneBtn: card.querySelector('.buy-btn[data-buy-type="one"]'),
+            tenBtn: card.querySelector('.buy-btn[data-buy-type="ten"]'),
+            maxBtn: card.querySelector('.buy-btn[data-buy-type="max"]'),
+            lastCount: count,
+            lastCanBuy: canBuy,
+            lastCanBuyTen: canBuyTen,
+            lastCanBuyMax: canBuyMax,
+            lastCost: Math.round(cost),
+            lastCostTen: Math.round(costForTen),
+            lastCostMax: Math.round(costForMax),
+            lastUnlockMessage: available ? '' : unlockStatus.message
+        });
         grid.appendChild(card);
     });
 }
 
 function setGeneratorButtonDisplay(button, mainText, priceText) {
     if (!button) return;
-    if (typeof priceText === 'string') {
-        button.innerHTML = `<span class="buy-btn-main">${mainText}</span><span class="buy-btn-price">${priceText}</span>`;
-        return;
-    }
-    button.innerHTML = `<span class="buy-btn-main">${mainText}</span>`;
+    const nextMarkup = typeof priceText === 'string'
+        ? `<span class="buy-btn-main">${mainText}</span><span class="buy-btn-price">${priceText}</span>`
+        : `<span class="buy-btn-main">${mainText}</span>`;
+    if (button.dataset.lastMarkup === nextMarkup) return;
+    button.dataset.lastMarkup = nextMarkup;
+    button.innerHTML = nextMarkup;
 }
 
 function renderUpgrades() {
     const grid = document.getElementById('upgrades-grid');
     grid.innerHTML = '';
+    UI_CACHE.upgradeCards.clear();
     const sortedUpgrades = Object.entries(UPGRADES).sort(([, a], [, b]) => {
         if (a.requiredLevel !== b.requiredLevel) {
             return a.requiredLevel - b.requiredLevel;
@@ -682,18 +709,25 @@ function renderUpgrades() {
         card.className = `upgrade-card ${(!purchased && !canBuy) ? 'locked' : ''} ${purchased ? 'purchased' : ''}`;
         card.setAttribute('data-price', upgrade.cost);
         card.setAttribute('data-id', key);
+        const buyButtonMarkup = `<span class="buy-btn-main">Acheter</span><span class="buy-btn-price">${formatNumber(upgrade.cost)}</span>`;
         let html = `
             <div class="upgrade-icon">${upgrade.icon}</div>
             <div class="upgrade-name">${upgrade.name}</div>
             <div class="upgrade-effect">${upgrade.effect}</div>
-                        ${purchased ? '<div class="upgrade-bought-label">✓ ACHETÉ</div>' : 
-              `<div class="upgrade-price">💰 ${formatNumber(upgrade.cost)}</div>`}
+                        ${purchased ? '<div class="upgrade-bought-label">✓ ACHETÉ</div>' : ''}
                         ${!available ? `<div style="color: #888; font-size: 0.85rem;">${unlockStatus.message}</div>` : ''}
         `;
         if (!purchased) {
-            html += `<button class="buy-btn" onclick="buyUpgrade('${key}')" ${canBuy ? '' : 'disabled'}>Acheter</button>`;
+            html += `<button class="buy-btn" onclick="buyUpgrade('${key}')" ${canBuy ? '' : 'disabled'}>${buyButtonMarkup}</button>`;
         }
         card.innerHTML = html;
+        UI_CACHE.upgradeCards.set(key, {
+            card,
+            btn: card.querySelector('.buy-btn'),
+            lastCanBuy: canBuy,
+            lastPurchased: purchased,
+            lastUnlockMessage: available ? '' : unlockStatus.message
+        });
         grid.appendChild(card);
     });
 }
@@ -721,12 +755,27 @@ function canAffordGeneratorQuantity(key, quantity) {
 function getMaxAffordableGeneratorPurchases(key) {
     const gen = GENERATORS[key];
     if (!gen) return 0;
-    let simulatedMilk = GAME_STATE.milk;
-    let simulatedCount = GAME_STATE.generators[key].count;
-    let purchases = 0;
-    const MAX_SIMULATED_PURCHASES = 50000;
+    const currentCount = GAME_STATE.generators[key].count;
+    const currentCost = gen.baseCost * Math.pow(GENERATOR_COST_GROWTH, currentCount);
+    if (GAME_STATE.milk < currentCost) {
+        return 0;
+    }
 
-    while (purchases < MAX_SIMULATED_PURCHASES) {
+    const growthRatio = GENERATOR_COST_GROWTH;
+    const estimatedPurchases = Math.floor(
+        Math.log(1 + ((GAME_STATE.milk * (growthRatio - 1)) / currentCost)) / Math.log(growthRatio)
+    );
+    const safeEstimate = Math.max(0, Math.min(estimatedPurchases, 50000));
+
+    if (safeEstimate > MAX_GENERATOR_BATCH_SIMULATION) {
+        return safeEstimate;
+    }
+
+    let simulatedMilk = GAME_STATE.milk;
+    let simulatedCount = currentCount;
+    let purchases = 0;
+
+    while (purchases < 50000) {
         const nextCost = calculateCost(gen.baseCost, simulatedCount);
         if (simulatedMilk < nextCost) break;
         simulatedMilk -= nextCost;
@@ -1011,59 +1060,75 @@ function updateStatsPanel() {
 }
 
 function updateBuyButtons() {
-    document.querySelectorAll('.generator-card').forEach(card => {
-        const key = card.getAttribute('data-id');
-        if (!key || !GENERATORS[key]) return;
+    const now = performance.now();
+    if (now - UI_CACHE.lastBuyButtonsRefreshAt < UI_REFRESH_INTERVAL_MS) {
+        return;
+    }
+    UI_CACHE.lastBuyButtonsRefreshAt = now;
 
+    UI_CACHE.generatorCards.forEach((entry, key) => {
         const unlockStatus = getGeneratorUnlockStatus(key);
-        const canBuyOne = unlockStatus.available && canAffordGeneratorQuantity(key, 1);
-        const canBuyTen = unlockStatus.available && canAffordGeneratorQuantity(key, 10);
+        const count = GAME_STATE.generators[key].count;
+        const cost = calculateCost(GENERATORS[key].baseCost, count);
+        const canBuyOne = unlockStatus.available && GAME_STATE.milk >= cost;
+        const costForTen = calculateGeneratorBatchCost(key, 10);
+        const canBuyTen = unlockStatus.available && GAME_STATE.milk >= costForTen;
         const maxAffordable = unlockStatus.available ? getMaxAffordableGeneratorPurchases(key) : 0;
         const canBuyMax = unlockStatus.available && maxAffordable > 0;
-        const costForTen = calculateGeneratorBatchCost(key, 10);
-        const costForMax = maxAffordable > 0 ? calculateGeneratorBatchCost(key, maxAffordable) : 0;
+        const costForMax = canBuyMax ? calculateGeneratorBatchCost(key, maxAffordable) : 0;
 
-        if (canBuyOne) {
-            card.classList.remove('locked');
-        } else {
-            card.classList.add('locked');
+        const locked = !canBuyOne;
+        if (entry.card.classList.contains('locked') !== locked) {
+            entry.card.classList.toggle('locked', locked);
         }
 
-        const oneBtn = card.querySelector('.buy-btn[data-buy-type="one"]');
-        const tenBtn = card.querySelector('.buy-btn[data-buy-type="ten"]');
-        const maxBtn = card.querySelector('.buy-btn[data-buy-type="max"]');
+        const nextCountText = `Vous avez: ${count}`;
+        if (entry.lastCount !== count && entry.countEl) {
+            entry.countEl.textContent = nextCountText;
+            entry.lastCount = count;
+        }
 
-        if (oneBtn) {
-            oneBtn.disabled = !canBuyOne;
-            setGeneratorButtonDisplay(oneBtn, 'Acheter', formatNumber(Math.round(calculateGeneratorBatchCost(key, 1))));
+        const nextOneDisabled = !canBuyOne;
+        if (entry.oneBtn && entry.oneBtn.disabled !== nextOneDisabled) {
+            entry.oneBtn.disabled = nextOneDisabled;
         }
-        if (tenBtn) {
-            tenBtn.disabled = !canBuyTen;
-            setGeneratorButtonDisplay(tenBtn, 'x10', formatNumber(Math.round(costForTen)));
+        const nextOneMarkup = `<span class="buy-btn-main">Acheter</span><span class="buy-btn-price">${formatNumber(Math.round(cost))}</span>`;
+        if (entry.oneBtn && entry.oneBtn.dataset.lastMarkup !== nextOneMarkup) {
+            setGeneratorButtonDisplay(entry.oneBtn, 'Acheter', formatNumber(Math.round(cost)));
         }
-        if (maxBtn) {
-            maxBtn.disabled = !canBuyMax;
-            setGeneratorButtonDisplay(maxBtn, 'Tout', canBuyMax ? formatNumber(Math.round(costForMax)) : '---');
+
+        const nextTenDisabled = !canBuyTen;
+        if (entry.tenBtn && entry.tenBtn.disabled !== nextTenDisabled) {
+            entry.tenBtn.disabled = nextTenDisabled;
+        }
+        const nextTenMarkup = `<span class="buy-btn-main">x10</span><span class="buy-btn-price">${formatNumber(Math.round(costForTen))}</span>`;
+        if (entry.tenBtn && entry.tenBtn.dataset.lastMarkup !== nextTenMarkup) {
+            setGeneratorButtonDisplay(entry.tenBtn, 'x10', formatNumber(Math.round(costForTen)));
+        }
+
+        const nextMaxDisabled = !canBuyMax;
+        if (entry.maxBtn && entry.maxBtn.disabled !== nextMaxDisabled) {
+            entry.maxBtn.disabled = nextMaxDisabled;
+        }
+        const nextMaxMarkup = `<span class="buy-btn-main">Tout</span><span class="buy-btn-price">${canBuyMax ? formatNumber(Math.round(costForMax)) : '---'}</span>`;
+        if (entry.maxBtn && entry.maxBtn.dataset.lastMarkup !== nextMaxMarkup) {
+            setGeneratorButtonDisplay(entry.maxBtn, 'Tout', canBuyMax ? formatNumber(Math.round(costForMax)) : '---');
         }
     });
 
-    document.querySelectorAll('.upgrade-card').forEach(card => {
-        if (card.classList.contains('purchased')) return;
-        const key = card.getAttribute('data-id');
-        if (!key || !UPGRADES[key]) return;
+    UI_CACHE.upgradeCards.forEach((entry, key) => {
+        if (entry.lastPurchased) return;
 
         const unlockStatus = getUpgradeUnlockStatus(key);
         const canBuy = unlockStatus.available && GAME_STATE.milk >= UPGRADES[key].cost;
-        const btn = card.querySelector('.buy-btn');
 
-        if (canBuy) {
-            card.classList.remove('locked');
-        } else {
-            card.classList.add('locked');
+        const locked = !canBuy;
+        if (entry.card.classList.contains('locked') !== locked) {
+            entry.card.classList.toggle('locked', locked);
         }
 
-        if (btn) {
-            btn.disabled = !canBuy;
+        if (entry.btn && entry.btn.disabled !== !canBuy) {
+            entry.btn.disabled = !canBuy;
         }
     });
 }
