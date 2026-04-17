@@ -297,6 +297,98 @@ button {
     word-break: break-word;
 }
 
+/* GAME MODAL */
+.game-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl);
+}
+
+.game-modal[hidden] {
+    display: none !important;
+}
+
+.game-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 8, 7, 0.78);
+    backdrop-filter: blur(4px);
+}
+
+.game-modal__panel {
+    position: relative;
+    width: min(520px, calc(100vw - 40px));
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(0, 255, 234, 0.35);
+    background: linear-gradient(165deg, rgba(0, 61, 56, 0.96), rgba(0, 36, 33, 0.96));
+    box-shadow: 0 0 35px rgba(0, 255, 234, 0.18);
+    padding: var(--spacing-xl);
+}
+
+.game-modal__title {
+    margin: 0;
+    font-family: var(--font-title);
+    font-size: var(--font-2xl);
+    color: var(--cyan);
+    line-height: 1.15;
+}
+
+.game-modal__message {
+    margin-top: var(--spacing-lg);
+    margin-bottom: 0;
+    font-size: var(--font-md);
+    line-height: 1.5;
+    color: var(--text-light);
+    white-space: pre-line;
+}
+
+.game-modal__actions {
+    margin-top: var(--spacing-xl);
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-md);
+}
+
+.game-modal__btn {
+    min-width: 112px;
+    height: 36px;
+    padding: 0 var(--spacing-lg);
+    border-radius: var(--radius-md);
+}
+
+.game-modal__btn span {
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.game-modal__btn--secondary {
+    border-color: rgba(176, 212, 208, 0.45);
+    color: var(--text-muted);
+    background: rgba(176, 212, 208, 0.08);
+}
+
+.game-modal__btn--secondary:hover {
+    border-color: rgba(176, 212, 208, 0.75);
+    background: rgba(176, 212, 208, 0.14);
+}
+
+.game-modal__btn--primary {
+    border-color: rgba(0, 255, 234, 0.55);
+    color: var(--cyan);
+    background: rgba(0, 255, 234, 0.14);
+}
+
+.game-modal__btn--primary:hover {
+    border-color: var(--cyan);
+    background: rgba(0, 255, 234, 0.24);
+}
+
 /* MAIN GRID */
 .main-grid {
     display: grid;

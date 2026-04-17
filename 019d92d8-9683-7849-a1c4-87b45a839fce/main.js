@@ -47,6 +47,17 @@ const UI_CACHE = {
     lastBuyButtonsRefreshAt: 0
 };
 
+const DIALOG_STATE = {
+    root: null,
+    panel: null,
+    title: null,
+    message: null,
+    confirmBtn: null,
+    cancelBtn: null,
+    closeBackdrop: null,
+    queue: Promise.resolve()
+};
+
 const GENERATORS = {
     harvesters: {
         name: 'Stagiaires Traiteurs de Lait',
@@ -269,6 +280,7 @@ function initGame() {
     if (window.lucide) {
         lucide.createIcons();
     }
+    initDialogElements();
     loadGame();
     initGenerators();
     initUpgrades();
@@ -323,19 +335,115 @@ function setupEventListeners() {
     document.getElementById('prestige-btn').addEventListener('click', handlePrestigeClick);
 }
 
-function handlePrestigeClick() {
+function initDialogElements() {
+    DIALOG_STATE.root = document.getElementById('game-modal');
+    DIALOG_STATE.panel = DIALOG_STATE.root?.querySelector('.game-modal__panel') || null;
+    DIALOG_STATE.title = document.getElementById('game-modal-title');
+    DIALOG_STATE.message = document.getElementById('game-modal-message');
+    DIALOG_STATE.confirmBtn = document.getElementById('game-modal-confirm');
+    DIALOG_STATE.cancelBtn = document.getElementById('game-modal-cancel');
+    DIALOG_STATE.closeBackdrop = DIALOG_STATE.root?.querySelector('[data-game-modal-close]') || null;
+}
+
+function enqueueDialog(factory) {
+    const scheduled = DIALOG_STATE.queue.then(() => factory(), () => factory());
+    DIALOG_STATE.queue = scheduled.catch(() => {});
+    return scheduled;
+}
+
+function showDialog(options = {}) {
+    return enqueueDialog(() => new Promise((resolve) => {
+        if (!DIALOG_STATE.root || !DIALOG_STATE.panel || !DIALOG_STATE.title || !DIALOG_STATE.message || !DIALOG_STATE.confirmBtn || !DIALOG_STATE.cancelBtn) {
+            resolve(false);
+            return;
+        }
+
+        const {
+            title = 'Notification',
+            message = '',
+            confirmText = 'OK',
+            cancelText = 'Annuler',
+            showCancel = false,
+            canCloseWithBackdrop = true
+        } = options;
+
+        let settled = false;
+        const previousActive = document.activeElement;
+
+        DIALOG_STATE.title.textContent = title;
+        DIALOG_STATE.message.textContent = message;
+        DIALOG_STATE.confirmBtn.textContent = confirmText;
+        DIALOG_STATE.cancelBtn.textContent = cancelText;
+        DIALOG_STATE.cancelBtn.hidden = !showCancel;
+        DIALOG_STATE.root.hidden = false;
+
+        const settle = (value) => {
+            if (settled) return;
+            settled = true;
+            DIALOG_STATE.root.hidden = true;
+
+            document.removeEventListener('keydown', onKeydown);
+            DIALOG_STATE.confirmBtn.removeEventListener('click', onConfirm);
+            DIALOG_STATE.cancelBtn.removeEventListener('click', onCancel);
+            DIALOG_STATE.closeBackdrop?.removeEventListener('click', onBackdrop);
+
+            if (previousActive && typeof previousActive.focus === 'function') {
+                previousActive.focus({ preventScroll: true });
+            }
+
+            resolve(value);
+        };
+
+        const onConfirm = () => settle(true);
+        const onCancel = () => settle(false);
+        const onBackdrop = () => {
+            if (canCloseWithBackdrop) {
+                settle(false);
+            }
+        };
+        const onKeydown = (event) => {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                settle(false);
+                return;
+            }
+
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                settle(true);
+            }
+        };
+
+        document.addEventListener('keydown', onKeydown);
+        DIALOG_STATE.confirmBtn.addEventListener('click', onConfirm);
+        DIALOG_STATE.cancelBtn.addEventListener('click', onCancel);
+        DIALOG_STATE.closeBackdrop?.addEventListener('click', onBackdrop);
+        DIALOG_STATE.confirmBtn.focus({ preventScroll: true });
+    }));
+}
+
+function showGameAlert(message, title = 'Information') {
+    return showDialog({ title, message, confirmText: 'OK', showCancel: false, canCloseWithBackdrop: true });
+}
+
+function showGameConfirm(message, title = 'Confirmation') {
+    return showDialog({ title, message, confirmText: 'Confirmer', cancelText: 'Annuler', showCancel: true, canCloseWithBackdrop: true });
+}
+
+async function handlePrestigeClick() {
     const canRebirth = GAME_STATE.battlePass.level >= 20 && GAME_STATE.prestigeLevel >= PRESTIGE_REQUIRED_FOR_REBIRTH;
     if (canRebirth) {
         const isFinalRebirth = GAME_STATE.rebirthCount >= FINAL_REBIRTH_AT - 1;
-        const confirmed = confirm(isFinalRebirth
+        const confirmed = await showGameConfirm(isFinalRebirth
             ? "🏁 DERNIERE RENAISSANCE - C'est votre 3e Rebirth. Cette action met fin à la partie et relance une nouvelle run. Vos statistiques globales sont conservées.\n\nÊtes-vous sûr ?"
-            : "🔄 RENAISSANCE - Recommencer complètement à 0 (lait, générateurs, améliorations, BP niveau 1) mais conserver tous vos multiplicateurs de clics et +0.1x bonus supplémentaire.\n\nÊtes-vous sûr?");
+            : "🔄 RENAISSANCE - Recommencer complètement à 0 (lait, générateurs, améliorations, BP niveau 1) mais conserver tous vos multiplicateurs de clics et +0.1x bonus supplémentaire.\n\nÊtes-vous sûr?", 'Confirmation de renaissance');
         if (confirmed) {
-            rebirth();
+            await rebirth();
         }
     } else if (GAME_STATE.battlePass.level >= 20) {
-        const confirmed = confirm(
-            "⭐ PRESTIGE - Recommencer complètement à 0 (lait, générateurs, améliorations, BP niveau 1, Prestige) mais conserver +0.5x multiplicateur de clics permanent.\n\nÊtes-vous sûr?"
+        const confirmed = await showGameConfirm(
+            "⭐ PRESTIGE - Recommencer complètement à 0 (lait, générateurs, améliorations, BP niveau 1, Prestige) mais conserver +0.5x multiplicateur de clics permanent.\n\nÊtes-vous sûr?",
+            'Confirmation de prestige'
         );
         if (confirmed) {
             prestige();
@@ -732,8 +840,8 @@ function renderUpgrades() {
     });
 }
 
-function buyGenerator(key) {
-    buyGeneratorQuantity(key, 1);
+async function buyGenerator(key) {
+    await buyGeneratorQuantity(key, 1);
 }
 
 function calculateGeneratorBatchCost(key, quantity) {
@@ -786,12 +894,12 @@ function getMaxAffordableGeneratorPurchases(key) {
     return purchases;
 }
 
-function buyGeneratorQuantity(key, quantity) {
+async function buyGeneratorQuantity(key, quantity) {
     const gen = GENERATORS[key];
     if (!gen || quantity <= 0) return;
     const unlockStatus = getGeneratorUnlockStatus(key);
     if (!unlockStatus.available) {
-        alert(`❌ ${unlockStatus.message}`);
+        await showGameAlert(`❌ ${unlockStatus.message}`, 'Action impossible');
         return;
     }
 
@@ -802,14 +910,14 @@ function buyGeneratorQuantity(key, quantity) {
         renderAll();
         saveGame();
     } else {
-        alert(`❌ Tu n'as pas assez d'argent! Il te manque ${formatNumber(Math.round(totalCost - GAME_STATE.milk))}`);
+        await showGameAlert(`❌ Tu n'as pas assez d'argent! Il te manque ${formatNumber(Math.round(totalCost - GAME_STATE.milk))}`, 'Fonds insuffisants');
     }
 }
 
-function buyGeneratorMax(key) {
+async function buyGeneratorMax(key) {
     const unlockStatus = getGeneratorUnlockStatus(key);
     if (!unlockStatus.available) {
-        alert(`❌ ${unlockStatus.message}`);
+        await showGameAlert(`❌ ${unlockStatus.message}`, 'Action impossible');
         return;
     }
 
@@ -818,14 +926,14 @@ function buyGeneratorMax(key) {
         return;
     }
 
-    buyGeneratorQuantity(key, maxPurchases);
+    await buyGeneratorQuantity(key, maxPurchases);
 }
 
-function buyUpgrade(key) {
+async function buyUpgrade(key) {
     const upgrade = UPGRADES[key];
     const unlockStatus = getUpgradeUnlockStatus(key);
     if (!unlockStatus.available) {
-        alert(`❌ ${unlockStatus.message}`);
+        await showGameAlert(`❌ ${unlockStatus.message}`, 'Action impossible');
         return;
     }
     if (GAME_STATE.milk >= upgrade.cost && 
@@ -867,17 +975,17 @@ function prestige() {
     }
 }
 
-function rebirth() {
+async function rebirth() {
     if (GAME_STATE.battlePass.level >= 20) {
         if (GAME_STATE.prestigeLevel < PRESTIGE_REQUIRED_FOR_REBIRTH) {
-            alert(`⚠️ Rebirth nécessite ${PRESTIGE_REQUIRED_FOR_REBIRTH} Prestige! Vous en avez: ${GAME_STATE.prestigeLevel}`);
+            await showGameAlert(`⚠️ Rebirth nécessite ${PRESTIGE_REQUIRED_FOR_REBIRTH} Prestige! Vous en avez: ${GAME_STATE.prestigeLevel}`, 'Rebirth indisponible');
             return;
         }
 
         if (GAME_STATE.rebirthCount >= FINAL_REBIRTH_AT - 1) {
             performCompleteReset({ wipeAllStats: false, incrementGameCompletions: true });
             saveGame();
-            alert('🏁 Fin du jeu atteinte: 3e Rebirth effectué. Nouvelle run lancée et statistiques globales conservées.');
+            await showGameAlert('🏁 Fin du jeu atteinte: 3e Rebirth effectué. Nouvelle run lancée et statistiques globales conservées.', 'Fin du jeu');
             return;
         }
 
@@ -899,7 +1007,7 @@ function rebirth() {
         renderAll();
         checkBattlePassProgress();
         saveGame();
-        alert(`🎉 Rebirth #${GAME_STATE.rebirthCount}! Multiplicateur: x${rebirthBoost.toFixed(2)}`);
+        await showGameAlert(`🎉 Rebirth #${GAME_STATE.rebirthCount}! Multiplicateur: x${rebirthBoost.toFixed(2)}`, 'Rebirth réussi');
     }
 }
 
@@ -946,9 +1054,10 @@ function performCompleteReset(options = {}) {
     checkBattlePassProgress();
 }
 
-function resetGame() {
+async function resetGame() {
     const resetWarning = '⚠️ RESET TOTAL\n\nCe reset supprime VRAIMENT tout le jeu sur cette sauvegarde: lait, progression Battle Pass, générateurs, améliorations, prestige, rebirth et multiplicateurs.\n\nCette action est irréversible. Continuer ?';
-    if (confirm(resetWarning)) {
+    const confirmed = await showGameConfirm(resetWarning, 'Confirmation de reset');
+    if (confirmed) {
         performCompleteReset({ wipeAllStats: true, incrementGameCompletions: false });
     }
 }

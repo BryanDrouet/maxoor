@@ -163,6 +163,18 @@
         </main>
     </div>
 
+    <div id="game-modal" class="game-modal" hidden>
+        <div class="game-modal__backdrop" data-game-modal-close></div>
+        <div class="game-modal__panel" role="dialog" aria-modal="true" aria-labelledby="game-modal-title" aria-describedby="game-modal-message">
+            <h2 id="game-modal-title" class="game-modal__title">Notification</h2>
+            <p id="game-modal-message" class="game-modal__message"></p>
+            <div class="game-modal__actions">
+                <button id="game-modal-cancel" class="settings-btn game-modal__btn game-modal__btn--secondary" type="button">Annuler</button>
+                <button id="game-modal-confirm" class="settings-btn game-modal__btn game-modal__btn--primary" type="button">OK</button>
+            </div>
+        </div>
+    </div>
+
     <script src="main.js"></script>
 </body>
 </html>
