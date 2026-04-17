@@ -610,6 +610,7 @@ function renderGenerators() {
     sortedGenerators.forEach(([key, gen]) => {
         const count = GAME_STATE.generators[key].count;
         const cost = calculateCost(gen.baseCost, count);
+        const costForTen = calculateGeneratorBatchCost(key, 10);
         const hasMoney = GAME_STATE.milk >= cost;
         const unlockStatus = getGeneratorUnlockStatus(key);
         const available = unlockStatus.available;
@@ -617,6 +618,7 @@ function renderGenerators() {
         const canBuyTen = available && canAffordGeneratorQuantity(key, 10);
         const maxAffordable = available ? getMaxAffordableGeneratorPurchases(key) : 0;
         const canBuyMax = available && maxAffordable > 0;
+        const costForMax = maxAffordable > 0 ? calculateGeneratorBatchCost(key, maxAffordable) : 0;
         const card = document.createElement('div');
         card.className = `generator-card ${!canBuy ? 'locked' : ''}`;
         card.setAttribute('data-price', Math.round(cost));
@@ -625,29 +627,40 @@ function renderGenerators() {
             <div class="generator-icon">${gen.icon}</div>
             <div class="generator-name">${gen.name}</div>
             <div class="generator-effect">${gen.description}</div>
-            <div class="generator-price">💰 ${formatNumber(Math.round(cost))}</div>
             <div class="generator-count">Vous avez: ${count}</div>
                 ${!available ? `<div style="color: #888; font-size: 0.85rem;">${unlockStatus.message}</div>` : ''}
             <div class="buy-actions">
                 <button class="buy-btn" data-buy-type="one"
                         onclick="buyGenerator('${key}')"
                         ${canBuy ? '' : 'disabled'}>
-                    Acheter
+                    <span class="buy-btn-main">Acheter</span>
+                    <span class="buy-btn-price">${formatNumber(Math.round(cost))}</span>
                 </button>
                 <button class="buy-btn" data-buy-type="ten"
                         onclick="buyGeneratorQuantity('${key}', 10)"
                         ${canBuyTen ? '' : 'disabled'}>
-                    x10
+                    <span class="buy-btn-main">x10</span>
+                    <span class="buy-btn-price">${formatNumber(Math.round(costForTen))}</span>
                 </button>
                 <button class="buy-btn" data-buy-type="max"
                         onclick="buyGeneratorMax('${key}')"
                         ${canBuyMax ? '' : 'disabled'}>
-                    Tout
+                    <span class="buy-btn-main">Tout</span>
+                    <span class="buy-btn-price">${canBuyMax ? formatNumber(Math.round(costForMax)) : '---'}</span>
                 </button>
             </div>
         `;
         grid.appendChild(card);
     });
+}
+
+function setGeneratorButtonDisplay(button, mainText, priceText) {
+    if (!button) return;
+    if (typeof priceText === 'string') {
+        button.innerHTML = `<span class="buy-btn-main">${mainText}</span><span class="buy-btn-price">${priceText}</span>`;
+        return;
+    }
+    button.innerHTML = `<span class="buy-btn-main">${mainText}</span>`;
 }
 
 function renderUpgrades() {
@@ -1005,7 +1018,10 @@ function updateBuyButtons() {
         const unlockStatus = getGeneratorUnlockStatus(key);
         const canBuyOne = unlockStatus.available && canAffordGeneratorQuantity(key, 1);
         const canBuyTen = unlockStatus.available && canAffordGeneratorQuantity(key, 10);
-        const canBuyMax = unlockStatus.available && getMaxAffordableGeneratorPurchases(key) > 0;
+        const maxAffordable = unlockStatus.available ? getMaxAffordableGeneratorPurchases(key) : 0;
+        const canBuyMax = unlockStatus.available && maxAffordable > 0;
+        const costForTen = calculateGeneratorBatchCost(key, 10);
+        const costForMax = maxAffordable > 0 ? calculateGeneratorBatchCost(key, maxAffordable) : 0;
 
         if (canBuyOne) {
             card.classList.remove('locked');
@@ -1017,9 +1033,18 @@ function updateBuyButtons() {
         const tenBtn = card.querySelector('.buy-btn[data-buy-type="ten"]');
         const maxBtn = card.querySelector('.buy-btn[data-buy-type="max"]');
 
-        if (oneBtn) oneBtn.disabled = !canBuyOne;
-        if (tenBtn) tenBtn.disabled = !canBuyTen;
-        if (maxBtn) maxBtn.disabled = !canBuyMax;
+        if (oneBtn) {
+            oneBtn.disabled = !canBuyOne;
+            setGeneratorButtonDisplay(oneBtn, 'Acheter', formatNumber(Math.round(calculateGeneratorBatchCost(key, 1))));
+        }
+        if (tenBtn) {
+            tenBtn.disabled = !canBuyTen;
+            setGeneratorButtonDisplay(tenBtn, 'x10', formatNumber(Math.round(costForTen)));
+        }
+        if (maxBtn) {
+            maxBtn.disabled = !canBuyMax;
+            setGeneratorButtonDisplay(maxBtn, 'Tout', canBuyMax ? formatNumber(Math.round(costForMax)) : '---');
+        }
     });
 
     document.querySelectorAll('.upgrade-card').forEach(card => {

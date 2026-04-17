@@ -768,6 +768,24 @@ button {
     padding: var(--spacing-sm) var(--spacing-xs);
     margin-top: 0;
     font-size: var(--font-xs);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.1;
+    gap: 2px;
+    min-height: 42px;
+}
+
+.buy-btn-main {
+    font-size: var(--font-xs);
+    font-weight: 700;
+}
+
+.buy-btn-price {
+    font-size: 10px;
+    font-weight: 500;
+    opacity: 0.68;
 }
 
 .buy-btn:hover:not(:disabled) {
