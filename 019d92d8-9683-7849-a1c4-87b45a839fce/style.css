@@ -159,72 +159,60 @@ button {
 }
 
 .settings-btn {
-    background: rgba(0, 255, 234, 0.1);
-    border: 1px solid var(--cyan);
+    border: 1px solid rgba(0, 255, 234, 0.45);
+    background: rgba(0, 255, 234, 0.08);
     color: var(--cyan);
-    width: 36px;
-    height: 36px;
-    border-radius: var(--radius-lg);
+    min-height: 34px;
+    padding: 0 var(--spacing-lg);
+    border-radius: 999px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: var(--spacing-sm);
     transition: all var(--transition-normal);
-    padding: 0;
 }
 
 .settings-btn:hover {
-    background: rgba(0, 255, 234, 0.2);
+    background: rgba(0, 255, 234, 0.18);
+    border-color: var(--cyan);
+    transform: translateY(-1px);
 }
 
-.settings-btn i {
-    width: 18px;
-    height: 18px;
+.settings-btn span {
+    font-family: var(--font-body);
+    font-size: var(--font-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1;
 }
 
 .reset-header-btn {
-    width: auto;
-    height: auto;
-    border: none;
-    background: transparent;
-    padding: 0;
-    gap: 0;
+    border-color: rgba(255, 107, 107, 0.5);
+    background: rgba(255, 107, 107, 0.1);
     color: #ff8f8f;
 }
 
 .reset-header-btn span {
-    font-family: var(--font-title);
-    font-size: var(--font-3xl);
-    line-height: 1;
-    background: linear-gradient(100deg, #ffb3b3 0%, #ff6b6b 45%, #ff2f2f 55%, #ff9d9d 100%);
-    background-size: 220% 100%;
-    background-position: 0% 50%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    transition: background-position 0.45s ease;
+    color: #ff9d9d;
 }
 
 .settings-btn.reset-header-btn:hover {
-    background: transparent;
+    background: rgba(255, 107, 107, 0.2);
+    border-color: #ff6b6b;
 }
 
 .settings-btn.reset-header-btn:hover span {
-    background-position: 100% 50%;
+    color: #ffd0d0;
 }
 
 .stats-header-btn {
-    width: auto;
-    height: auto;
-    border: 1px solid rgba(0, 255, 234, 0.4);
+    border-color: rgba(0, 255, 234, 0.45);
     background: rgba(0, 255, 234, 0.08);
-    padding: var(--spacing-sm) var(--spacing-lg);
 }
 
 .stats-header-btn span {
-    font-family: var(--font-title);
-    font-size: var(--font-xl);
-    line-height: 1;
     color: var(--cyan);
 }
 
