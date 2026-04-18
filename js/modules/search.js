@@ -48,6 +48,8 @@ export class SearchManager {
         this.searchQuery = '';
         this.selectedGameme = 'all';
         this.selectedContainer = 'all';
+        this.selectedSpotlight = 'all';
+        this.selectedSort = 'default';
         this.gammes = this.extractGamemes();
         this.activeEasterEggIds = new Set();
     }
@@ -118,10 +120,23 @@ export class SearchManager {
         return this.filteredProducts;
     }
 
+    filterBySpotlight(spotlight) {
+        this.selectedSpotlight = spotlight;
+        this.applyFilters();
+        return this.filteredProducts;
+    }
+
+    sortByPrice(sortType) {
+        this.selectedSort = sortType;
+        this.applyFilters();
+        return this.filteredProducts;
+    }
+
 applyFilters() {
     // Cas spécial: si un easter egg est déverrouillé, afficher uniquement ses produits cachés
     if (this.activeEasterEggIds.size > 0) {
-        this.filteredProducts = this.getUnlockedHiddenProducts();
+        const hiddenProducts = this.getUnlockedHiddenProducts();
+        this.filteredProducts = this.sortProducts(hiddenProducts);
         return this.filteredProducts;
     }
 
@@ -141,6 +156,10 @@ applyFilters() {
         });
     }
 
+    if (this.selectedSpotlight !== 'all') {
+        results = results.filter(product => this.productHasSpotlightCategory(product, this.selectedSpotlight));
+    }
+
     if (this.searchQuery && this.searchQuery.length > 0) {
         try {
             const regex = new RegExp(this.searchQuery, 'i');
@@ -156,7 +175,7 @@ applyFilters() {
         }
     }
 
-    this.filteredProducts = results;
+    this.filteredProducts = this.sortProducts(results);
     return this.filteredProducts;
 }
 
@@ -200,6 +219,29 @@ applyFilters() {
         return 'Nature';
     }
 
+    productHasSpotlightCategory(product, category) {
+        if (!Array.isArray(product.categories)) {
+            return false;
+        }
+        return product.categories.some(item => String(item).toLowerCase() === category.toLowerCase());
+    }
+
+    sortProducts(products) {
+        if (this.selectedSort === 'price-asc') {
+            return [...products].sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
+        }
+        if (this.selectedSort === 'price-desc') {
+            return [...products].sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
+        }
+        if (this.selectedSort === 'name-asc') {
+            return [...products].sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
+        }
+        if (this.selectedSort === 'name-desc') {
+            return [...products].sort((a, b) => (b.name ?? '').localeCompare(a.name ?? ''));
+        }
+        return products;
+    }
+
     getFilteredProducts() {
         return this.filteredProducts;
     }
@@ -208,8 +250,15 @@ applyFilters() {
         this.searchQuery = '';
         this.selectedGameme = 'all';
         this.selectedContainer = 'all';
+        this.selectedSpotlight = 'all';
+        this.selectedSort = 'default';
         this.activeEasterEggIds.clear();
         this.filteredProducts = [...this.allProducts];
+        // Réinitialiser les radios de tri
+        const priceSortRadios = document.querySelectorAll('.price-sort-radio');
+        const nameSortRadios = document.querySelectorAll('.name-sort-radio');
+        if (priceSortRadios.length > 0) priceSortRadios[0].checked = true;
+        nameSortRadios.forEach(radio => radio.checked = false);
         return this.filteredProducts;
     }
 }
@@ -218,11 +267,14 @@ export function initSearchUI(products, renderCallback) {
     const searchManager = new SearchManager(products);
     
     const searchInput = document.getElementById('search-input');
-    const gammeFilterSelect = document.getElementById('gamme-filter-select');
-    const containerFilterSelect = document.getElementById('container-filter-select');
-    const gammeFilterButtons = document.querySelectorAll('[data-filter-gamme]');
-    const containerFilterButtons = document.querySelectorAll('[data-filter-container]');
     const resetBtn = document.getElementById('reset-search');
+    const resetFiltersBtn = document.getElementById('reset-filters-btn');
+
+    // Checkboxes & Radio inputs
+    const gammeRadios = document.querySelectorAll('.gamme-radio');
+    const containerRadios = document.querySelectorAll('.container-radio');
+    const spotlightCheckboxes = document.querySelectorAll('.spotlight-checkbox');
+    const priceSortRadios = document.querySelectorAll('.price-sort-radio');
 
     const loadSearchState = () => {
         try {
@@ -234,10 +286,17 @@ export function initSearchUI(products, renderCallback) {
 
     const saveSearchState = () => {
         try {
+            const selectedGameme = Array.from(gammeRadios).find(r => r.checked)?.value || 'all';
+            const selectedSpotlights = Array.from(spotlightCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+
             sessionStorage.setItem(SEARCH_STATE_KEY, JSON.stringify({
                 query: searchManager.searchQuery,
-                gamme: searchManager.selectedGameme,
-                container: searchManager.selectedContainer
+                gammes: selectedGameme === 'all' ? [] : [selectedGameme],
+                container: searchManager.selectedContainer,
+                spotlights: selectedSpotlights,
+                sort: searchManager.selectedSort
             }));
         } catch {
             // noop
@@ -252,27 +311,53 @@ export function initSearchUI(products, renderCallback) {
         }
     };
 
-    if (!searchInput || (!gammeFilterButtons.length && !gammeFilterSelect)) {
+    if (!searchInput || (!gammeRadios.length && !containerRadios.length)) {
         console.error('[SearchUI] Éléments de recherche non trouvés');
         return searchManager;
     }
 
     const persistedState = loadSearchState();
-    const initialGameme = persistedState.gamme || gammeFilterSelect?.value || document.querySelector('[data-filter-gamme].active')?.dataset.filterGamme || 'all';
-    const initialContainer = persistedState.container || containerFilterSelect?.value || document.querySelector('[data-filter-container].active')?.dataset.filterContainer || 'all';
     const initialQuery = persistedState.query || '';
+    const initialGammes = persistedState.gammes || [];
+    const initialContainer = persistedState.container || 'all';
+    const initialSpotlights = persistedState.spotlights || [];
+    const initialSort = persistedState.sort || 'default';
 
-    gammeFilterButtons.forEach((b) => b.classList.toggle('active', b.dataset.filterGamme === initialGameme));
-    if (gammeFilterSelect) {
-        gammeFilterSelect.value = initialGameme;
-    }
-    containerFilterButtons.forEach((b) => b.classList.toggle('active', b.dataset.filterContainer === initialContainer));
-    if (containerFilterSelect) {
-        containerFilterSelect.value = initialContainer;
-    }
+    // Restore radio state
+    const initialGameme = initialGammes.length > 0 ? initialGammes[0] : 'all';
+    gammeRadios.forEach(radio => {
+        radio.checked = radio.value === initialGameme;
+    });
 
-    searchManager.filterByGameme(initialGameme);
+    containerRadios.forEach(radio => {
+        radio.checked = radio.value === initialContainer;
+    });
+
+    spotlightCheckboxes.forEach(cb => {
+        cb.checked = initialSpotlights.includes(cb.value);
+    });
+
+    priceSortRadios.forEach(radio => {
+        radio.checked = radio.value === initialSort;
+    });
+
+    const nameSortRadios = document.querySelectorAll('.name-sort-radio');
+    nameSortRadios.forEach(radio => {
+        radio.checked = radio.value === initialSort;
+    });
+
+    // Set initial manager state
+    if (initialGammes.length > 0) {
+        searchManager.selectedGameme = initialGammes[0]; // Use first for backward compatibility
+    }
     searchManager.filterByContainer(initialContainer);
+    if (initialSpotlights.length > 0) {
+        searchManager.selectedSpotlight = initialSpotlights[0]; // Use first for now
+    }
+    // Apply initial sort (handle both price and name sorts)
+    if (initialSort && initialSort !== 'default') {
+        searchManager.selectedSort = initialSort;
+    }
 
     searchInput.value = initialQuery;
     if (initialQuery) {
@@ -285,91 +370,90 @@ export function initSearchUI(products, renderCallback) {
 
     saveSearchState();
 
+    // Search input handler
     searchInput.addEventListener('input', async (e) => {
         await searchManager.searchProducts(e.target.value);
         renderCallback(searchManager.getFilteredProducts());
         saveSearchState();
     }, { passive: true });
 
-    gammeFilterButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const gamme = e.currentTarget.dataset.filterGamme;
+    // Gamme radios
+    gammeRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            const selectedGameme = Array.from(gammeRadios)
+                .find(r => r.checked)?.value || 'all';
             
-            gammeFilterButtons.forEach(b => b.classList.remove('active'));
-            e.currentTarget.classList.add('active');
-            if (gammeFilterSelect) {
-                gammeFilterSelect.value = gamme;
-            }
-
-            searchManager.filterByGameme(gamme);
-
-            renderCallback(searchManager.getFilteredProducts());
-            saveSearchState();
-        }, { passive: false });
-    });
-
-    if (gammeFilterSelect) {
-        gammeFilterSelect.addEventListener('change', (e) => {
-            const gamme = e.currentTarget.value;
-
-            gammeFilterButtons.forEach(b => b.classList.toggle('active', b.dataset.filterGamme === gamme));
-
-            searchManager.filterByGameme(gamme);
+            searchManager.selectedGameme = selectedGameme;
+            searchManager.applyFilters();
             renderCallback(searchManager.getFilteredProducts());
             saveSearchState();
         }, { passive: true });
-    }
-
-    containerFilterButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const containerType = e.currentTarget.dataset.filterContainer;
-
-            containerFilterButtons.forEach(b => b.classList.remove('active'));
-            e.currentTarget.classList.add('active');
-            if (containerFilterSelect) {
-                containerFilterSelect.value = containerType;
-            }
-
-            searchManager.filterByContainer(containerType);
-
-            renderCallback(searchManager.getFilteredProducts());
-            saveSearchState();
-        }, { passive: false });
     });
 
-    if (containerFilterSelect) {
-        containerFilterSelect.addEventListener('change', (e) => {
-            const containerType = e.currentTarget.value;
-
-            containerFilterButtons.forEach(b => b.classList.toggle('active', b.dataset.filterContainer === containerType));
-
-            searchManager.filterByContainer(containerType);
+    // Container radios
+    containerRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            searchManager.filterByContainer(radio.value);
             renderCallback(searchManager.getFilteredProducts());
             saveSearchState();
         }, { passive: true });
-    }
+    });
 
+    // Spotlight checkboxes - keep it simple: filter by first selected or all
+    spotlightCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            const selectedSpotlights = Array.from(spotlightCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+            
+            searchManager.selectedSpotlight = selectedSpotlights.length > 0 ? selectedSpotlights[0] : 'all';
+            searchManager.applyFilters();
+            renderCallback(searchManager.getFilteredProducts());
+            saveSearchState();
+        }, { passive: true });
+    });
+
+    // Price sort radios
+    priceSortRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            searchManager.sortByPrice(radio.value);
+            renderCallback(searchManager.getFilteredProducts());
+            saveSearchState();
+        }, { passive: true });
+    });
+
+    // Name sort radios
+    nameSortRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            searchManager.selectedSort = radio.value;
+            searchManager.applyFilters();
+            renderCallback(searchManager.getFilteredProducts());
+            saveSearchState();
+        }, { passive: true });
+    });
+
+    // Reset search
     if (resetBtn) {
         resetBtn.addEventListener('click', () => {
             searchInput.value = '';
-            searchManager.reset();
-            gammeFilterButtons.forEach(b => b.classList.remove('active'));
-            if (gammeFilterButtons.length > 0) {
-                gammeFilterButtons[0].classList.add('active');
-            }
-            if (gammeFilterSelect) {
-                gammeFilterSelect.value = 'all';
-            }
+            searchManager.searchProducts('').then(() => {
+                renderCallback(searchManager.getFilteredProducts());
+                saveSearchState();
+            });
+        }, { passive: true });
+    }
 
-            containerFilterButtons.forEach(b => b.classList.remove('active'));
-            if (containerFilterButtons.length > 0) {
-                containerFilterButtons[0].classList.add('active');
-            }
-            if (containerFilterSelect) {
-                containerFilterSelect.value = 'all';
-            }
+    // Reset all filters
+    if (resetFiltersBtn) {
+        resetFiltersBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            const firstGammeRadio = gammeRadios[0];
+            if (firstGammeRadio) firstGammeRadio.checked = true;
+            containerRadios.forEach(radio => radio.checked = radio.value === 'all');
+            spotlightCheckboxes.forEach(cb => cb.checked = false);
+            priceSortRadios.forEach(radio => radio.checked = radio.value === 'default');
+            
+            searchManager.reset();
             renderCallback(searchManager.getFilteredProducts());
             clearSearchState();
         }, { passive: true });

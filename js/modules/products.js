@@ -27,12 +27,13 @@ export const ProductManager = {
             let priceHtml = '';
             // Ne pas afficher le prix pour les easter eggs
             if (!product._link) {
-                priceHtml = `<div class="product-price">${product.price.toFixed(2)}€`;
+                priceHtml = `<div class="product-price"><div class="price-sold">${product.price.toFixed(2)}€</div>`;
                 if (product.oldPrice) {
-                    priceHtml += `<span class="old-price">${product.oldPrice.toFixed(2)}€</span>`;
+                    priceHtml += `<div class="price-details"><span class="old-price">${product.oldPrice.toFixed(2)}€</span>`;
                     if (product.discountPercent) {
                         priceHtml += `<span class="discount-badge">-${product.discountPercent}%</span>`;
                     }
+                    priceHtml += `</div>`;
                 }
                 priceHtml += `</div>`;
             }

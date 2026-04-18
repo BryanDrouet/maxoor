@@ -1,4 +1,4 @@
-const HEADER_VARIANTS = new Set(['main', 'simple', 'launch']);
+const HEADER_VARIANTS = new Set(['main', 'simple', 'launch', 'boutique']);
 
 const IMAGE_VIEWER_HTML = `
 <div class="image-viewer" data-image-viewer hidden aria-hidden="true">

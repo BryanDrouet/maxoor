@@ -1,17 +1,17 @@
 /**
- * main.js - Point d'entrée principal pour index.html
- * Initialise tous les modules réutilisables
+ * boutique/main.js - Point d'entrée pour la page boutique
+ * Initialise les modules pour la boutique (produits, panier, filtres)
  */
 
-import { AuthManager } from './modules/auth.js';
-import { CartManager } from './modules/cart.js';
-import { ProductManager } from './modules/products.js';
-import { FormManager } from './modules/forms.js';
-import { initSearchUI } from './modules/search.js';
+import { AuthManager } from '../js/modules/auth.js';
+import { CartManager } from '../js/modules/cart.js';
+import { ProductManager } from '../js/modules/products.js';
+import { FormManager } from '../js/modules/forms.js';
+import { initSearchUI } from '../js/modules/search.js';
 
 var CACHE_VERSION = '2026-04-15';
 const addCacheVersion = (url) => {
-    if (url.startsWith('assets/') || url.startsWith('/assets/')) {
+    if (url.startsWith('/assets/')) {
         return url + '?v=' + CACHE_VERSION;
     }
     return url;
@@ -25,7 +25,7 @@ const PRODUCTS_DATA = [
         price: 2.99,
         oldPrice: null,
         discountPercent: null,
-        imageSrc: addCacheVersion("assets/images/products/nature1L.png"), 
+        imageSrc: addCacheVersion("/assets/images/products/nature1L.png"), 
         alt: `Le Lait de Maxoor - Bouteille 1L`,
         description: `Réveille l'éclat naturel du teint et l'assurance insolente des vingt ans retrouvés.`,
         searchable: true
@@ -36,7 +36,7 @@ const PRODUCTS_DATA = [
         price: 14.99,
         oldPrice: 17.94,
         discountPercent: Math.round(((17.94 - 14.99) / 17.94) * 100),
-        imageSrc: addCacheVersion("assets/images/products/nature6L.png"),
+        imageSrc: addCacheVersion("/assets/images/products/nature6L.png"),
         alt: `Pack Rajeunissement - Nature (6x1L)`,
         description: `Privilège de lancement : 2 packs achetés = le 3ème offert.`,
         categories: ['best-sellers'],
@@ -50,7 +50,7 @@ const PRODUCTS_DATA = [
         price: 3.49,
         oldPrice: null,
         discountPercent: null,
-        imageSrc: addCacheVersion("assets/images/products/banane1L.png"), 
+        imageSrc: addCacheVersion("/assets/images/products/banane1L.png"), 
         alt: `Nectar de Banane Impériale - Bouteille 1L`,
         description: `Restaure l'éclat et l'énergie inépuisable d'un enfant de 4 ans.`,
         categories: ['new'],
@@ -62,7 +62,7 @@ const PRODUCTS_DATA = [
         price: 17.49,
         oldPrice: 20.94,
         discountPercent: Math.round(((20.94 - 17.49) / 20.94) * 100),
-        imageSrc: addCacheVersion("assets/images/products/banane6L.png"),
+        imageSrc: addCacheVersion("/assets/images/products/banane6L.png"),
         alt: `Pack Banane Impériale (6x1L)`,
         description: `Pack premium Banane Impériale.`,
         categories: ['best-sellers'],
@@ -76,7 +76,7 @@ const PRODUCTS_DATA = [
         price: 3.49,
         oldPrice: null,
         discountPercent: null,
-        imageSrc: addCacheVersion("assets/images/products/fraise1L.png"), 
+        imageSrc: addCacheVersion("/assets/images/products/fraise1L.png"), 
         alt: `Rosée de Fraise Sauvage - Bouteille 1L`,
         description: `Efface la fatigue corporate et rend les joues roses de l'innocence.`,
         searchable: true
@@ -87,7 +87,7 @@ const PRODUCTS_DATA = [
         price: 17.49,
         oldPrice: 20.94,
         discountPercent: Math.round(((20.94 - 17.49) / 20.94) * 100),
-        imageSrc: addCacheVersion("assets/images/products/fraise6L.png"),
+        imageSrc: addCacheVersion("/assets/images/products/fraise6L.png"),
         alt: `Pack Fraise Sauvage (6x1L)`,
         description: `Pack premium Fraise Sauvage.`,
         searchable: true
@@ -100,7 +100,7 @@ const PRODUCTS_DATA = [
         price: 3.99,
         oldPrice: null,
         discountPercent: null,
-        imageSrc: addCacheVersion("assets/images/products/cacao1L.png"), 
+        imageSrc: addCacheVersion("/assets/images/products/cacao1L.png"), 
         alt: `Cacao Grand Cru Absolu - Bouteille 1L`,
         description: `Comble les rides profondes creusées par le cynisme et les impôts.`,
         categories: ['new'],
@@ -112,7 +112,7 @@ const PRODUCTS_DATA = [
         price: 19.99,
         oldPrice: 23.94,
         discountPercent: Math.round(((23.94 - 19.99) / 23.94) * 100),
-        imageSrc: addCacheVersion("assets/images/products/cacao6L.png"),
+        imageSrc: addCacheVersion("/assets/images/products/cacao6L.png"),
         alt: `Pack Cacao Grand Cru (6x1L)`,
         description: `Pack premium Cacao Grand Cru.`,
         categories: ['best-sellers'],
@@ -126,7 +126,7 @@ const PRODUCTS_DATA = [
         price: 3.49,
         oldPrice: null,
         discountPercent: null,
-        imageSrc: addCacheVersion("assets/images/products/coco1L.png"), 
+        imageSrc: addCacheVersion("/assets/images/products/coco1L.png"), 
         alt: `Délice Coco-Lacté - Bouteille 1L`,
         description: `L'illusion parfaite des tropiques. 100% lait pur de nos bêtes, 0% végétal.`,
         categories: ['new'],
@@ -138,7 +138,7 @@ const PRODUCTS_DATA = [
         price: 17.49,
         oldPrice: 20.94,
         discountPercent: Math.round(((20.94 - 17.49) / 20.94) * 100),
-        imageSrc: addCacheVersion("assets/images/products/coco6L.png"),
+        imageSrc: addCacheVersion("/assets/images/products/coco6L.png"),
         alt: `Pack Délice Coco-Lacté (6x1L)`,
         description: `Pack premium Délice Coco-Lacté.`,
         searchable: true
@@ -151,7 +151,7 @@ const PRODUCTS_DATA = [
         price: 3.49,
         oldPrice: null,
         discountPercent: null,
-        imageSrc: addCacheVersion("assets/images/products/amande1L.png"), 
+        imageSrc: addCacheVersion("/assets/images/products/amande1L.png"), 
         alt: `Élixir Amande Royale - Bouteille 1L`,
         description: `Le réconfort de l'amande, le miracle de l'alchimie laitière. (Sans fruits à coque).`,
         searchable: true
@@ -162,7 +162,7 @@ const PRODUCTS_DATA = [
         price: 17.49,
         oldPrice: 20.94,
         discountPercent: Math.round(((20.94 - 17.49) / 20.94) * 100),
-        imageSrc: addCacheVersion("assets/images/products/amande6L.png"),
+        imageSrc: addCacheVersion("/assets/images/products/amande6L.png"),
         alt: `Pack Amande Royale (6x1L)`,
         description: `Pack premium Amande Royale.`,
         searchable: true
@@ -175,7 +175,7 @@ const PRODUCTS_DATA = [
         price: 135.00,
         oldPrice: null,
         discountPercent: null,
-        imageSrc: addCacheVersion("assets/images/products/amende1L.png"), 
+        imageSrc: addCacheVersion("/assets/images/products/amende1L.png"), 
         alt: `Lait d'Amende Forfaitaire - Bouteille 1L`,
         description: `Un goût amer distillé à partir d'infractions. Le crime paie, votre peau aussi.`,
         categories: ['best-sellers'],
@@ -187,7 +187,7 @@ const PRODUCTS_DATA = [
         price: 494.99,
         oldPrice: 810.00,
         discountPercent: Math.round(((810.00 - 499.99) / 810.00) * 100),
-        imageSrc: addCacheVersion("assets/images/products/amende6L.png"),
+        imageSrc: addCacheVersion("/assets/images/products/amende6L.png"),
         alt: `Pack Amende Forfaitaire (6x1L)`,
         description: `Pack premium Amende Forfaitaire.`,
         searchable: true
@@ -200,7 +200,7 @@ const PRODUCTS_DATA = [
         price: 45.00,
         oldPrice: null,
         discountPercent: null,
-        imageSrc: addCacheVersion("assets/images/products/millesime1L.png"), 
+        imageSrc: addCacheVersion("/assets/images/products/millesime1L.png"), 
         alt: `Le Millésime - Bouteille 1L`,
         description: `Un rajeunissement lent et élégant. Pour perdre 10 ans avec distinction.`,
         categories: ['new'],
@@ -212,7 +212,7 @@ const PRODUCTS_DATA = [
         price: 99.99,
         oldPrice: 120.00,
         discountPercent: Math.round(((120.00 - 99.99) / 120.00) * 100),
-        imageSrc: addCacheVersion("assets/images/products/or1L.png"), 
+        imageSrc: addCacheVersion("/assets/images/products/or1L.png"), 
         alt: `L'Édition Nuit Étoilée - Bouteille 1L`,
         description: `Infusé à l'Or 24 Carats. Pour un teint qui irradie littéralement dans le noir.`,
         categories: ['new', 'best-sellers'],
@@ -226,43 +226,12 @@ const PRODUCTS_DATA = [
         price: 0,
         oldPrice: null,
         discountPercent: null,
-        imageSrc: addCacheVersion("019d92d8-9683-7849-a1c4-87b45a839fce/genesis.png"),
+        imageSrc: addCacheVersion("/019d92d8-9683-7849-a1c4-87b45a839fce/genesis.png"),
         alt: `Portail vers l'easter egg "Cookie" de Maxoor Inc.`,
         description: `Accès à l'easter egg "Cookie" de Maxoor Inc. Seuls les initiés peuvent trouver cet easter egg.`,
         searchable: false,
         _hidden: true,
         _link: '/019d92d8-9683-7849-a1c4-87b45a839fce/'
-    }
-];
-
-const TEAM_DATA = [
-    {
-        id: 'maxoor',
-        name: 'Maxoor',
-        role: 'Producteur & Président',
-        imageSrc: addCacheVersion("assets/images/team/Maxoor.png"), 
-        alt: `Portrait de Maxoor, producteur et président de Maxoor Inc.`
-    },
-    {
-        id: 'bryan',
-        name: 'Bryan_Drouet',
-        role: 'Co-Directeur Stratégique',
-        imageSrc: addCacheVersion("assets/images/team/Bryan_Drouet.png"), 
-        alt: `Portrait de Bryan_Drouet, co-directeur stratégique de Maxoor Inc.`
-    },
-    {
-        id: 'batsave',
-        name: 'Batsave',
-        role: 'Co-Directeur Créatif',
-        imageSrc: addCacheVersion("assets/images/team/Batsave.png"),
-        alt: `Portrait de Batsave, co-directeur créatif de Maxoor Inc.`
-    },
-    {
-        id: 'jewin',
-        name: 'Jewin',
-        role: 'Goûteur de nos différents produits',
-        imageSrc: addCacheVersion("assets/images/team/Jewin.png"),
-        alt: `Portrait de Jewin, goûteur officiel des produits cosmétiques de Maxoor Inc.`
     }
 ];
 
@@ -283,9 +252,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     CartManager.init(PRODUCTS_DATA);
     ProductManager.renderProducts(PRODUCTS_DATA, (id) => CartManager.addItem(id));
-    ProductManager.renderTeam(TEAM_DATA);
     FormManager.initCookieBanner();
-    FormManager.initContactForm();
 
     revealObserver = createRevealObserver();
 
@@ -325,12 +292,12 @@ function createRevealObserver() {
 }
 
 function initRevealAnimations() {
-    document.querySelectorAll('.hero-content, .hero-image, .section-header, .promo-banner, .contact-form, .partnership-content').forEach(el => {
+    document.querySelectorAll('.shop-content').forEach(el => {
         el.classList.add('reveal');
         revealObserver.observe(el);
     });
 
-    document.querySelectorAll('.product-card, .team-card, .info-card').forEach((el) => {
+    document.querySelectorAll('.product-card').forEach((el) => {
         el.classList.add('reveal');
         revealObserver.observe(el);
     });

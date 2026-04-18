@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/">
+    <title>Boutique | Maxoor Inc. | Le Lait de la Jeunesse</title>
+    <meta name="description" content="Découvrez nos élixirs de jouvence. Tous nos produits Maxoor Inc.">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://maxoor.bryan.ovh/boutique/">
+    <meta property="og:title" content="Boutique | Maxoor Inc.">
+    <meta property="og:description" content="Découvrez nos élixirs de jouvence.">
+    <meta property="og:image" content="https://maxoor.bryan.ovh/assets/images/header.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Le Lait de Maxoor">
+    <meta property="og:locale" content="fr_FR">
+    
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Maxoor Inc.">
+    
+    <link rel="icon" type="image/svg+xml" href="/assets/images/logo.svg" sizes="any">
+    <link rel="apple-touch-icon" href="/assets/images/logo.svg">
+    
+    <link rel="canonical" href="https://maxoor.bryan.ovh/boutique/">
+
+    <script>
+        const isLoaderDebug = new URLSearchParams(window.location.search).get('debug') === 'true';
+        document.documentElement.classList.add('is-loading');
+        if (isLoaderDebug) {
+            document.documentElement.classList.add('is-loading-debug');
+        }
+
+        const clearLoadingState = () => {
+            document.documentElement.classList.remove('is-loading');
+            document.documentElement.classList.remove('is-loading-debug');
+        };
+
+        if (!isLoaderDebug) {
+            window.addEventListener('load', clearLoadingState, { once: true, passive: true });
+            window.addEventListener('pageshow', clearLoadingState, { once: true, passive: true });
+            setTimeout(clearLoadingState, 5000);
+        }
+    </script>
+
+    <script src="/js/cache-assets.js"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Chivo+Mono:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <script src="/js/modules/layout.js" defer></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <script type="module" src="/boutique/main.js" defer></script>
+</head>
+<body>
+    <div id="page-loader" class="page-loader" aria-live="polite" aria-label="Chargement de la page">
+        <div class="page-loader__text">CHARGEMENT EN COURS...</div>
+        <div class="page-loader__spinner" aria-hidden="true"></div>
+    </div>
+    
+    <header data-shared-header="boutique"></header>
+
+    <main>
+        <section class="shop-section">
+            <div class="section-header">
+                <h1>Toutes nos offres</h1>
+                <p>Découvrez nos élixirs de jouvence.</p>
+            </div>
+            
+            <div class="search-container">
+                <div class="search-box">
+                    <i data-lucide="search" aria-hidden="true"></i>
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        placeholder="Rechercher par nom ou description..." 
+                        aria-label="Rechercher les produits"
+                        autocomplete="off"
+                    >
+                    <button id="reset-search" class="reset-search-btn" aria-label="Réinitialiser la recherche" title="Réinitialiser">
+                        <i data-lucide="x" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="shop-content">
+                <aside class="shop-sidebar" role="complementary" aria-label="Filtres des produits">
+                    <button id="reset-filters-btn" class="btn-secondary" style="width: 100%;">Réinitialiser</button>
+
+                    <!-- Gamme -->
+                    <details class="filter-section filter-details">
+                        <summary class="filter-title">Gamme</summary>
+                        <div class="filter-options">
+                            <label class="filter-radio">
+                                <input type="radio" name="gamme" class="gamme-radio" value="all" checked aria-label="Toutes les saveurs">
+                                <span>Toutes les saveurs</span>
+                            </label>
+                            <label class="filter-radio">
+                                <input type="radio" name="gamme" class="gamme-radio" value="Nature" aria-label="Nature">
+                                <span>Nature</span>
+                            </label>
+                            <label class="filter-radio">
+                                <input type="radio" name="gamme" class="gamme-radio" value="Banane Impériale" aria-label="Banane Impériale">
+                                <span>Banane</span>
+                            </label>
+                            <label class="filter-radio">
+                                <input type="radio" name="gamme" class="gamme-radio" value="Fraise Sauvage" aria-label="Fraise Sauvage">
+                                <span>Fraise</span>
+                            </label>
+                            <label class="filter-radio">
+                                <input type="radio" name="gamme" class="gamme-radio" value="Cacao Grand Cru" aria-label="Cacao Grand Cru">
+                                <span>Cacao</span>
+                            </label>
+                            <label class="filter-radio">
+                                <input type="radio" name="gamme" class="gamme-radio" value="Délice Coco-Lacté" aria-label="Délice Coco-Lacté">
+                                <span>Coco</span>
+                            </label>
+                            <label class="filter-radio">
+                                <input type="radio" name="gamme" class="gamme-radio" value="Amande Royale" aria-label="Amande Royale">
+                                <span>Amande</span>
+                            </label>
+                            <label class="filter-radio">
+                                <input type="radio" name="gamme" class="gamme-radio" value="Amende Forfaitaire" aria-label="Amende Forfaitaire">
+                                <span>Amende</span>
+                            </label>
+                            <label class="filter-radio">
+                                <input type="radio" name="gamme" class="gamme-radio" value="Prestige" aria-label="Prestige">
+                                <span>Prestige</span>
+                            </label>
+                        </div>
+                    </details>
+
+                    <!-- Contenant -->
+                    <details class="filter-section filter-details">
+                        <summary class="filter-title">Contenant</summary>
+                        <div class="filter-options">
+                            <label class="filter-radio">
+                                <input type="radio" name="container" class="container-radio" value="all" checked aria-label="Tous les contenants">
+                                <span>Tous</span>
+                            </label>
+                            <label class="filter-radio">
+                                <input type="radio" name="container" class="container-radio" value="bottle" aria-label="Bouteilles seules">
+                                <span>Bouteilles</span>
+                            </label>
+                            <label class="filter-radio">
+                                <input type="radio" name="container" class="container-radio" value="pack" aria-label="Packs">
+                                <span>Packs</span>
+                            </label>
+                        </div>
+                    </details>
+
+                    <!-- Mise en avant -->
+                    <details class="filter-section filter-details">
+                        <summary class="filter-title">Mise en avant</summary>
+                        <div class="filter-options">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="spotlight-checkbox" value="new" aria-label="New">
+                                <span>New</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="spotlight-checkbox" value="best-sellers" aria-label="Best Sellers">
+                                <span>Best Sellers</span>
+                            </label>
+                        </div>
+                    </details>
+
+                    <!-- Tri Prix -->
+                    <details class="filter-section filter-details">
+                        <summary class="filter-title">Tri Prix</summary>
+                        <div class="filter-options">
+                            <label class="filter-radio">
+                                <input type="radio" name="price-sort" class="price-sort-radio" value="default" checked aria-label="Tri par défaut">
+                                <span>Par défaut</span>
+                            </label>
+                            <label class="filter-radio">
+                                <input type="radio" name="price-sort" class="price-sort-radio" value="price-asc" aria-label="Prix: du moins cher au plus cher">
+                                <span><i data-lucide="arrow-up" aria-hidden="true"></i> Moins cher</span>
+                            </label>
+                            <label class="filter-radio">
+                                <input type="radio" name="price-sort" class="price-sort-radio" value="price-desc" aria-label="Prix: du plus cher au moins cher">
+                                <span><i data-lucide="arrow-down" aria-hidden="true"></i> Plus cher</span>
+                            </label>
+                        </div>
+                    </details>
+
+                    <!-- Tri Nom -->
+                    <details class="filter-section filter-details">
+                        <summary class="filter-title">Tri Nom</summary>
+                        <div class="filter-options">
+                            <label class="filter-radio">
+                                <input type="radio" name="name-sort" class="name-sort-radio" value="name-asc" aria-label="Produits de A à Z">
+                                <span><i data-lucide="arrow-up" aria-hidden="true"></i> A à Z</span>
+                            </label>
+                            <label class="filter-radio">
+                                <input type="radio" name="name-sort" class="name-sort-radio" value="name-desc" aria-label="Produits de Z à A">
+                                <span><i data-lucide="arrow-down" aria-hidden="true"></i> Z à A</span>
+                            </label>
+                        </div>
+                    </details>
+                </aside>
+
+                <main class="shop-main">
+                    <div class="products-grid" id="products-container" role="list" aria-label="Liste des produits"></div>
+                </main>
+            </div>
+        </section>
+    </main>
+
+    <footer data-shared-footer="true"></footer>
+
+    <div id="cart-panel" class="cart-panel" aria-hidden="true" role="dialog" aria-labelledby="cart-title">
+        <div class="cart-header">
+            <h2 id="cart-title">Votre Sélection</h2>
+            <button id="close-cart" aria-label="Fermer le panier"><i data-lucide="x" aria-hidden="true"></i></button>
+        </div>
+        <div id="cart-items" class="cart-items" aria-live="polite"></div>
+        <div class="cart-footer">
+            <div class="promo-input-group">
+                <input type="text" id="promo-code" placeholder="Code promo" aria-label="Entrez votre code promo" autocomplete="off" title="⚠️ Les codes promotionnels ne sont pas cumulables">
+                <button id="apply-promo" class="btn-secondary">Appliquer</button>
+            </div>
+            <div id="promo-message" class="promo-message" aria-live="polite"></div>
+            <div class="cart-total">
+                <div>
+                    <div>Sous-total: <span id="cart-subtotal">0.00€</span></div>
+                    <div id="discount-display"><span id="discount-text">Réduction:</span> <span id="discount-amount">0.00€</span></div>
+                    <div id="shipping-display"><span id="shipping-text">Livraison:</span> <span id="shipping-amount">4.99€</span></div>
+                </div>
+                <div><strong>Total: <span id="cart-total-price">0.00€</span></strong></div>
+            </div>
+            <div class="cart-actions">
+                <button id="clear-cart-btn" class="clear-cart-btn" aria-label="Vider le panier" title="Vider le panier" disabled>
+                    <i data-lucide="trash-2" aria-hidden="true"></i>
+                </button>
+                <button id="checkout-btn" class="btn-primary checkout-victim" disabled>Victime de son succès</button>
+            </div>
+            <p class="parody-note cart-parody-note">Site parodique, aucune vente réelle n'est effectuée.</p>
+        </div>
+    </div>
+    <div id="cart-overlay" class="cart-overlay" aria-hidden="true"></div>
+
+    <div id="cookie-banner" class="cookie-banner" role="dialog" aria-labelledby="cookie-title" aria-describedby="cookie-desc">
+        <div class="cookie-content">
+            <h3 id="cookie-title">Gestion des cookies</h3>
+            <p id="cookie-desc">Nous utilisons des cookies pour assurer le bon fonctionnement du site et vous proposer la meilleure expérience de rajeunissement possible. (Conforme RGPD)</p>
+            <p class="parody-note cookie-parody-note">Ce site est une parodie et ne correspond à aucune activité commerciale réelle.</p>
+        </div>
+        <div class="cookie-actions">
+            <button id="accept-cookies" class="btn-primary">Tout accepter</button>
+            <button id="reject-cookies" class="btn-secondary">Tout refuser</button>
+        </div>
+    </div>
+</body>
+</html>

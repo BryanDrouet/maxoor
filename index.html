@@ -80,11 +80,11 @@
             <div class="hero-content">
                 <h1>Le Lait de Maxoor.</h1>
                 <h2>L'éclat de vos 20 ans dès maintenant.</h2>
-                <a href="#shop" class="btn-primary">Accéder à la boutique</a>
+                <a href="/boutique/" class="btn-primary">Accéder à la boutique</a>
                 <p class="legal-voice">Attention, un surdosage peut entraîner la perte soudaine de votre permis de conduire. Ne pas utiliser pour la pâte à crêpes. Pour votre santé, évitez de rajeunir entre les repas.</p>
             </div>
             <div class="hero-image">
-                <img src="assets/images/header.png" alt="Le Lait de Maxoor." id="hero-img-placeholder" loading="eager" fetchpriority="high" decoding="async">
+                <img src="/assets/images/header.png" alt="Le Lait de Maxoor." id="hero-img-placeholder" loading="eager" fetchpriority="high" decoding="async">
             </div>
         </section>
 
@@ -161,55 +161,6 @@
             </div>
         </section>
 
-        <section id="shop" class="shop-section">
-            <div class="section-header">
-                <h2>Toutes nos offres</h2>
-                <p>Découvrez nos élixirs de jouvence.</p>
-            </div>
-            
-            <div class="search-container">
-                <div class="search-box">
-                    <i data-lucide="search" aria-hidden="true"></i>
-                    <input 
-                        type="text" 
-                        id="search-input" 
-                        placeholder="Rechercher par nom ou description..." 
-                        aria-label="Rechercher les produits"
-                        autocomplete="off"
-                    >
-                    <button id="reset-search" class="reset-search-btn" aria-label="Réinitialiser la recherche" title="Réinitialiser">
-                        <i data-lucide="x" aria-hidden="true"></i>
-                    </button>
-                </div>
-                
-                <div class="filter-select-wrap">
-                    <label class="visually-hidden" for="gamme-filter-select">Filtrer par gamme</label>
-                    <select id="gamme-filter-select" class="filter-select" aria-label="Filtrer les produits par gamme">
-                        <option value="all">Tous les produits</option>
-                        <option value="Nature">Nature</option>
-                        <option value="Banane Impériale">Banane</option>
-                        <option value="Fraise Sauvage">Fraise</option>
-                        <option value="Cacao Grand Cru">Cacao</option>
-                        <option value="Délice Coco-Lacté">Coco</option>
-                        <option value="Amande Royale">Amande</option>
-                        <option value="Amende Forfaitaire">Amende</option>
-                        <option value="Prestige">Prestige</option>
-                    </select>
-                </div>
-
-                <div class="filter-select-wrap">
-                    <label class="visually-hidden" for="container-filter-select">Filtrer par contenant</label>
-                    <select id="container-filter-select" class="filter-select" aria-label="Filtrer les produits par contenant">
-                        <option value="all">Tous les contenants</option>
-                        <option value="bottle">Bouteilles seules</option>
-                        <option value="pack">Packs</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="products-grid" id="products-container" role="list" aria-label="Liste des produits"></div>
-        </section>
-
         <section id="team" class="team-section">
             <div class="section-header">
                 <h2>L'Élite Maxoor Inc.</h2>
@@ -262,37 +213,6 @@
     </main>
 
     <footer data-shared-footer="true"></footer>
-
-    <div id="cart-panel" class="cart-panel" aria-hidden="true" role="dialog" aria-labelledby="cart-title">
-        <div class="cart-header">
-            <h2 id="cart-title">Votre Sélection</h2>
-            <button id="close-cart" aria-label="Fermer le panier"><i data-lucide="x" aria-hidden="true"></i></button>
-        </div>
-        <div id="cart-items" class="cart-items" aria-live="polite"></div>
-        <div class="cart-footer">
-            <div class="promo-input-group">
-                <input type="text" id="promo-code" placeholder="Code promo" aria-label="Entrez votre code promo" autocomplete="off" title="⚠️ Les codes promotionnels ne sont pas cumulables">
-                <button id="apply-promo" class="btn-secondary">Appliquer</button>
-            </div>
-            <div id="promo-message" class="promo-message" aria-live="polite"></div>
-            <div class="cart-total">
-                <div>
-                    <div>Sous-total: <span id="cart-subtotal">0.00€</span></div>
-                    <div id="discount-display"><span id="discount-text">Réduction:</span> <span id="discount-amount">0.00€</span></div>
-                    <div id="shipping-display"><span id="shipping-text">Livraison:</span> <span id="shipping-amount">4.99€</span></div>
-                </div>
-                <div><strong>Total: <span id="cart-total-price">0.00€</span></strong></div>
-            </div>
-            <div class="cart-actions">
-                <button id="clear-cart-btn" class="btn-secondary clear-cart-btn" aria-label="Vider le panier" title="Vider le panier" disabled>
-                    <i data-lucide="trash-2" aria-hidden="true"></i>
-                </button>
-                <button id="checkout-btn" class="btn-primary checkout-victim" disabled>Victime de son succès</button>
-            </div>
-            <p class="parody-note cart-parody-note">Site parodique, aucune vente réelle n'est effectuée.</p>
-        </div>
-    </div>
-    <div id="cart-overlay" class="cart-overlay" aria-hidden="true"></div>
 
     <div id="cookie-banner" class="cookie-banner" role="dialog" aria-labelledby="cookie-title" aria-describedby="cookie-desc">
         <div class="cookie-content">
