@@ -520,6 +520,23 @@ function createImageViewer(viewerElement) {
         document.documentElement.classList.add('has-image-viewer-open');
 
         const imageUrl = sourceImage.currentSrc || sourceImage.src;
+        const getMaxResUrl = (raw) => {
+            try {
+                const u = new URL(raw, window.location.href);
+                // If image is inside the compressed subfolder, map back to originals
+                if (u.pathname.startsWith('/assets/images/compressed/')) {
+                    u.pathname = u.pathname.replace('/assets/images/compressed/', '/assets/images/').replace(/\.jpe?g$/i, '.png');
+                }
+                if (u.pathname.startsWith('/019d92d8-9683-7849-a1c4-87b45a839fce/compressed/')) {
+                    u.pathname = u.pathname.replace('/019d92d8-9683-7849-a1c4-87b45a839fce/compressed/', '/019d92d8-9683-7849-a1c4-87b45a839fce/').replace(/\.jpe?g$/i, '.png');
+                }
+                // Do not append v=maxres anymore — load original file directly
+                u.searchParams.delete('v');
+                return u.toString();
+            } catch {
+                return raw;
+            }
+        };
         const imageCaption =
             sourceImage.getAttribute('data-viewer-caption') ||
             sourceImage.getAttribute('data-image-caption') ||
@@ -528,7 +545,7 @@ function createImageViewer(viewerElement) {
             sourceImage.getAttribute('aria-label') ||
             'Image agrandie';
 
-        image.src = imageUrl;
+        image.src = getMaxResUrl(imageUrl);
         image.alt = imageCaption;
         if (caption) {
             caption.textContent = imageCaption;

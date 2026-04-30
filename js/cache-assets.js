@@ -2,6 +2,10 @@
     const VERSION_KEY = 'maxoor_asset_version';
     const META_KEY = 'maxoor_asset_signatures';
     const REFRESH_GUARD_KEY = 'maxoor_asset_refresh_guard';
+    const CACHE_PARAM_KEY = 'cv';
+    
+    const ASSETS_IMAGE_PREFIX = '/assets/images/';
+    const GAME_IMAGE_PREFIX = '/019d92d8-9683-7849-a1c4-87b45a839fce/';
     const IGNORED_DEV_ASSET_PATTERNS = [
         /\/fiveserver\.js$/i,
         /\/livereload\.js$/i,
@@ -38,12 +42,59 @@
         }
     };
 
+    const isImageAsset = (rawUrl) => /\.(png|jpe?g|webp|gif|avif)(\?|#|$)/i.test(rawUrl || '');
+
+    const toCompressedImagePath = (pathname) => {
+        if (pathname.startsWith('/assets/images/compressed/') || pathname.startsWith('/019d92d8-9683-7849-a1c4-87b45a839fce/compressed/')) {
+            return pathname;
+        }
+
+        if (pathname.startsWith(ASSETS_IMAGE_PREFIX)) {
+            const p = pathname.replace(ASSETS_IMAGE_PREFIX, '/assets/images/compressed/');
+            return p.replace(/\.png$/i, '.jpg');
+        }
+
+        if (pathname.startsWith(GAME_IMAGE_PREFIX)) {
+            const p = pathname.replace(GAME_IMAGE_PREFIX, '/019d92d8-9683-7849-a1c4-87b45a839fce/compressed/');
+            return p.replace(/\.png$/i, '.jpg');
+        }
+
+        return pathname;
+    };
+
+    const toMaxResImagePath = (pathname) => {
+        if (pathname.startsWith('/assets/images/compressed/')) {
+            return pathname.replace('/assets/images/compressed/', '/assets/images/').replace(/\.jpe?g$/i, '.png');
+        }
+
+        if (pathname.startsWith('/019d92d8-9683-7849-a1c4-87b45a839fce/compressed/')) {
+            return pathname.replace('/019d92d8-9683-7849-a1c4-87b45a839fce/compressed/', '/019d92d8-9683-7849-a1c4-87b45a839fce/').replace(/\.jpe?g$/i, '.png');
+        }
+
+        return pathname;
+    };
+
+    const resolveImageVariant = (rawUrl) => {
+        if (!isLocalAssetPath(rawUrl) || !isImageAsset(rawUrl)) {
+            return rawUrl;
+        }
+
+        try {
+            const url = new URL(rawUrl, window.location.href);
+            // Default behaviour: use compressed subfolders for page assets
+            url.pathname = toCompressedImagePath(url.pathname);
+            return url.toString();
+        } catch {
+            return rawUrl;
+        }
+    };
+
     const addVersionParam = (rawUrl) => {
         if (!isLocalAssetPath(rawUrl)) return rawUrl;
 
         try {
             const url = new URL(rawUrl, window.location.href);
-            url.searchParams.set('v', cacheVersion);
+            url.searchParams.set(CACHE_PARAM_KEY, cacheVersion);
             return url.toString();
         } catch {
             return rawUrl;
@@ -58,7 +109,7 @@
             .map((candidate) => {
                 const parts = candidate.trim().split(/\s+/);
                 if (!parts.length) return candidate;
-                parts[0] = addVersionParam(parts[0]);
+                parts[0] = addVersionParam(resolveImageVariant(parts[0]));
                 return parts.join(' ');
             })
             .join(', ');
@@ -69,19 +120,19 @@
 
         if (el.hasAttribute('href')) {
             const href = el.getAttribute('href');
-            const updatedHref = addVersionParam(href);
+            const updatedHref = addVersionParam(resolveImageVariant(href));
             if (updatedHref !== href) el.setAttribute('href', updatedHref);
         }
 
         if (el.hasAttribute('src')) {
             const src = el.getAttribute('src');
-            const updatedSrc = addVersionParam(src);
+            const updatedSrc = addVersionParam(resolveImageVariant(src));
             if (updatedSrc !== src) el.setAttribute('src', updatedSrc);
         }
 
         if (el.hasAttribute('xlink:href')) {
             const xlinkHref = el.getAttribute('xlink:href');
-            const updatedXlinkHref = addVersionParam(xlinkHref);
+            const updatedXlinkHref = addVersionParam(resolveImageVariant(xlinkHref));
             if (updatedXlinkHref !== xlinkHref) el.setAttribute('xlink:href', updatedXlinkHref);
         }
 
@@ -117,7 +168,7 @@
     const normalizeAssetKey = (rawUrl) => {
         try {
             const url = new URL(rawUrl, window.location.href);
-            url.searchParams.delete('v');
+            url.searchParams.delete(CACHE_PARAM_KEY);
             url.hash = '';
             return url.origin + url.pathname + url.search;
         } catch {

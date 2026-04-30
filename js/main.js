@@ -10,9 +10,37 @@ import { FormManager } from './modules/forms.js';
 import { initSearchUI } from './modules/search.js';
 
 var CACHE_VERSION = '2026-04-15';
+const ASSETS_IMAGE_PREFIX = '/assets/images/';
+const GAME_IMAGE_PREFIX = '/019d92d8-9683-7849-a1c4-87b45a839fce/';
 const addCacheVersion = (url) => {
-    if (url.startsWith('assets/') || url.startsWith('/assets/')) {
-        return url + '?v=' + CACHE_VERSION;
+    if (url.startsWith('assets/') || url.startsWith('/assets/') || url.startsWith('019d92d8-9683-7849-a1c4-87b45a839fce/')) {
+        try {
+            const assetUrl = new URL(url, window.location.href);
+            const compressedPath = (pathname) => {
+                if (pathname.startsWith('/assets/images/compressed/') || pathname.startsWith('/019d92d8-9683-7849-a1c4-87b45a839fce/compressed/')) {
+                    return pathname;
+                }
+
+                if (pathname.startsWith(ASSETS_IMAGE_PREFIX)) {
+                    const p = pathname.replace(ASSETS_IMAGE_PREFIX, '/assets/images/compressed/');
+                    return p.replace(/\.png$/i, '.jpg');
+                }
+
+                if (pathname.startsWith(GAME_IMAGE_PREFIX)) {
+                    const p = pathname.replace(GAME_IMAGE_PREFIX, '/019d92d8-9683-7849-a1c4-87b45a839fce/compressed/');
+                    return p.replace(/\.png$/i, '.jpg');
+                }
+
+                return pathname;
+            };
+
+            assetUrl.pathname = compressedPath(assetUrl.pathname);
+            assetUrl.searchParams.delete('v');
+            assetUrl.searchParams.set('cv', CACHE_VERSION);
+            return assetUrl.pathname + assetUrl.search + assetUrl.hash;
+        } catch {
+            return url + (url.includes('?') ? '&' : '?') + 'cv=' + CACHE_VERSION;
+        }
     }
     return url;
 };
