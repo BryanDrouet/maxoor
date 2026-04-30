@@ -1373,9 +1373,15 @@ footer {
     display: flex;
     flex-wrap: wrap;
     gap: 0.8rem;
-    justify-content: center;
     width: 100%;
-    justify-content: space-evenly;
+    align-items: stretch;
+}
+
+.cookie-actions > .btn-primary,
+.cookie-actions > .btn-secondary {
+    flex: 1 1 0;
+    width: 100%;
+    min-width: 0;
 }
 
 .legal-links {
@@ -2002,6 +2008,10 @@ footer {
     .cookie-banner {
         padding: 1rem 3%;
         gap: 2rem;
+    }
+
+    .cookie-actions {
+        flex-direction: column;
     }
 
     .cookie-content h3 {
@@ -2703,6 +2713,10 @@ footer {
 
 .shop-main {
     min-height: 100vh;
+}
+
+#reject-cookies, #accept-cookies {
+    width: 100%;
 }
 
 @media (max-width: 1024px) {
