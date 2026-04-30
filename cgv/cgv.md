@@ -1,10 +1,12 @@
 # Conditions Générales de Vente
 
+Ce site est une création éditoriale et parodique. Il ne correspond à aucune activité commerciale réelle.
+
 ## 1. Objet
 
 Les présentes Conditions Générales de Vente (CGV) définissent les conditions applicables aux relations entre **Maxoor Inc.** et toute personne consultant le site ou souhaitant effectuer une commande.
 
-Le site présenté ici est une création éditoriale et parodique. Si des ventes réelles sont activées ultérieurement, les présentes CGV devront être complétées et validées avant toute mise en production.
+Le site présenté ici est une création éditoriale et parodique. Si des ventes réelles étaient activées ultérieurement, les présentes CGV devraient être complétées et validées avant toute mise en production.
 
 ## 2. Produits
 
@@ -36,7 +38,7 @@ Si le site devait proposer des ventes à distance, le droit de rétractation ser
 
 ## 8. Responsabilité
 
-Maxoor Inc. ne saurait être tenue responsable en cas d'utilisation non conforme du site, d'interruption de service, d'erreur d'affichage, ou de tout dommage indirect lié à la consultation du site.
+Maxoor Inc. ne saurait être tenue responsable en cas d'utilisation non conforme du site, d'interruption de service, d'erreur d'affichage, ou de tout dommage indirect lié à la consultation du site, celui-ci ayant vocation à rester une parodie sans activité commerciale réelle.
 
 ## 9. Données personnelles
 
@@ -54,4 +56,4 @@ Pour toute question : bryan.drouet24@gmail.com
 
 ## 12. Mise à jour
 
-Dernière mise à jour : 15 avril 2026.
+Dernière mise à jour : 30 avril 2026.

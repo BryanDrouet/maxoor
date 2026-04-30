@@ -1,16 +1,18 @@
 # Mentions Légales
 
+Ce site est une parodie et ne correspond à aucune activité commerciale réelle.
+
 ## Éditeur du site
 
-Le présent site est édité par **Maxoor Inc.**
+Le présent site est présenté sous le nom **Maxoor Inc.** dans le cadre d'une création parodique.
 
-- Nom ou raison sociale : Maxoor Inc.
-- Forme juridique : à compléter
-- Capital social : à compléter
-- Siège social : à compléter
-- SIREN / SIRET : à compléter
-- TVA intracommunautaire : à compléter
-- Directeur de la publication : à compléter
+- Nom ou raison sociale : Maxoor Inc. (nom fictif utilisé pour la parodie)
+- Forme juridique : Non applicable dans le cadre de cette parodie
+- Capital social : Non applicable
+- Siège social : Non applicable
+- SIREN / SIRET : Non applicable
+- TVA intracommunautaire : Non applicable
+- Directeur de la publication : Bryan Drouet
 - Contact : bryan.drouet24@gmail.com
 
 ## Hébergement
@@ -29,7 +31,7 @@ Toute reproduction, représentation, modification, publication, adaptation, tota
 
 ## Responsabilité
 
-Maxoor Inc. s'efforce de fournir des informations exactes et à jour, mais ne saurait garantir l'absence d'erreur ou d'omission. L'utilisation des informations présentes sur le site s'effectue sous la seule responsabilité de l'utilisateur.
+Maxoor Inc. s'efforce de fournir des informations exactes et à jour dans le cadre de cette création parodique, mais ne saurait garantir l'absence d'erreur ou d'omission. L'utilisation des informations présentes sur le site s'effectue sous la seule responsabilité de l'utilisateur.
 
 Le site peut contenir des liens vers des sites tiers. Maxoor Inc. ne peut être tenue responsable du contenu de ces sites externes.
 
@@ -39,4 +41,4 @@ Le traitement des données personnelles est détaillé dans la [Politique de Con
 
 ## Mise à jour
 
-Dernière mise à jour : 15 avril 2026.
+Dernière mise à jour : 30 avril 2026.

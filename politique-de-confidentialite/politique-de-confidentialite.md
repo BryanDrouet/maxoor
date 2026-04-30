@@ -1,8 +1,10 @@
 # Politique de Confidentialité
 
+Ce site est une parodie et ne correspond à aucune activité commerciale réelle.
+
 ## 1. Responsable du traitement
 
-Le responsable du traitement des données est **Maxoor Inc.**
+Le responsable du traitement des données est **Maxoor Inc.** dans le cadre de cette création parodique.
 
 - Contact : bryan.drouet24@gmail.com
 - Site : https://maxoor.bryan.ovh/
@@ -82,10 +84,12 @@ Pour exercer ces droits, l'utilisateur peut écrire à : bryan.drouet24@gmail.co
 
 Maxoor Inc. met en œuvre des mesures techniques et organisationnelles raisonnables pour protéger les données contre la perte, l'accès non autorisé, la divulgation ou l'altération.
 
+Les éléments décrits sur cette page s'appliquent à un site de démonstration et de parodie, sans prétention à représenter une activité commerciale réelle.
+
 ## 10. Réclamation
 
 En cas de difficulté, l'utilisateur peut introduire une réclamation auprès de l'autorité de contrôle compétente.
 
 ## 11. Mise à jour
 
-Dernière mise à jour : 15 avril 2026.
+Dernière mise à jour : 30 avril 2026.
