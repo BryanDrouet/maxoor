@@ -34,10 +34,17 @@ export const StorageManager = {
 
     setCookieConsent(status) {
         localStorage.setItem('rgpd_cookie_consent', status);
+        window.dispatchEvent(new CustomEvent('rgpd:consent-change', {
+            detail: { status }
+        }));
+    },
+
+    getCookieConsent() {
+        return localStorage.getItem('rgpd_cookie_consent');
     },
 
     hasCookieConsent() {
-        return localStorage.getItem('rgpd_cookie_consent') !== null;
+        return this.getCookieConsent() !== null;
     },
 
     setPreviewAccess() {

@@ -18,7 +18,7 @@ Selon les usages du site, les données suivantes peuvent être collectées :
 - panier et code promo enregistrés localement dans le navigateur
 - données techniques minimales générées par l'hébergement (adresse IP, navigateur, horodatage, pages consultées si journalisées par le serveur)
 
-Le site n'intègre pas d'outil d'analyse ou de suivi publicitaire tiers.
+Le site peut intégrer un outil gratuit de mesure d'audience activé uniquement après consentement.
 
 ## 3. Finalités du traitement
 
@@ -29,6 +29,7 @@ Les données collectées sont utilisées pour :
 - mémoriser le choix de consentement aux cookies
 - conserver localement le panier et le code promo
 - exploiter les journaux techniques nécessaires à l'hébergement et à la sécurité
+- mesurer l'audience globale et les visites en temps réel si l'utilisateur accepte les cookies de statistiques
 
 ## 4. Base légale
 
@@ -37,6 +38,7 @@ Les traitements reposent sur :
 - l'intérêt légitime de Maxoor Inc. pour l'administration technique du site
 - le consentement de l'utilisateur pour les cookies non strictement nécessaires
 - l'exécution de mesures précontractuelles ou la réponse à une demande de contact lorsque cela s'applique
+- le consentement de l'utilisateur pour la mesure d'audience
 
 ## 5. Durée de conservation
 
@@ -45,6 +47,7 @@ Les données sont conservées pour une durée limitée, adaptée à leur finalit
 - demandes de contact : durée nécessaire au traitement puis archivage administratif si besoin
 - cookies de consentement : durée maximale recommandée par la réglementation applicable
 - données de navigation : durée technique limitée et anonymisée lorsque cela est possible
+- données de mesure d'audience : conservées selon la configuration de l'outil gratuit utilisé et uniquement si vous avez consenti
 
 ## 6. Destinataires des données
 
@@ -58,7 +61,7 @@ Aucune vente de données personnelles n'est effectuée.
 
 ## 7. Cookies
 
-Le site peut utiliser des cookies strictement nécessaires à son fonctionnement et des cookies de mesure ou de confort uniquement si l'utilisateur y consent.
+Le site peut utiliser des cookies strictement nécessaires à son fonctionnement et des cookies de mesure d'audience uniquement si l'utilisateur y consent.
 
 L'utilisateur peut modifier son choix à tout moment via les mécanismes proposés par le site ou via les paramètres de son navigateur.
 

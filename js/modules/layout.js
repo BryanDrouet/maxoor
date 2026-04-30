@@ -1,4 +1,5 @@
 const HEADER_VARIANTS = new Set(['main', 'simple', 'launch', 'boutique']);
+window.MAXOOR_ANALYTICS_ID = 'G-E3VKTPY26T';
 
 const IMAGE_VIEWER_HTML = `
 <div class="image-viewer" data-image-viewer hidden aria-hidden="true">
@@ -23,6 +24,86 @@ const IMAGE_VIEWER_HTML = `
 
 let imageViewerState = null;
 let markdownEnginePromise = null;
+let analyticsState = {
+    loading: false,
+    loaded: false,
+    measurementId: ''
+};
+
+function getAnalyticsMeasurementId() {
+    return (
+        window.MAXOOR_ANALYTICS_ID ||
+        document.querySelector('meta[name="maxoor-analytics-id"]')?.content?.trim() ||
+        ''
+    );
+}
+
+function loadGoogleAnalytics(measurementId) {
+    if (!measurementId || analyticsState.loading || analyticsState.loaded) return;
+
+    analyticsState.loading = true;
+    analyticsState.measurementId = measurementId;
+
+    if (typeof window.gtag !== 'function') {
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function gtag() {
+            window.dataLayer.push(arguments);
+        };
+    }
+
+    const existingScript = document.querySelector(`script[data-analytics-id="${measurementId}"]`);
+    if (existingScript) {
+        analyticsState.loading = false;
+        analyticsState.loaded = true;
+        return;
+    }
+
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+    script.dataset.analyticsId = measurementId;
+
+    script.addEventListener('load', () => {
+        window.gtag('js', new Date());
+        window.gtag('config', measurementId, {
+            anonymize_ip: true,
+            allow_google_signals: false,
+            allow_ad_personalization_signals: false
+        });
+        analyticsState.loaded = true;
+        analyticsState.loading = false;
+    }, { once: true });
+
+    script.addEventListener('error', () => {
+        analyticsState.loading = false;
+        console.warn('[Analytics] Impossible de charger Google Analytics');
+    }, { once: true });
+
+    document.head.appendChild(script);
+}
+
+function syncAnalyticsWithConsent() {
+    const consent = localStorage.getItem('rgpd_cookie_consent');
+    const measurementId = getAnalyticsMeasurementId();
+
+    if (consent === 'accepted') {
+        loadGoogleAnalytics(measurementId);
+    }
+}
+
+function initAnalytics() {
+    if (window.__maxoorAnalyticsInitialized) return;
+    window.__maxoorAnalyticsInitialized = true;
+
+    syncAnalyticsWithConsent();
+
+    window.addEventListener('rgpd:consent-change', syncAnalyticsWithConsent, { passive: true });
+    window.addEventListener('storage', (event) => {
+        if (event.key === 'rgpd_cookie_consent') {
+            syncAnalyticsWithConsent();
+        }
+    }, { passive: true });
+}
 
 function escapeHtml(value) {
     return value
@@ -415,6 +496,8 @@ async function initSharedLayout() {
     }
 
     await initMarkdownContent();
+
+    initAnalytics();
 
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
